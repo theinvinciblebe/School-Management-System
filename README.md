@@ -9,6 +9,7 @@ A comprehensive web-based school management system built with **Laravel**, **Jav
 ### Core Functionality
 - **Student Management** - Register, manage, and track student information
 - **Staff Management** - Employee records, roles, and permissions
+- **Accounting Management** - Receipt, Purchase Request, and Profit&Lost
 - **Class Management** - Create and organize classes with grade levels
 - **Attendance Tracking** - Mark and monitor student and staff attendance
 - **Grade Management** - Record and manage student grades and academic performance
