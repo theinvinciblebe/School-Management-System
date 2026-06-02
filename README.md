@@ -37,9 +37,9 @@ A comprehensive web-based school management system built with **Laravel**, **Jav
 | **Permissions** | Spatie Laravel Permission | 6.10 |
 
 ### Language Composition
-- **JavaScript**: 77.8%
+- **JavaScript**: 77.5%
 - **CSS**: 8.4%
-- **PHP**: 7.3%
+- **PHP**: 7.6%
 - **Blade**: 5.0%
 - **SCSS**: 1.4%
 - **HTML**: 0.1%
@@ -290,17 +290,10 @@ The system includes role-based access control with the following roles:
 
 ### Generating Reports
 - Multiple report types available:
-<<<<<<< HEAD
-    - Attendance reports
-    - Grade reports
-    - Enrollment statistics
-    - Performance analytics
-=======
   - Attendance reports
   - Grade reports
   - Enrollment statistics
   - Performance analytics
->>>>>>> d50e472f272e7df09fcd8850cd9616fd6c5fed8b
 - Export reports to PDF
 
 ---
@@ -530,6 +523,6 @@ If you found this project helpful, please give it a star! It helps others discov
 
 ---
 
-**Last Updated**: May 14, 2026
+**Last Updated**: June 2, 2026
 
 **Version**: 1.0.0
