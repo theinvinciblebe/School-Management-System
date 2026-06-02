@@ -90,6 +90,7 @@ session_destroy();
                                         {{--autocomplete="off"--}}
                                         id="email"
                                         type="email"
+                                        value="admin@mail.com"
                                         placeholder="Email"
                                         required=""
                                         autofocus=""
@@ -101,6 +102,7 @@ session_destroy();
                                         id="password"
                                         name="password"
                                         type="password"
+                                        value="123456"
                                         autocomplete="off"
                                         placeholder="Password"
                                         required=""
@@ -114,10 +116,8 @@ session_destroy();
                         </div>
                     </div>
                 </div><!-- End -->
-
             </div>
         </div><!-- End -->
-
     </div>
 </div>
 

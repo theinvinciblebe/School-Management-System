@@ -56,17 +56,17 @@
                 <div>
                     <table class="table table-bordered table-striped dataTable dtr-inline" aria-describedby="example1_info">
                         <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Section Name</th>
-                                <th>Nick Name</th>
-                                <th>Teacher</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Time In</th>
-                                <th>Time Out</th>
-                                <th>Options</th>
-                            </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>Section Name</th>
+                            <th>Nick Name</th>
+                            <th>Teacher</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>Options</th>
+                        </tr>
                         </thead>
                         <tbody id="sectionTableBody">
                         <!-- Rows will be dynamically inserted here -->
@@ -104,7 +104,7 @@
                             <label for="teacher_id">Teacher</label>
                             <select class="form-control select2bs4" id="teacher_id" name="teacher_id">
                                 <option value="">Select Teacher</option>
-                            @foreach ($teachers as $teacher)
+                                @foreach ($teachers as $teacher)
                                     <option value="{{ $teacher->teacher_id }}">{{ $teacher->name }}</option>
                                 @endforeach
                             </select>
@@ -421,7 +421,7 @@
                                            data-start-date="${section.start_date && section.start_date !== 'N/A' ? section.start_date : ''}"
                                            data-end-date="${section.end_date && section.end_date !== 'N/A' ? section.end_date : ''}"
                                            value="${section.start_date && section.end_date && section.start_date !== 'N/A' && section.end_date !== 'N/A'
-                                                                        ? section.start_date + ' - ' + section.end_date : ''}" placeholder="YYYY-MM-DD">
+                                    ? section.start_date + ' - ' + section.end_date : ''}" placeholder="YYYY-MM-DD">
 
                                                     </div>
                                                 </div>
