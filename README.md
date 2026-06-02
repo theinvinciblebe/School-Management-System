@@ -290,10 +290,17 @@ The system includes role-based access control with the following roles:
 
 ### Generating Reports
 - Multiple report types available:
+<<<<<<< HEAD
     - Attendance reports
     - Grade reports
     - Enrollment statistics
     - Performance analytics
+=======
+  - Attendance reports
+  - Grade reports
+  - Enrollment statistics
+  - Performance analytics
+>>>>>>> d50e472f272e7df09fcd8850cd9616fd6c5fed8b
 - Export reports to PDF
 
 ---
