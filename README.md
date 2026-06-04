@@ -3,6 +3,8 @@
 A comprehensive web-based school management system built with **Laravel**, **JavaScript**, and **CSS**. This application provides complete functionality for managing school operations including student information, attendance, grades, schedules, and administrative tasks.
 
 ---
+<img width="1500" height="1500" alt="portfolio-SMS" src="https://github.com/user-attachments/assets/34e7fd37-59fc-431c-a150-ccb6d8b3a34e" />
+
 
 ## 🎯 Features
 
