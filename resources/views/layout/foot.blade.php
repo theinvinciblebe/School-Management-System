@@ -212,37 +212,37 @@
 </script>
 
 <!-- Overlay script -->
-<script>
-    function showOverlay() {
-        let overlay = document.getElementById("div");
+{{--<script>--}}
+{{--    function showOverlay() {--}}
+{{--        let overlay = document.getElementById("div");--}}
 
-        // Check if the element exists, if not, create it
-        if (!overlay) {
-            overlay = document.createElement("div");
-            overlay.id = "div";
-            document.body.appendChild(overlay);
-        }
+{{--        // Check if the element exists, if not, create it--}}
+{{--        if (!overlay) {--}}
+{{--            overlay = document.createElement("div");--}}
+{{--            overlay.id = "div";--}}
+{{--            document.body.appendChild(overlay);--}}
+{{--        }--}}
 
-        overlay.className = "overlay";
-        overlay.innerHTML = `
-        <i class="fas fa-3x fa-sync-alt fa-spin"></i>
-        <div class="text-bold pt-2">Loading...</div>
-    `;
-        document.body.appendChild(overlay);
-    }
+{{--        overlay.className = "overlay";--}}
+{{--        overlay.innerHTML = `--}}
+{{--        <i class="fas fa-3x fa-sync-alt fa-spin"></i>--}}
+{{--        <div class="text-bold pt-2">Loading...</div>--}}
+{{--    `;--}}
+{{--        document.body.appendChild(overlay);--}}
+{{--    }--}}
 
-    // Listen for the "pageshow" event to handle back/forward navigation
-    window.addEventListener('pageshow', (event) => {
-        // Check if the page is being restored from the cache
-        if (event.persisted) {
-            // Remove the overlay if it exists
-            const overlay = document.querySelector('.overlay');
-            if (overlay) {
-                document.body.removeChild(overlay);
-            }
-        }
-    });
-</script>
+{{--    // Listen for the "pageshow" event to handle back/forward navigation--}}
+{{--    window.addEventListener('pageshow', (event) => {--}}
+{{--        // Check if the page is being restored from the cache--}}
+{{--        if (event.persisted) {--}}
+{{--            // Remove the overlay if it exists--}}
+{{--            const overlay = document.querySelector('.overlay');--}}
+{{--            if (overlay) {--}}
+{{--                document.body.removeChild(overlay);--}}
+{{--            }--}}
+{{--        }--}}
+{{--    });--}}
+{{--</script>--}}
 
 {{--<script>--}}
 {{--    document.addEventListener("DOMContentLoaded", () => {--}}
@@ -307,6 +307,8 @@
 
     });
 </script>
+
+{{--@stack('scripts')--}}
 
 </body>
 </html>

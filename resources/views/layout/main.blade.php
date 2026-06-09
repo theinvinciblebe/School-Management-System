@@ -1,72 +1,4 @@
-@extends('layout.head')
-
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- Bootstrap Switch -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css">
-
-<style>
-    input:-webkit-autofill {
-        background-color: transparent !important;
-        -webkit-box-shadow: 0 0 0px 1000px #fff inset !important; /* Ensures background matches normal input */
-        -webkit-text-fill-color: #000 !important; /* Ensures the text color remains normal */
-        border-color: #ced4da !important; /* Optional: Adjust border if needed */
-        transition: background-color 5000s ease-in-out 0s; /* Fix flickering issue */
-    }
-
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus {
-        background-color: transparent !important;
-        -webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
-        -webkit-text-fill-color: #000 !important;
-        border-color: #ced4da !important;
-    }
-
-
-    /* Light Mode */
-    .light-mode {
-        background-color: #f5f5f5;
-        color: #000;
-    }
-
-    /* Dark Mode */
-    .dark-mode {
-        background-color: #1a1a1a;
-        color: #fff;
-    }
-
-</style>
-
-<!-- Preloader -->
-<style>
-    .preloader {
-        background-color: #ffffff; /* Change the background color */
-        /*display: none !important;*/
-    }
-
-    .animation__wobble {
-        animation: myCustomWobble 0.1s infinite; /* Customize animation */
-    }
-
-</style>
-
-<style>
-
-    #notification-list  {
-        display: flex;
-        align-items: center;
-        white-space: nowrap;  /* Prevent text from wrapping */
-        overflow: hidden;  /* Hide overflow text */
-        text-overflow: ellipsis;  /* Add '...' for overflowing text */
-        max-width: 320px; /* Adjust width to fit */
-
-    }
-</style>
+@include("layout.head")
 
 <body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $customizes->accent_color ?? '' }}" style="height: auto;">
 
@@ -282,4 +214,4 @@
 
 
 <!-- REQUIRED SCRIPTS -->
-@extends('layout.foot')
+@include('layout.foot')

@@ -2,7 +2,6 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
         <img class="animation__wobble img-circle elevation-3 brand-img" src="/assets/dist/img/mawaridLogo.jpg" alt="MawaridLogo" height="160" width="160">
