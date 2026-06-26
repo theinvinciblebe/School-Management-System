@@ -122,7 +122,7 @@
                 </p>
             </a>
         </li>
-
+        @if (!empty($defaultClassId))
         <li class="nav-item">
             <a href="{{ route('attendance.show', $defaultClassId) }}" class="nav-link {{ Request::is('attendance/class*') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-poll"></i>
@@ -131,7 +131,7 @@
                 </p>
             </a>
         </li>
-
+        @endif
         <li class="nav-item {{ Request::is('exams*') ||Request::is('grades*')||Request::is('manage-exam-marks*') ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link {{ Request::is('exams*') ||Request::is('grades*')||Request::is('manage-exam-marks*') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-layer-group"></i>
