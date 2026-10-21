@@ -164,12 +164,7 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-image nav-icon"></i>Theme Mode :
-                        <input type="checkbox" id="themeSwitch" name="theme-switch" data-bootstrap-switch>
-                    </a>
-                </li>
+                @include('components.sidebar.theme-switch')
                 <div class="dropdown-divider"></div>
                 <li class="nav-item">
                     <a href="/logout" class="nav-link logout-btn">

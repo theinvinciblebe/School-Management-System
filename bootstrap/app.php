@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->encryptCookies(except: [
+            'theme',
+        ]);
         $middleware->alias([
             'role'=> RoleMiddleware::class,
             'log.activity' => LogUserActivity::class, // Define the alias as a key-value pair inside an array

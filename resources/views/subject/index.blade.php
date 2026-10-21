@@ -116,7 +116,7 @@
                     </div>
                     <div class="form-group">
                         <label for="teacher_id">Teacher</label>
-                        <select class="form-control" name="teacher_id" required>
+                        <select class="form-control" name="teacher_id">
                             <option value="">Select Teacher</option>
                             @foreach($teachers as $teacher)
                             <option value="{{ $teacher->teacher_id }}">{{ $teacher->name }}</option>
@@ -157,7 +157,7 @@
                                 <!-- Teacher Dropdown -->
                                 <div class="form-group">
                                     <label for="teacher_id">Teacher</label>
-                                    <select class="form-control" name="teacher_id" required>
+                                    <select class="form-control" name="teacher_id">
                                         <option value="">Select Teacher</option>
                                         @foreach($teachers as $teacher)
                                             <option value="{{ $teacher->teacher_id }}" {{ isset($subject->teacher_id) && $teacher->teacher_id == $subject->teacher_id ? 'selected' : '' }}>

@@ -1,5 +1,4 @@
-<!-- jQuery -->
-<script src="/assets/plugins/jquery/jquery.min.js"></script>
+
 <!-- Bootstrap Bundle (includes Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -306,6 +305,152 @@
         }).buttons().container().appendTo('#classTable_wrapper .col-md-6:eq(0)');
 
     });
+</script>
+
+<!-- Sidebar Scroll Position & OverlayScrollbars Consistency Script -->
+<script>
+    (function () {
+        const SIDEBAR_SCROLL_KEY = 'adminlte_sidebar_scroll_pos';
+        const SIDEBAR_PATH_KEY = 'adminlte_sidebar_last_path';
+
+        function getSidebar() {
+            return $('.main-sidebar .sidebar');
+        }
+
+        function getOsInstance() {
+            const $sidebar = getSidebar();
+            if ($sidebar.length && typeof $sidebar.overlayScrollbars === 'function') {
+                return $sidebar.overlayScrollbars();
+            }
+            return null;
+        }
+
+        function syncSidebarTheme() {
+            const $mainSidebar = $('.main-sidebar');
+            const $sidebar = getSidebar();
+            if (!$sidebar.length) return;
+
+            const isLightSidebar = $mainSidebar.is('[class*="sidebar-light-"]');
+            if (isLightSidebar) {
+                $sidebar.removeClass('os-theme-light').addClass('os-theme-dark');
+            } else {
+                $sidebar.removeClass('os-theme-dark').addClass('os-theme-light');
+            }
+        }
+
+        function saveSidebarScroll() {
+            try {
+                const os = getOsInstance();
+                let pos = null;
+                if (os && typeof os.scroll === 'function') {
+                    const s = os.scroll();
+                    if (s && s.position) {
+                        pos = s.position.y;
+                    }
+                } else {
+                    const $vp = getSidebar().find('.os-viewport');
+                    if ($vp.length) {
+                        pos = $vp.scrollTop();
+                    } else if (getSidebar().length) {
+                        pos = getSidebar()[0].scrollTop;
+                    }
+                }
+                if (pos !== null && !isNaN(pos)) {
+                    sessionStorage.setItem(SIDEBAR_SCROLL_KEY, pos);
+                }
+            } catch (e) {}
+        }
+
+        function syncSidebarSelectedPosition() {
+            const $sidebar = getSidebar();
+            if (!$sidebar.length) return;
+
+            syncSidebarTheme();
+
+            const os = getOsInstance();
+            let currentPath = window.location.pathname;
+            let lastPath = null;
+            let savedScroll = null;
+
+            try {
+                lastPath = sessionStorage.getItem(SIDEBAR_PATH_KEY);
+                savedScroll = sessionStorage.getItem(SIDEBAR_SCROLL_KEY);
+                sessionStorage.setItem(SIDEBAR_PATH_KEY, currentPath);
+            } catch (e) {}
+
+            const $active = $sidebar.find('.nav-sidebar .nav-link.active').first();
+
+            // Ensure parent treeview menu is opened if active item is inside a treeview
+            if ($active.length) {
+                const $parentItem = $active.closest('.nav-treeview').closest('.nav-item');
+                if ($parentItem.length && !$parentItem.hasClass('menu-open')) {
+                    $parentItem.addClass('menu-open');
+                    $parentItem.children('.nav-treeview').show();
+                }
+            }
+
+            // If navigating within the same page or page reload, restore exact scroll
+            if (savedScroll !== null && lastPath === currentPath) {
+                const targetY = parseInt(savedScroll, 10);
+                if (!isNaN(targetY)) {
+                    if (os && typeof os.scroll === 'function') {
+                        os.scroll({ y: targetY }, 0);
+                    } else {
+                        $sidebar.find('.os-viewport').scrollTop(targetY);
+                    }
+                    return;
+                }
+            }
+
+            // If navigating to an active link (or first load of route), scroll active item into view
+            if ($active.length) {
+                if (os && typeof os.scroll === 'function') {
+                    os.scroll({ el: $active[0], block: 'center', scroll: 'ifneeded' });
+                } else {
+                    $active[0].scrollIntoView({ block: 'center', inline: 'nearest' });
+                }
+            }
+        }
+
+        // Run when DOM and AdminLTE are ready
+        $(document).ready(function () {
+            syncSidebarTheme();
+
+            // Save on beforeunload
+            window.addEventListener('beforeunload', saveSidebarScroll);
+
+            // Continuously save scroll on os-viewport scroll
+            $(document).on('scroll', '.main-sidebar .sidebar .os-viewport', function () {
+                saveSidebarScroll();
+            });
+
+            // Also listen to click on nav-links so position is captured right before unload
+            $(document).on('click', '.main-sidebar .sidebar .nav-link', function () {
+                saveSidebarScroll();
+            });
+
+            // Handle treeview animation finishes
+            $(document).on('expanded.lte.treeview collapsed.lte.treeview', function () {
+                setTimeout(function () {
+                    const os = getOsInstance();
+                    if (os && typeof os.update === 'function') {
+                        os.update();
+                    }
+                    saveSidebarScroll();
+                }, 350);
+            });
+        });
+
+        $(window).on('load', function () {
+            // Allow AdminLTE layout and treeview initialization to complete
+            setTimeout(syncSidebarSelectedPosition, 50);
+            setTimeout(syncSidebarSelectedPosition, 300);
+        });
+
+        // Expose globally so customize page swatch changes can call it
+        window.syncSidebarScrollbarTheme = syncSidebarTheme;
+        window.syncSidebarSelectedPosition = syncSidebarSelectedPosition;
+    })();
 </script>
 
 {{--@stack('scripts')--}}

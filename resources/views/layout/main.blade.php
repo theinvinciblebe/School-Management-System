@@ -1,6 +1,42 @@
+@php
+    $themeCookie = request()->cookie('theme') ?? ($_COOKIE['theme'] ?? null);
+    $isDark = ($themeCookie === 'dark-mode');
+@endphp
 @include("layout.head")
 
-<body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $customizes->accent_color ?? '' }}" style="height: auto;">
+<body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $isDark ? 'dark-mode' : '' }} {{ $customizes->accent_color ?? '' }}" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}; height: auto;">
+<script>
+    (function () {
+        try {
+            var theme = localStorage.getItem('theme');
+            if (!theme) {
+                var m = document.cookie.match(/(?:^|; )theme=([^;]*)/);
+                if (m) theme = m[1];
+            }
+            var isDark = theme === 'dark-mode' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            var b = document.getElementById('mainBody');
+            if (isDark) {
+                document.documentElement.classList.add('dark-mode');
+                document.documentElement.style.backgroundColor = '#232323';
+                document.documentElement.style.colorScheme = 'dark';
+                if (b) {
+                    b.classList.add('dark-mode');
+                    b.classList.remove('light-mode');
+                    b.style.backgroundColor = '#232323';
+                }
+            } else if (theme === 'light-mode') {
+                document.documentElement.classList.remove('dark-mode');
+                document.documentElement.style.backgroundColor = '';
+                document.documentElement.style.colorScheme = 'light';
+                if (b) {
+                    b.classList.remove('dark-mode');
+                    b.classList.add('light-mode');
+                    b.style.backgroundColor = '';
+                }
+            }
+        } catch(e) {}
+    })();
+</script>
 
 <div class="wrapper">
     <!-- Navbar -->
@@ -90,7 +126,7 @@
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper light-mode" id="contentWrapper">
+    <div class="content-wrapper {{ $isDark ? 'dark-mode' : '' }}" id="contentWrapper" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}">
         <div class="overlay-wrapper">
             @yield('content')
 
@@ -111,34 +147,102 @@
 <!-- ./wrapper -->
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const themeSwitch = document.getElementById('themeSwitch');
-        const contentWrapper = document.getElementById('mainBody');
+    (function () {
+        function updateThemeUI(isDark) {
+            const body = document.getElementById('mainBody');
+            const contentWrapper = document.getElementById('contentWrapper');
+            const themeSwitch = document.getElementById('themeSwitch');
 
-        // Load the saved theme from localStorage
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark-mode') {
-            contentWrapper.classList.remove('light-mode');
-            contentWrapper.classList.add('dark-mode');
-            themeSwitch.checked = true;
+            if (isDark) {
+                document.documentElement.classList.add('dark-mode');
+                document.documentElement.style.backgroundColor = '#232323';
+                document.documentElement.style.colorScheme = 'dark';
+                if (body) {
+                    body.classList.remove('light-mode');
+                    body.classList.add('dark-mode');
+                    body.style.backgroundColor = '#232323';
+                }
+                if (contentWrapper) {
+                    contentWrapper.classList.remove('light-mode');
+                    contentWrapper.classList.add('dark-mode');
+                    contentWrapper.style.backgroundColor = '#232323';
+                }
+                if (themeSwitch) themeSwitch.checked = true;
+                document.querySelectorAll('.theme-icon-sun').forEach(function (el) { el.classList.add('d-none'); });
+                document.querySelectorAll('.theme-icon-moon').forEach(function (el) { el.classList.remove('d-none'); });
+                document.querySelectorAll('#themeLabelText').forEach(function (el) { el.textContent = 'Dark Mode'; });
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+                document.documentElement.style.backgroundColor = '';
+                document.documentElement.style.colorScheme = 'light';
+                if (body) {
+                    body.classList.remove('dark-mode');
+                    body.classList.add('light-mode');
+                    body.style.backgroundColor = '';
+                }
+                if (contentWrapper) {
+                    contentWrapper.classList.remove('dark-mode');
+                    contentWrapper.classList.add('light-mode');
+                    contentWrapper.style.backgroundColor = '';
+                }
+                if (themeSwitch) themeSwitch.checked = false;
+                document.querySelectorAll('.theme-icon-sun').forEach(function (el) { el.classList.remove('d-none'); });
+                document.querySelectorAll('.theme-icon-moon').forEach(function (el) { el.classList.add('d-none'); });
+                document.querySelectorAll('#themeLabelText').forEach(function (el) { el.textContent = 'Light Mode'; });
+            }
         }
 
-        // Initialize the Bootstrap Switch
-        $('[data-bootstrap-switch]').bootstrapSwitch();
+        function toggleTheme(enableDark) {
+            const body = document.getElementById('mainBody');
+            if (body) body.classList.add('theme-transitioning');
 
-        // Add event listener for the switch
-        $(themeSwitch).on('switchChange.bootstrapSwitch', function (event, state) {
-            if (state) {
-                contentWrapper.classList.remove('light-mode');
-                contentWrapper.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark-mode'); // Save theme preference
-            } else {
-                contentWrapper.classList.remove('dark-mode');
-                contentWrapper.classList.add('light-mode');
-                localStorage.setItem('theme', 'light-mode'); // Save theme preference
+            updateThemeUI(enableDark);
+            try {
+                localStorage.setItem('theme', enableDark ? 'dark-mode' : 'light-mode');
+                document.cookie = "theme=" + (enableDark ? "dark-mode" : "light-mode") + "; path=/; max-age=31536000; SameSite=Lax";
+            } catch(e) {}
+
+            setTimeout(() => {
+                if (body) body.classList.remove('theme-transitioning');
+            }, 350);
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        const isDark = savedTheme === 'dark-mode' || (!savedTheme && document.documentElement.classList.contains('dark-mode'));
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateThemeUI(isDark);
+
+            const themeSwitch = document.getElementById('themeSwitch');
+            const wrapper = document.getElementById('themeToggleWrapper');
+
+            if (themeSwitch) {
+                themeSwitch.addEventListener('change', function () {
+                    toggleTheme(this.checked);
+                });
+            }
+
+            if (wrapper) {
+                wrapper.addEventListener('click', function (e) {
+                    if (e.target.closest('.modern-theme-switch')) return;
+                    if (themeSwitch) {
+                        themeSwitch.checked = !themeSwitch.checked;
+                        toggleTheme(themeSwitch.checked);
+                    }
+                });
+
+                wrapper.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (themeSwitch) {
+                            themeSwitch.checked = !themeSwitch.checked;
+                            toggleTheme(themeSwitch.checked);
+                        }
+                    }
+                });
             }
         });
-    });
+    })();
 </script>
 
 

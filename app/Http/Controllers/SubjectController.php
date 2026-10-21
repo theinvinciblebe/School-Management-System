@@ -87,8 +87,8 @@ class SubjectController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'class_id' => 'required|exists:class,class_id',
-            'teacher_id' => 'required|exists:teacher,teacher_id',
+            'class_id' => 'nullable|exists:class,class_id',
+            'teacher_id' => 'nullable|exists:teacher,teacher_id',
         ]);
 
         DB::table('subject')->insert([
@@ -124,7 +124,7 @@ class SubjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'teacher_id' => 'required|exists:teacher,teacher_id',
+            'teacher_id' => 'nullable|exists:teacher,teacher_id',
         ]);
 
         DB::table('subject')->where('subject_id', $id)->update([

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Admission Form</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
 
@@ -275,17 +276,6 @@
             border-color: #777771 !important;
             background-color: #fff !important;
         }
-    </style>
-
-
-    <script>
-        flatpickr("#dob", {
-            dateFormat: "d-m-Y", // Format like 08-05-2025
-            defaultDate: "today",
-            maxDate: "today", // Optional: prevent selecting future dates
-            allowInput: true
-        });
-    </script>
     <style>
         .flatpickr-calendar {
             border: 1px solid #00aaff;
@@ -311,10 +301,7 @@
 </head>
 <body class="bg-gray-200 p-12">
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-
-    <form id="admissionForm" class="max-w-6xl mx-auto p-12 space-y-12 bg-white rounded shadow" method="POST">
+    <form id="admissionForm" novalidate class="max-w-6xl mx-auto p-12 space-y-12 bg-white rounded shadow" method="POST">
         <a href="https://mawaridtech.com/" rel="home">
             <img fetchpriority="high" src="https://mawaridtech.com/wp-content/uploads/2024/03/logoweb.png"  alt="Mawarid logo">
         </a><br>
@@ -376,10 +363,8 @@
 
                     <div>
                         <label class="block font-medium mb-1">Date of Birth <span class="forminator-required">*</span></label>
-                        <input type="date" name="dob" class="w-full border rounded px-3 py-2 forminator-input" required>
-{{--                        <input id="dob" name="dob" type="text" placeholder="DD-MM-YYYY" class="form-control" required>--}}
+                        <input type="text" id="dob" name="dob" placeholder="DD-MM-YYYY" class="w-full border rounded px-3 py-2 forminator-input" required>
                         <span class="forminator-error-message">Date of Birth is required.</span>
-
                     </div>
 
                     <div>
@@ -621,7 +606,7 @@
                             <option value="zm" data-name="Zambia">Zambia</option>
                             <option value="zw" data-name="Zimbabwe">Zimbabwe</option>
                         </select>
-
+                        <span class="forminator-error-message">Country is required.</span>
 
                     </div>
                 </div>
@@ -715,12 +700,12 @@
             <div class="space-y-4">
                 <label class="block font-medium mb-5">Consent <span class="forminator-required">*</span></label>
                 <label class="flex items-start gap-2">
-                    <input type="checkbox" name="consent" id="consentCheckbox" required><span style="width: 30px"></span>
-                    <label class="text-sm">
+                    <input type="checkbox" name="consent" id="consentCheckbox" required><span class="shrink-0 mt-1"></span>
+                    <span class="text-sm">
                         I, the undersigned, certify that all information provided in this form is accurate to the best of my knowledge.
                         I agree to follow the academy's rules, regulations, and code of conduct.
                         I understand that failure to adhere to the terms may result in the termination of my enrollment.
-                    </label>
+                    </span>
                 </label>
 
                 <ul class="list-disc ml-6 text-sm text-gray-600">
@@ -837,12 +822,12 @@
     function validateStep1() {
         let isValid = true;
         const step1 = document.getElementById('step1');
+        const radioGroupsChecked = new Set();
 
         // Validate required inputs
         step1.querySelectorAll('input[required], select[required]').forEach(input => {
-            const errorMessage = input.closest('div').querySelector('.forminator-error-message');
+            const errorMessage = input.closest('div')?.querySelector('.forminator-error-message');
 
-            const radioGroupsChecked = new Set();
             // Radio group validation
             if (input.type === "radio") {
                 if (radioGroupsChecked.has(input.name)) return;
@@ -853,10 +838,8 @@
 
                 if (!groupChecked) {
                     isValid = false;
-                    // if (wrapperDiv) wrapperDiv.classList.add("border-red-500");
                     if (groupError) groupError.style.display = "block";
                 } else {
-                    // if (wrapperDiv) wrapperDiv.classList.remove("border-red-500");
                     if (groupError) groupError.style.display = "none";
                 }
 
@@ -864,10 +847,18 @@
             }
             else if (!input.value.trim()) {
                 isValid = false;
-                input.classList.add('border-red-500');
+                if (input.id === 'country') {
+                    $('#country').next('.select2-container').find('.select2-selection').addClass('border-red-500');
+                } else {
+                    input.classList.add('border-red-500');
+                }
                 if (errorMessage) errorMessage.style.display = 'block';
             } else {
-                input.classList.remove('border-red-500');
+                if (input.id === 'country') {
+                    $('#country').next('.select2-container').find('.select2-selection').removeClass('border-red-500');
+                } else {
+                    input.classList.remove('border-red-500');
+                }
                 if (errorMessage) errorMessage.style.display = 'none';
             }
         });
@@ -879,10 +870,14 @@
 
         if (!isCourseSelected) {
             isValid = false;
-            courseCheckboxes.forEach(cb => cb.classList.add('outline', 'outline-red-500'));
+            courseCheckboxes.forEach(cb => {
+                if (cb.nextElementSibling) cb.nextElementSibling.classList.add('border-red-500');
+            });
             if (courseError) courseError.style.display = 'block';
         } else {
-            courseCheckboxes.forEach(cb => cb.classList.remove('outline', 'outline-red-500'));
+            courseCheckboxes.forEach(cb => {
+                if (cb.nextElementSibling) cb.nextElementSibling.classList.remove('border-red-500');
+            });
             if (courseError) courseError.style.display = 'none';
         }
 
@@ -899,28 +894,48 @@
 
         if (!validateStep2()) return;
 
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+        }
+
         const formData = new FormData(this);
         const submitUrl = "{{ route('studentsAdmission.store') }}";
 
         fetch(submitUrl, {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
             },
             body: formData
         })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
+            .then(async response => {
+                const data = await response.json();
+                if (!response.ok) {
+                    if (data.errors) {
+                        const errs = Object.values(data.errors).flat().join('\n');
+                        throw new Error(errs);
+                    }
+                    throw new Error(data.message || 'Submission failed');
+                }
+                return data;
             })
             .then(data => {
                 alert('Form submitted successfully!');
                 this.reset();
-                // Optionally redirect to a thank you page
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('There was an error submitting the form.');
+                alert(error.message || 'There was an error submitting the form.');
+            })
+            .finally(() => {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Application';
+                }
             });
     });
 
@@ -936,10 +951,14 @@
 
         if (!isEducationChecked) {
             isValid = false;
-            educationBoxes.forEach(cb => cb.classList.add('outline', 'outline-red-500'));
+            educationBoxes.forEach(cb => {
+                if (cb.nextElementSibling) cb.nextElementSibling.classList.add('border-red-500');
+            });
             educationError.style.display = 'block';
         } else {
-            educationBoxes.forEach(cb => cb.classList.remove('outline', 'outline-red-500'));
+            educationBoxes.forEach(cb => {
+                if (cb.nextElementSibling) cb.nextElementSibling.classList.remove('border-red-500');
+            });
             educationError.style.display = 'none';
         }
 
@@ -949,10 +968,10 @@
 
         if (!consentCheckbox.checked) {
             isValid = false;
-            consentCheckbox.classList.add('outline', 'outline-red-500');
+            if (consentCheckbox.nextElementSibling) consentCheckbox.nextElementSibling.classList.add('border-red-500');
             consentError.style.display = 'block';
         } else {
-            consentCheckbox.classList.remove('outline', 'outline-red-500');
+            if (consentCheckbox.nextElementSibling) consentCheckbox.nextElementSibling.classList.remove('border-red-500');
             consentError.style.display = 'none';
         }
 

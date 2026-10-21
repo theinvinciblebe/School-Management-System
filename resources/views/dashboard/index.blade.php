@@ -3,7 +3,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Preloader -->
-    <div class="preloader flex-column justify-content-center align-items-center">
+    <div class="preloader flex-column justify-content-center align-items-center" style="{{ (request()->cookie('theme') === 'dark-mode' || (isset($_COOKIE['theme']) && $_COOKIE['theme'] === 'dark-mode')) ? 'background-color: #1a1a1a !important;' : '' }}">
         <img class="animation__wobble img-circle elevation-3 brand-img" src="/assets/dist/img/mawaridLogo.jpg" alt="MawaridLogo" height="160" width="160">
     </div>
 

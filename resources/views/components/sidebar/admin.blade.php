@@ -320,12 +320,7 @@
                     </a>
                 </li>
                 <div class="dropdown-divider"></div>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-image nav-icon" aria-hidden="true"></i><p>Theme Mode :</p>
-                        <input type="checkbox" id="themeSwitch" name="theme-switch" data-bootstrap-switch>
-                    </a>
-                </li>
+                @include('components.sidebar.theme-switch')
                 <div class="dropdown-divider"></div>
                 <li class="nav-item">
                     <a href="{{ route('user.index') }}" class="nav-link {{ Request::is('user-management')? 'active' : '' }}">

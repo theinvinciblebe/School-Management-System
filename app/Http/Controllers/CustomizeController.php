@@ -16,18 +16,22 @@ class CustomizeController extends Controller
     public function updateLogo(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:jpeg,png,jpg,gif,ico|max:2048',
+            'file' => 'required|file|mimes:jpeg,png,jpg,gif,ico,webp,svg|max:4096',
         ]);
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-
-            // Ensure valid file format
-            if (!in_array($file->getClientOriginalExtension(), ['jpeg', 'jpg', 'png', 'gif', 'ico'])) {
-                return redirect()->back()->with('error', 'Invalid image format.');
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!$ext) {
+                $ext = strtolower($file->guessExtension() ?? 'png');
             }
 
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $allowed = ['jpeg', 'jpg', 'png', 'gif', 'ico', 'webp', 'svg'];
+            if (!in_array($ext, $allowed)) {
+                return response()->json(['error' => 'Invalid image format. Allowed: ' . implode(', ', $allowed)], 422);
+            }
+
+            $fileName = 'logo_' . time() . '.' . $ext;
             $file->move(public_path('customize_images'), $fileName);
 
             // Update database
@@ -37,47 +41,53 @@ class CustomizeController extends Controller
             );
 
             return response()->json([
-                'message' => 'Logo Updated Successfully!',
-                'newLogoUrl' => asset('customize_images/' . $fileName)
+                'message' => 'School Brand Logo Updated Successfully!',
+                'newLogoUrl' => asset('customize_images/' . $fileName) . '?v=' . time()
             ], 200);
         }
 
-        return response()->json(['error' => 'File upload failed'], 500);
+        return response()->json(['error' => 'File upload failed: No file received.'], 400);
     }
+
     public function updateIcon(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png,gif,ico|max:2048', // Allowed file types
+            'file' => 'required|file|mimes:jpg,jpeg,png,gif,ico,webp,svg|max:4096',
         ]);
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $fileExtension = $file->getClientOriginalExtension();
-
-            // Check if the uploaded file is `.ico`
-            if ($fileExtension === 'ico') {
-                $fileName = 'favicon.ico'; // Always store favicon as favicon.ico
-                $file->move(public_path(), $fileName); // Move to root public directory
-                $filePath = asset($fileName);
-            } else {
-                $fileName = 'favicon.ico'; // Always store favicon as favicon.ico
-                $file->move(public_path(), $fileName); // Move to root public directory
-                $filePath = asset($fileName);
+            $ext = strtolower($file->getClientOriginalExtension());
+            if (!$ext) {
+                $ext = strtolower($file->guessExtension() ?? 'ico');
             }
 
-            // Update database with new icon filename
+            $allowed = ['jpeg', 'jpg', 'png', 'gif', 'ico', 'webp', 'svg'];
+            if (!in_array($ext, $allowed)) {
+                return response()->json(['error' => 'Invalid icon format. Allowed: ' . implode(', ', $allowed)], 422);
+            }
+
+            $fileName = 'icon_' . time() . '.' . $ext;
+            $file->move(public_path('customize_images'), $fileName);
+
+            // Also mirror to public/favicon.ico for browser default fallback
+            @copy(public_path('customize_images/' . $fileName), public_path('favicon.ico'));
+
+            $dbIconPath = 'customize_images/' . $fileName;
+
+            // Update database with new icon relative path
             DB::table('customize')->updateOrInsert(
-                ['id' => 1], // Assuming there's only one row for customization
-                ['url_icon' => $fileName]
+                ['id' => 1],
+                ['url_icon' => $dbIconPath]
             );
 
             return response()->json([
-                'message' => 'Icon Updated Successfully!',
-                'newIconUrl' => $filePath
+                'message' => 'Browser Tab Icon Updated Successfully!',
+                'newIconUrl' => asset($dbIconPath) . '?v=' . time()
             ], 200);
         }
 
-        return response()->json(['error' => 'File upload failed'], 500);
+        return response()->json(['error' => 'File upload failed: No file received.'], 400);
     }
 
     public function updateBrandTitle(Request $request)
