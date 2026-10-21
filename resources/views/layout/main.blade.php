@@ -77,7 +77,7 @@
   <aside class="main-sidebar {{ $customizes->dark_sidebar_variants ?? 'sidebar-dark-primary' }} elevation-4 {{ $customizes->sidebar_color ?? 'bg-dark' }} ">
     <!-- Brand Logo -->
     <a href="/dashboard" class="brand-link">
-      <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Mawarid Logo" class="brand-image img-circle elevation-3">
+      <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Brand Logo" class="brand-image img-circle elevation-3">
       <span class="brand-text font-weight-light">{{ $customizes->brand_title ?? 'N/A'}}</span>
     </a>
 
