@@ -10,51 +10,73 @@ use Symfony\Component\HttpFoundation\Response;
 class RoleMiddleware
 {
     /**
+     * Role names to integer mapping:
+     * 0: Admin
+     * 1: Teacher
+     * 2: Student
+     * 3: Accountant
+     * 4: Receptionist
+     */
+    protected array $roleMap = [
+        'admin'        => 0,
+        'teacher'      => 1,
+        'student'      => 2,
+        'accountant'   => 3,
+        'reception'    => 4,
+        'receptionist' => 4,
+    ];
+
+    /**
      * Handle an incoming request.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  mixed  ...$roles
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next, $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (Auth::check() && Auth::user()->role == $role) {
+        // 1. Ensure user is logged in
+        if (!Auth::check()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['error' => 'Unauthenticated.'], 401);
+            }
+            return redirect()->route('login');
+        }
+
+        // 2. If no role parameter provided, allow any authenticated user
+        if (empty($roles)) {
             return $next($request);
         }
 
-        Auth::logout();
-        return redirect()->route('login')->with('status', 'Access denied.');
+        // 3. Normalize roles (supports 'role:0,1', 'role:admin,teacher', or variadic args)
+        $allowedRoles = [];
+        foreach ($roles as $roleArg) {
+            foreach (explode(',', (string) $roleArg) as $r) {
+                $r = trim(strtolower($r));
+                if (is_numeric($r)) {
+                    $allowedRoles[] = (int) $r;
+                } elseif (isset($this->roleMap[$r])) {
+                    $allowedRoles[] = $this->roleMap[$r];
+                }
+            }
+        }
+
+        $userRole = (int) Auth::user()->role;
+
+        // 4. Grant access if user role matches allowed roles
+        if (in_array($userRole, $allowedRoles, true)) {
+            return $next($request);
+        }
+
+        // 5. User does not have access: return 403 without logging out
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'error' => 'Forbidden',
+                'message' => 'Unauthorized action. You do not have permission to access this resource.'
+            ], 403);
+        }
+
+        abort(403, 'Unauthorized action. You do not have permission to access this page.');
     }
-
-//    public function handle(Request $request, Closure $next, $requiredRole)
-//    {
-//        // Ensure the user is authenticated
-//        if (!auth()->check()) {
-//            return redirect('/login');
-//        }
-//
-//        // Convert string role to integer if needed
-//        $roleMap = [
-//            'admin' => 0,
-//            'teacher' => 1,
-//            'student' => 2,
-//            'accountant' => 3,
-//            'reception' => 4,
-//        ];
-//
-//        // Get the actual role value from user
-//        $userRole = Auth::user()->role;
-//
-//        // Match role using the map
-//        if (isset($roleMap[$requiredRole]) && $userRole == $roleMap[$requiredRole]) {
-//            return $next($request);
-//        }
-//
-//        // Optional: redirect or abort
-//        abort(403, 'Unauthorized action.');
-//    }
-
-
-//    public function handle(Request $request, Closure $next): Response
-//    {
-//        return $next($request);
-//    }
 }
