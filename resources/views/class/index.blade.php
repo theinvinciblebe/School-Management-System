@@ -5,15 +5,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>Class Management</h3>
+                    <h3>{{ __('Class Management') }}</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('sections.index') }}">Section List</a></li>
-                        <li class="breadcrumb-item active">Class List</li>
-
-
+                        <li class="breadcrumb-item"><a href="/dashboard">{{ __('Home') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('sections.index') }}">{{ __('Section List') }}</a></li>
+                        <li class="breadcrumb-item active">{{ __('Class List') }}</li>
                     </ol>
                 </div>
             </div>
@@ -23,12 +21,12 @@
     <div class="card">
         <div class="card-header">
             <div class="card-title">
-                <h3>Class List</h3>
+                <h3>{{ __('Class List') }}</h3>
             </div>
             @if (in_array(Auth::user()->role, [0, 3]))
                 <!-- Add Button -->
                 <a href="{{ route('class.create') }}" class="btn btn-primary mb-3 float-right">
-                    <i class="fa fa-plus"></i> Add Class
+                    <i class="fa fa-plus"></i> {{ __('Add Class') }}
                 </a>
 
                 <a href="{{ route('class.create') }}" class="floating-button">
@@ -43,12 +41,12 @@
                         <table id="classTable" class="table table-bordered table-striped dataTable dtr-inline" aria-describedby="example1_info">
                             <thead>
                                 <tr>
-                                    <th class="sorting" tabindex="0" width="50px" aria-controls="example1" rowspan="1" colspan="1" aria-label="Rendering engine: activate to sort column ascending">#</th>
-                                    <th class="sorting sorting_desc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" aria-sort="descending">Class Name</th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">Class Code</th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">Class Room</th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">Teacher</th>
-                                    <th tabindex="0" aria-controls="example1" width="90px" rowspan="1" colspan="1">Options</th>
+                                    <th class="sorting" tabindex="0" width="50px" aria-controls="example1" rowspan="1" colspan="1">#</th>
+                                    <th class="sorting sorting_desc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="descending">{{ __('Class Name') }}</th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">{{ __('Class Code') }}</th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">{{ __('Class Room') }}</th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">{{ __('Teacher') }}</th>
+                                    <th tabindex="0" aria-controls="example1" width="90px" rowspan="1" colspan="1">{{ __('Options') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,24 +60,24 @@
                                     <td>
                                         @if (Auth::user()->role == 0 || Auth::user()->role == 3)
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-success">Action</button>
+                                            <button type="button" class="btn btn-success">{{ __('Action') }}</button>
                                             <button type="button" class="btn btn-success dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown" aria-expanded="false">
                                                 <span class="sr-only">Toggle Dropdown</span>
                                             </button>
                                             <div class="dropdown-menu" role="menu">
-                                                <button type="button" class="dropdown-item text-primary" data-toggle="modal" data-target="#editModal{{ $item->class_id }}"><i class="fas fa-edit"></i> Edit</button>
+                                                <button type="button" class="dropdown-item text-primary" data-toggle="modal" data-target="#editModal{{ $item->class_id }}"><i class="fas fa-edit"></i> {{ __('Edit') }}</button>
 
                                                 <div class="dropdown-divider"></div>
 
                                                 <form action="{{ route('class.destroy', $item->class_id) }}" method="POST" onsubmit="showOverlay()" style="display: inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger delete-btn"><i class="fas fa-trash"></i> Delete</button>
+                                                    <button type="submit" class="dropdown-item text-danger delete-btn"><i class="fas fa-trash"></i> {{ __('Delete') }}</button>
                                                 </form>
                                             </div>
                                         </div>
                                         @else
-                                            <span class="text-muted">No Actions Available</span>
+                                            <span class="text-muted">{{ __('No Actions Available') }}</span>
                                         @endif
                                     </td>
 
@@ -102,26 +100,26 @@
                             @csrf
                             @method('PUT')
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editModalLabel{{ $item->class_id }}">Edit Class</h5>
+                                <h5 class="modal-title" id="editModalLabel{{ $item->class_id }}">{{ __('Edit Class') }}</h5>
                                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="name">Class Name</label>
+                                    <label for="name">{{ __('Class Name') }}</label>
                                     <input type="text" class="form-control" id="name" name="name" value="{{ $item->name }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="class_code">Class Code</label>
-                                    <input type="text" class="form-control" id="class_code" name="class_code" value="{{ $item->class_code ?? 'No Code Assigned'}}">
+                                    <label for="class_code">{{ __('Class Code') }}</label>
+                                    <input type="text" class="form-control" id="class_code" name="class_code" value="{{ $item->class_code ?? __('No Code Assigned')}}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="class_room">Class Room</label>
-                                    <input type="text" class="form-control" id="class_room" name="class_room" value="{{ $item->class_room ?? 'No Room Assigned'}}">
+                                    <label for="class_room">{{ __('Class Room') }}</label>
+                                    <input type="text" class="form-control" id="class_room" name="class_room" value="{{ $item->class_room ?? __('No Room Assigned')}}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="teacher_id">Teacher</label>
+                                    <label for="teacher_id">{{ __('Teacher') }}</label>
                                     <select class="form-control select2bs4" id="teacher_id" name="teacher_id">
-                                        <option value="">No Teacher Assigned</option> <!-- Option to store null -->
+                                        <option value="">{{ __('No Teacher Assigned') }}</option>
                                         @foreach ($teachers as $teacher)
                                             <option value="{{ $teacher->teacher_id }}" {{ $item->teacher_id == $teacher->teacher_id ? 'selected' : '' }}>
                                                 {{ $teacher->name }}
@@ -131,8 +129,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+                                <button type="submit" class="btn btn-primary">{{ __('Save changes') }}</button>
                             </div>
                         </form>
                     </div>
@@ -142,5 +140,3 @@
     </div>
 
 @endsection
-
-

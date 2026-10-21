@@ -264,14 +264,14 @@
     </div>
 
 
-   <!-- Add Department Modal -->
+   <!-- Add Staff Modal -->
     <div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form action="{{ route('staffs.store') }}" method="POST" enctype="multipart/form-data" onsubmit="showOverlay()">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addStaffModalLabel">Add Department</h5>
+                        <h5 class="modal-title" id="addStaffModalLabel">Add Staff</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

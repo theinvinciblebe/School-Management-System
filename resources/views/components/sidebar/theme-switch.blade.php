@@ -13,7 +13,7 @@
                 <i class="fas fa-sun theme-icon-sun {{ $isDark ? 'd-none' : '' }}"></i>
                 <i class="fas fa-moon theme-icon-moon {{ $isDark ? '' : 'd-none' }}"></i>
             </span>
-            <span class="theme-text" id="themeLabelText">{{ $isDark ? 'Dark Mode' : 'Light Mode' }}</span>
+            <span class="theme-text" id="themeLabelText">{{ $isDark ? __('Dark Mode') : __('Light Mode') }}</span>
         </div>
         <div class="theme-switch-container">
             <label class="modern-theme-switch" for="themeSwitch" onclick="event.stopPropagation();">

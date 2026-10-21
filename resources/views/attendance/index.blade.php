@@ -267,33 +267,42 @@
         }
 
         // Trigger reloadAttendanceData when class or date changes
-        classPicker.addEventListener('change', reloadAttendanceData);
-        datePicker.addEventListener('change', reloadAttendanceData);
+        if (classPicker) {
+            classPicker.addEventListener('change', reloadAttendanceData);
+        }
+        if (datePicker) {
+            datePicker.addEventListener('change', reloadAttendanceData);
+        }
 
         // Trigger initial load if class and date are already selected
-        if (classPicker.value && datePicker.value) {
+        if (classPicker && datePicker && classPicker.value && datePicker.value) {
             reloadAttendanceData();
         }
 
-        // Add event listener for the Request Edit button
-        requestEditButton.addEventListener('click', function () {
-            // Get the selected date and class
-            const selectedDate = datePicker.value;
-            const selectedClass = classPicker.value;
-            const activeSectionTab = document.querySelector('.nav-link.active'); // Active section tab
+        // Add event listener for the Request Edit button (Teacher role only)
+        if (requestEditButton) {
+            requestEditButton.addEventListener('click', function () {
+                // Get the selected date and class
+                const selectedDate = datePicker ? datePicker.value : '';
+                const selectedClass = classPicker ? classPicker.value : '';
+                const activeSectionTab = document.querySelector('.nav-link.active'); // Active section tab
 
-            if (!selectedDate || !selectedClass || !activeSectionTab) {
-                alert('Please select a valid date, class, and section before requesting an edit.');
-                return;
-            }
+                if (!selectedDate || !selectedClass || !activeSectionTab) {
+                    alert('Please select a valid date, class, and section before requesting an edit.');
+                    return;
+                }
 
-            const selectedSection = activeSectionTab.getAttribute('data-section-id'); // Custom data attribute for section ID
+                const selectedSection = activeSectionTab.getAttribute('data-section-id'); // Custom data attribute for section ID
 
-            // Fill the hidden inputs in the modal form
-            document.getElementById('request-edit-date').value = selectedDate;
-            document.getElementById('request-edit-class-id').value = selectedClass;
-            document.getElementById('request-edit-section-id').value = selectedSection;
-        });
+                // Fill the hidden inputs in the modal form
+                const reqDate = document.getElementById('request-edit-date');
+                const reqClass = document.getElementById('request-edit-class-id');
+                const reqSection = document.getElementById('request-edit-section-id');
+                if (reqDate) reqDate.value = selectedDate;
+                if (reqClass) reqClass.value = selectedClass;
+                if (reqSection) reqSection.value = selectedSection;
+            });
+        }
     });
 
 </script>

@@ -14,7 +14,7 @@
                 <div class="card-header text-center">
                     <div class="card-title">
                         <h3>
-                            Add New Class
+                            {{ __('Add New Class') }}
                         </h3>
                     </div>
                 </div>
@@ -24,43 +24,43 @@
                     @csrf
                     <!-- Class Name -->
                     <div class="form-group">
-                        <label for="name">Class Name</label>
+                        <label for="name">{{ __('Class Name') }}</label>
                         <div class="input-group mb-3 ">
                             <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-graduation-cap"></i>
                                     </span>
                             </div>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Enter Class Name" required>
+                            <input type="text" name="name" id="name" class="form-control" placeholder="{{ __('Enter Class Name') }}" required>
                         </div>
                     </div>
                     <!-- Class Code -->
                     <div class="form-group">
-                        <label for="class_code">Class Code</label>
+                        <label for="class_code">{{ __('Class Code') }}</label>
                         <div class="input-group mb-3 ">
                             <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-id-card"></i>
                                     </span>
                             </div>
-                            <input type="text" name="class_code" id="class_code" class="form-control" placeholder="Enter Class Code" required>
+                            <input type="text" name="class_code" id="class_code" class="form-control" placeholder="{{ __('Enter Class Code') }}" required>
                         </div>
                     </div>
                     <!-- Class Room -->
                     <div class="form-group">
-                        <label for="class_room">Class Room</label>
+                        <label for="class_room">{{ __('Class Room') }}</label>
                         <div class="input-group mb-3 ">
                             <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-university"></i>
                                     </span>
                             </div>
-                            <input type="text" name="class_room" id="class_room" class="form-control" placeholder="Enter Class Room">
+                            <input type="text" name="class_room" id="class_room" class="form-control" placeholder="{{ __('Enter Class Room') }}">
                         </div>
                     </div>
                     <!-- Teacher -->
                     <div class="form-group">
-                        <label for="teacher_id">Teacher</label>
+                        <label for="teacher_id">{{ __('Teacher') }}</label>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -68,7 +68,7 @@
                                 </span>
                             </div>
                             <select class="form-control select2bs4" id="teacher_id" name="teacher_id">
-                                <option value="">Select Teacher</option>
+                                <option value="">{{ __('Select Teacher') }}</option>
                                 @foreach ($teachers as $teacher)
                                     <option value="{{ $teacher->teacher_id }}">{{ $teacher->name }}</option>
                                 @endforeach
@@ -77,8 +77,8 @@
                     </div>
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-success add-btn">Add Class</button>
-                        <a href="{{ route('class.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-success add-btn">{{ __('Add Class') }}</button>
+                        <a href="{{ route('class.index') }}" class="btn btn-secondary">{{ __('Cancel') }}</a>
                     </div>
                 </form>
             </div>

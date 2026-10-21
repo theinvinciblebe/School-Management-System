@@ -50,6 +50,15 @@ Route::get('/login', [App\Http\Controllers\LoginController::class, 'index'])->na
 Route::post('/do_login', [App\Http\Controllers\LoginController::class, 'do_login'])->name('do_login');
 Route::get('/logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'km', 'kh'])) {
+        $standardLocale = ($locale === 'kh') ? 'km' : $locale;
+        session(['locale' => $standardLocale]);
+        cookie()->queue(cookie('locale', $standardLocale, 60 * 24 * 365, null, null, false, false));
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 //Route::middleware(['auth', 'role:0'])->group(function () {
 //    Route::get('/test', function () {
 //        dd(Auth::user()); // Check if user is authenticated and the role is present

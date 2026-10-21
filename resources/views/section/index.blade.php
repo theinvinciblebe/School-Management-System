@@ -6,16 +6,16 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>Section Management</h3>
+                    <h3>{{ __('Section Management') }}</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/dashboard">{{ __('Home') }}</a></li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('class.index') }}">Class List</a>
+                            <a href="{{ route('class.index') }}">{{ __('Class List') }}</a>
                         </li>
                         <li class="breadcrumb-item active">
-                            Section List
+                            {{ __('Section List') }}
                         </li>
                     </ol>
                 </div>

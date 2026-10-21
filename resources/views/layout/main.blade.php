@@ -4,7 +4,7 @@
 @endphp
 @include("layout.head")
 
-<body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $isDark ? 'dark-mode' : '' }} {{ $customizes->accent_color ?? '' }}" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}; height: auto;">
+<body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $isDark ? 'dark-mode' : '' }} {{ $customizes->accent_color ?? '' }} {{ app()->getLocale() === 'km' ? 'lang-km' : '' }}" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}; height: auto;">
 <script>
     (function () {
         try {
@@ -39,6 +39,35 @@
 </script>
 
 <div class="wrapper">
+    <!-- System Preloader: Runs on Fresh Start of System, suppressed during internal route changes -->
+    @php
+        $brandLogoFile = $customizes->brand_logo ?? null;
+        $preloaderLogo = (!empty($brandLogoFile) && file_exists(public_path('customize_images/' . $brandLogoFile)))
+            ? asset('customize_images/' . $brandLogoFile)
+            : (!empty($brandLogoFile) ? asset('customize_images/' . $brandLogoFile) : asset('assets/dist/img/mawaridLogo.jpg'));
+    @endphp
+    <div id="systemPreloader" class="system-preloader flex-column justify-content-center align-items-center" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}">
+        <img class="img-circle elevation-3 preloader-brand-img animation__wobble"
+             src="{{ $preloaderLogo }}"
+             alt="{{ $customizes->brand_title ?? 'Brand Logo' }}"
+             height="120"
+             width="120">
+    </div>
+    <script>
+        (function() {
+            try {
+                // If moving between routes internally, immediately remove preloader so it never flashes
+                if (sessionStorage.getItem('is_route_navigating') === '1') {
+                    var p = document.getElementById('systemPreloader');
+                    if (p) {
+                        p.style.display = 'none';
+                        p.remove();
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
+
     <!-- Navbar -->
     <nav id="mainNav" class="main-header navbar navbar-expand navbar-dark {{ $customizes->nav_color ?? '' }}">
         <!-- Left navbar links -->
@@ -47,15 +76,21 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/dashboard" class="nav-link">Home</a>
+                <a href="/dashboard" class="nav-link">{{ __('Home') }}</a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="https://mawaridtech.com/" class="nav-link">Contact</a>
+                <a href="#" class="nav-link">{{ __('Contact') }}</a>
             </li>
         </ul>
 
         <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto align-items-center">
+            <!-- Dark / Light Mode Toggle -->
+            @include('components.navbar.theme-toggle')
+
+            <!-- Language Switcher Dropdown -->
+            @include('components.navbar.language-switch')
+
             <!-- Notifications Dropdown Menu -->
             @include('components.navbar.notifications')
 
@@ -64,11 +99,11 @@
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
                     <i class="fas fa-th-large"></i>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </nav>
     <!-- /.navbar -->
@@ -95,7 +130,7 @@
         <div class="info">
           <a href="{{ route('user.profile') }}" class="d-block">
               @if (Auth::check())
-                  <p>Welcome, {{ Auth::user()->name }}!</p>
+                  <p>{{ __('Welcome') }}, {{ Auth::user()->name }}!</p>
               @endif
           </a>
         </div>
@@ -104,7 +139,7 @@
         <!-- SidebarSearch Form -->
       <div class="form-inline">
         <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="{{ __('Search') }}" aria-label="{{ __('Search') }}">
           <div class="input-group-append">
             <button class="btn btn-sidebar">
               <i class="fas fa-search fa-fw"></i>
@@ -130,8 +165,6 @@
         <div class="overlay-wrapper" id="mainOverlayWrapper">
             @yield('content')
 
-            <!-- Include Toastr JS -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
             <!-- Include Global Toastr Notifications -->
             @include('layout.toastr')
         </div>
@@ -152,6 +185,7 @@
             const body = document.getElementById('mainBody');
             const contentWrapper = document.getElementById('contentWrapper');
             const themeSwitch = document.getElementById('themeSwitch');
+            const navbarThemeToggle = document.getElementById('navbarThemeToggle');
 
             if (isDark) {
                 document.documentElement.classList.add('dark-mode');
@@ -168,9 +202,15 @@
                     contentWrapper.style.backgroundColor = '#232323';
                 }
                 if (themeSwitch) themeSwitch.checked = true;
+                if (navbarThemeToggle) {
+                    navbarThemeToggle.classList.add('is-dark');
+                    navbarThemeToggle.classList.remove('is-light');
+                    navbarThemeToggle.setAttribute('title', '{{ __("Switch to Light Mode") }}');
+                    navbarThemeToggle.setAttribute('aria-label', '{{ __("Switch to Light Mode") }}');
+                }
                 document.querySelectorAll('.theme-icon-sun').forEach(function (el) { el.classList.add('d-none'); });
                 document.querySelectorAll('.theme-icon-moon').forEach(function (el) { el.classList.remove('d-none'); });
-                document.querySelectorAll('#themeLabelText').forEach(function (el) { el.textContent = 'Dark Mode'; });
+                document.querySelectorAll('#themeLabelText').forEach(function (el) { el.textContent = '{{ __("Dark Mode") }}'; });
             } else {
                 document.documentElement.classList.remove('dark-mode');
                 document.documentElement.style.backgroundColor = '';
@@ -186,9 +226,15 @@
                     contentWrapper.style.backgroundColor = '';
                 }
                 if (themeSwitch) themeSwitch.checked = false;
+                if (navbarThemeToggle) {
+                    navbarThemeToggle.classList.remove('is-dark');
+                    navbarThemeToggle.classList.add('is-light');
+                    navbarThemeToggle.setAttribute('title', '{{ __("Switch to Dark Mode") }}');
+                    navbarThemeToggle.setAttribute('aria-label', '{{ __("Switch to Dark Mode") }}');
+                }
                 document.querySelectorAll('.theme-icon-sun').forEach(function (el) { el.classList.remove('d-none'); });
                 document.querySelectorAll('.theme-icon-moon').forEach(function (el) { el.classList.add('d-none'); });
-                document.querySelectorAll('#themeLabelText').forEach(function (el) { el.textContent = 'Light Mode'; });
+                document.querySelectorAll('#themeLabelText').forEach(function (el) { el.textContent = '{{ __("Light Mode") }}'; });
             }
         }
 
@@ -202,10 +248,18 @@
                 document.cookie = "theme=" + (enableDark ? "dark-mode" : "light-mode") + "; path=/; max-age=31536000; SameSite=Lax";
             } catch(e) {}
 
+            // Dispatch event for charts (dashboard) and listeners
+            const themeSwitch = document.getElementById('themeSwitch');
+            if (themeSwitch) {
+                themeSwitch.dispatchEvent(new Event('change'));
+            }
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { isDark: enableDark } }));
+
             setTimeout(() => {
                 if (body) body.classList.remove('theme-transitioning');
             }, 350);
         }
+        window.toggleTheme = toggleTheme;
 
         const savedTheme = localStorage.getItem('theme');
         const isDark = savedTheme === 'dark-mode' || (!savedTheme && document.documentElement.classList.contains('dark-mode'));
@@ -215,6 +269,15 @@
 
             const themeSwitch = document.getElementById('themeSwitch');
             const wrapper = document.getElementById('themeToggleWrapper');
+            const navbarThemeToggle = document.getElementById('navbarThemeToggle');
+
+            if (navbarThemeToggle) {
+                navbarThemeToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const willBeDark = !document.documentElement.classList.contains('dark-mode');
+                    toggleTheme(willBeDark);
+                });
+            }
 
             if (themeSwitch) {
                 themeSwitch.addEventListener('change', function () {
@@ -228,6 +291,9 @@
                     if (themeSwitch) {
                         themeSwitch.checked = !themeSwitch.checked;
                         toggleTheme(themeSwitch.checked);
+                    } else {
+                        const willBeDark = !document.documentElement.classList.contains('dark-mode');
+                        toggleTheme(willBeDark);
                     }
                 });
 
@@ -237,6 +303,9 @@
                         if (themeSwitch) {
                             themeSwitch.checked = !themeSwitch.checked;
                             toggleTheme(themeSwitch.checked);
+                        } else {
+                            const willBeDark = !document.documentElement.classList.contains('dark-mode');
+                            toggleTheme(willBeDark);
                         }
                     }
                 });

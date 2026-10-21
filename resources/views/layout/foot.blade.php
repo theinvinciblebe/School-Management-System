@@ -1,7 +1,5 @@
 
-<!-- Bootstrap Bundle (includes Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Bootstrap 4 -->
+<!-- Bootstrap 4 (Includes Popper.js) -->
 <script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- overlayScrollbars -->
 <script src="/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
@@ -10,16 +8,10 @@
 
 <!-- jQuery UI 1.11.4 -->
 <script src="/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
-<script src="/assets/plugins/jquery-knob/jquery.knob.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
     $.widget.bridge('uibutton', $.ui.button)
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-
-<!-- Include Toastr JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -27,18 +19,8 @@
 <!-- Bootstrap Timepicker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
 
-<!-- BS-Stepper -->
-<script src="/assets/plugins/bs-stepper/js/bs-stepper.min.js"></script>
-<!-- PAGE PLUGINS -->
-<!-- jQuery Mapael -->
-<script src="/assets/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
-<script src="/assets/plugins/raphael/raphael.min.js"></script>
-<script src="/assets/plugins/jquery-mapael/jquery.mapael.min.js"></script>
-<script src="/assets/plugins/jquery-mapael/maps/usa_states.min.js"></script>
 <!-- Select2 -->
 <script src="/assets/plugins/select2/js/select2.full.min.js"></script>
-<!-- Sparkline -->
-<script src="/assets/plugins/sparklines/sparkline.js"></script>
 <!-- Moment.js -->
 <script src="/assets/plugins/moment/moment.min.js"></script>
 <!-- Date Range Picker -->
@@ -48,28 +30,20 @@
 
 <!-- Bootstrap Switch -->
 <script src="/assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-<!-- dropzonejs -->
-<script src="/assets/plugins/dropzone/min/dropzone.min.js"></script>
 
-<!-- DataTables  & Plugins -->
+<!-- DataTables & Plugins (Deferred for maximum responsiveness) -->
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="/assets/plugins/jszip/jszip.min.js"></script>
-<script src="/assets/plugins/pdfmake/pdfmake.min.js"></script>
-<script src="/assets/plugins/pdfmake/vfs_fonts.js"></script>
+<script defer src="/assets/plugins/jszip/jszip.min.js"></script>
+<script defer src="/assets/plugins/pdfmake/pdfmake.min.js"></script>
+<script defer src="/assets/plugins/pdfmake/vfs_fonts.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<!-- Summernote -->
-<script src="/assets/plugins/summernote/summernote-bs4.min.js"></script>
-
-
-<!-- AdminLTE for demo purposes -->
-<script src="/assets/dist/js/demo.js"></script>
 
 {{--<!-- AdminLTE dashboard demo (This is only for demo purposes) -->--}}
 {{--<script src="/assets/dist/js/pages/dashboard2.js"></script>--}}
@@ -223,8 +197,8 @@
             overlay.className = "overlay";
             overlay.innerHTML = `
                 <div class="overlay-content">
-                    <i class="fas fa-3x fa-sync-alt fa-spin"></i>
-                    <div class="text-bold pt-2">Loading...</div>
+                    <i class="fas fa-2x fa-spinner fa-spin"></i>
+                    <div class="text-bold pt-2 font-weight-normal" style="font-size: 0.92rem; letter-spacing: 0.5px;">Loading...</div>
                 </div>
             `;
             wrapper.appendChild(overlay);
@@ -242,24 +216,8 @@
     });
 </script>
 
-<!-- Flatpickr JS -->
-{{--<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>--}}
-
-{{--<script>--}}
-{{--    flatpickr("#datepicker", {--}}
-{{--        dateFormat: "d/m/Y", // Example format: "DD/MM/YYYY"--}}
-{{--    });--}}
-{{--</script>--}}
-
 <!-- Page specific script -->
 <script>
-    $(document).ready(function () {
-        $('.dropdown-toggle').dropdown();
-    });
-
-    $(document).ready(function() {
-        $('#notificationDropdown').dropdown();
-    });
 
     $(function () {
         //Initialize Select2 Elements
@@ -269,6 +227,35 @@
         $('.select2bs4').select2({
             theme: 'bootstrap4'
         })
+
+        @if(app()->getLocale() === 'km')
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: {
+                search: "ស្វែងរក:",
+                searchPlaceholder: "ស្វែងរក...",
+                lengthMenu: "បង្ហាញ _MENU_ ទិន្នន័យ",
+                info: "បង្ហាញពី _START_ ដល់ _END_ នៃ _TOTAL_ ទិន្នន័យ",
+                infoEmpty: "បង្ហាញពី 0 ដល់ 0 នៃ 0 ទិន្នន័យ",
+                infoFiltered: "(ត្រងចេញពីទិន្នន័យសរុប _MAX_)",
+                zeroRecords: "រកមិនឃើញទិន្នន័យដែលត្រូវគ្នាទេ",
+                emptyTable: "គ្មានទិន្នន័យក្នុងតារាងទេ",
+                paginate: {
+                    first: "ដំបូង",
+                    previous: "ថយក្រោយ",
+                    next: "បន្ទាប់",
+                    last: "ចុងក្រោយ"
+                },
+                buttons: {
+                    copy: "ចម្លង",
+                    csv: "CSV",
+                    excel: "Excel",
+                    pdf: "PDF",
+                    print: "បោះពុម្ព",
+                    colvis: "បង្ហាញជួរឈរ"
+                }
+            }
+        });
+        @endif
 
         $("#example1").DataTable({
             "responsive": true,
@@ -324,10 +311,30 @@
             if (!$sidebar.length) return;
 
             const isLightSidebar = $mainSidebar.is('[class*="sidebar-light-"]');
+            const targetTheme = isLightSidebar ? 'os-theme-dark' : 'os-theme-light';
             if (isLightSidebar) {
                 $sidebar.removeClass('os-theme-light').addClass('os-theme-dark');
             } else {
                 $sidebar.removeClass('os-theme-dark').addClass('os-theme-light');
+            }
+
+            const os = getOsInstance();
+            if (os && typeof os.options === 'function') {
+                os.options({
+                    className: targetTheme,
+                    overflowBehavior: {
+                        x: 'hidden',
+                        y: 'scroll'
+                    },
+                    scrollbars: {
+                        visibility: 'auto',
+                        autoHide: 'leave',
+                        autoHideDelay: 600,
+                        dragScrolling: true,
+                        clickScrolling: true,
+                        touchSupport: true
+                    }
+                });
             }
         }
 
@@ -418,11 +425,42 @@
                 saveSidebarScroll();
             });
 
+            // Proactive link prefetching for buttery smooth page navigation
+            const prefetchedLinks = new Set();
+            function prefetchNav(href) {
+                if (!href || href === '#' || href.startsWith('javascript:') || prefetchedLinks.has(href)) return;
+                try {
+                    const targetUrl = new URL(href, window.location.origin);
+                    if (targetUrl.origin !== window.location.origin) return;
+                    if (targetUrl.pathname === window.location.pathname) return;
+                    if (targetUrl.pathname.includes('logout') || targetUrl.pathname.includes('delete')) return;
+
+                    prefetchedLinks.add(href);
+                    const prefetchTag = document.createElement('link');
+                    prefetchTag.rel = 'prefetch';
+                    prefetchTag.href = targetUrl.href;
+                    prefetchTag.as = 'document';
+                    document.head.appendChild(prefetchTag);
+                } catch (e) {}
+            }
+
+            $(document).on('mouseenter pointerdown', '.main-sidebar .sidebar .nav-link', function () {
+                const href = $(this).attr('href');
+                if (href) prefetchNav(href);
+            });
+
             // Listen to click on nav-links: immediately save position, update active highlight, and show overlay inside overlay-wrapper
-            $(document).on('click', '.main-sidebar .sidebar .nav-link', function () {
-                saveSidebarScroll();
+            $(document).on('click', '.main-sidebar .sidebar .nav-link', function (e) {
+                if (e.ctrlKey || e.metaKey || e.shiftKey || $(this).attr('target') === '_blank') {
+                    return;
+                }
                 const href = $(this).attr('href');
                 if (href && href !== '#' && !href.startsWith('javascript:')) {
+                    saveSidebarScroll();
+                    // Avoid showing loader if already on current URL
+                    if (window.location.pathname === href || window.location.href === href) {
+                        return;
+                    }
                     $('.main-sidebar .sidebar .nav-link').removeClass('active');
                     $(this).addClass('active');
                     showOverlay();
