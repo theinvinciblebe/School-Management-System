@@ -77,7 +77,7 @@
   <aside class="main-sidebar {{ $customizes->dark_sidebar_variants ?? 'sidebar-dark-primary' }} elevation-4 {{ $customizes->sidebar_color ?? 'bg-dark' }} ">
     <!-- Brand Logo -->
     <a href="/dashboard" class="brand-link">
-      <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Brand Logo" class="brand-image img-circle elevation-3">
+      <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Brand Logo" class="brand-image img-circle elevation-3" style="width: 33px; height: 33px; object-fit: cover; border-radius: 50%;">
       <span class="brand-text font-weight-light">{{ $customizes->brand_title ?? 'N/A'}}</span>
     </a>
 
@@ -127,7 +127,7 @@
 
   <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper {{ $isDark ? 'dark-mode' : '' }}" id="contentWrapper" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}">
-        <div class="overlay-wrapper">
+        <div class="overlay-wrapper" id="mainOverlayWrapper">
             @yield('content')
 
             <!-- Include Toastr JS -->

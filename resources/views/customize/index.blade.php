@@ -1533,7 +1533,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (logoImg) logoImg.src = previewUrl;
             const mockLogo = document.getElementById("mockup-brand-logo");
             if (mockLogo) mockLogo.src = previewUrl;
-            document.querySelectorAll(".brand-image").forEach(img => img.src = previewUrl);
+            document.querySelectorAll(".brand-image, .preloader-brand-img").forEach(img => img.src = previewUrl);
         };
         reader.readAsDataURL(file);
 
@@ -1570,7 +1570,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (logoImg) logoImg.src = data.newLogoUrl;
                 const mockLogo = document.getElementById("mockup-brand-logo");
                 if (mockLogo) mockLogo.src = data.newLogoUrl;
-                document.querySelectorAll(".brand-image").forEach(img => img.src = data.newLogoUrl);
+                document.querySelectorAll(".brand-image, .preloader-brand-img").forEach(img => img.src = data.newLogoUrl);
             }
             logoUploadText.innerHTML = `<span class="text-success"><i class="fas fa-check-circle mr-1"></i> ${file.name} saved!</span>`;
             setTimeout(() => {

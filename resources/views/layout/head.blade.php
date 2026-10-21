@@ -50,6 +50,28 @@
     </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        function showOverlay() {
+            var wrapper = document.getElementById('mainOverlayWrapper') || document.querySelector('.overlay-wrapper');
+            if (!wrapper) return;
+            var overlay = document.getElementById('contentOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'contentOverlay';
+                overlay.className = 'overlay';
+                overlay.innerHTML = `
+                    <div class="overlay-content">
+                        <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                        <div class="text-bold pt-2">Loading...</div>
+                    </div>
+                `;
+                wrapper.appendChild(overlay);
+            } else {
+                overlay.style.display = 'flex';
+            }
+        }
+        window.showOverlay = showOverlay;
+    </script>
 
     <title>{{ $customizes->url_title ?? config('app.name') }}</title>
 
@@ -457,8 +479,40 @@
             color: #ffffff !important;
         }
 
+        @keyframes preloaderWobble {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+            }
+            20% {
+                transform: scale(1.04) rotate(-3deg);
+            }
+            40% {
+                transform: scale(0.98) rotate(3deg);
+            }
+            60% {
+                transform: scale(1.02) rotate(-2deg);
+            }
+            80% {
+                transform: scale(0.99) rotate(2deg);
+            }
+        }
+
         .animation__wobble {
-            animation: myCustomWobble 0.1s infinite !important; /* Customize animation */
+            animation: preloaderWobble 1.5s ease-in-out infinite !important;
+        }
+
+        .preloader-brand-img {
+            width: 120px !important;
+            height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+            min-width: 120px !important;
+            min-height: 120px !important;
+            object-fit: cover !important;
+            border-radius: 50% !important;
+            aspect-ratio: 1 / 1 !important;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
         }
 
         #notification-list  {
@@ -531,6 +585,85 @@
         [class*="sidebar-light-"] .sidebar .os-scrollbar-handle:hover,
         [class*="sidebar-light-"] .sidebar .os-scrollbar-handle.active {
             background: rgba(0, 0, 0, 0.65) !important;
+        }
+
+        /* =========================================================
+           Brand Logo Perfect Circle
+           ========================================================= */
+        .brand-link .brand-image,
+        .brand-link .brand-image.img-circle,
+        .main-sidebar .brand-link .brand-image {
+            width: 33px !important;
+            height: 33px !important;
+            max-width: 33px !important;
+            max-height: 33px !important;
+            min-width: 33px !important;
+            min-height: 33px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            aspect-ratio: 1 / 1 !important;
+            background-color: #ffffff;
+            display: inline-block;
+        }
+
+        /* =========================================================
+           Overlay-Wrapper Data Loader Styling (AdminLTE Scoped Loader)
+           Covers ONLY .overlay-wrapper content, never sidebar/navbar/logo
+           ========================================================= */
+        .content-wrapper > .overlay-wrapper,
+        .overlay-wrapper {
+            position: relative !important;
+            min-height: calc(100vh - 120px);
+        }
+
+        .overlay-wrapper > .overlay {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 1040 !important;
+            background-color: rgba(244, 246, 249, 0.78) !important;
+            backdrop-filter: blur(2px);
+            color: #495057 !important;
+            border-radius: 0.25rem;
+        }
+
+        html.dark-mode .overlay-wrapper > .overlay,
+        body.dark-mode .overlay-wrapper > .overlay,
+        .dark-mode .overlay-wrapper > .overlay {
+            background-color: rgba(35, 35, 35, 0.85) !important;
+            color: #ffffff !important;
+        }
+
+        .overlay-wrapper > .overlay .overlay-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .overlay-wrapper > .overlay i {
+            font-size: 2.2rem;
+            margin-bottom: 0.6rem;
+            color: #007bff;
+        }
+
+        html.dark-mode .overlay-wrapper > .overlay i,
+        body.dark-mode .overlay-wrapper > .overlay i {
+            color: #3f9aff;
+        }
+
+        /* Ensure active and opening treeviews are rendered open immediately without slide/flicker */
+        .nav-sidebar .menu-open > .nav-treeview,
+        .nav-sidebar .menu-is-opening > .nav-treeview {
+            display: block !important;
         }
     </style>
 

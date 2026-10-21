@@ -211,43 +211,36 @@
 </script>
 
 <!-- Overlay script -->
-{{--<script>--}}
-{{--    function showOverlay() {--}}
-{{--        let overlay = document.getElementById("div");--}}
+<script>
+    function showOverlay() {
+        const wrapper = document.getElementById("mainOverlayWrapper") || document.querySelector(".content-wrapper .overlay-wrapper") || document.querySelector(".overlay-wrapper");
+        if (!wrapper) return;
 
-{{--        // Check if the element exists, if not, create it--}}
-{{--        if (!overlay) {--}}
-{{--            overlay = document.createElement("div");--}}
-{{--            overlay.id = "div";--}}
-{{--            document.body.appendChild(overlay);--}}
-{{--        }--}}
+        let overlay = document.getElementById("contentOverlay");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.id = "contentOverlay";
+            overlay.className = "overlay";
+            overlay.innerHTML = `
+                <div class="overlay-content">
+                    <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                    <div class="text-bold pt-2">Loading...</div>
+                </div>
+            `;
+            wrapper.appendChild(overlay);
+        } else {
+            overlay.style.display = "flex";
+        }
+    }
 
-{{--        overlay.className = "overlay";--}}
-{{--        overlay.innerHTML = `--}}
-{{--        <i class="fas fa-3x fa-sync-alt fa-spin"></i>--}}
-{{--        <div class="text-bold pt-2">Loading...</div>--}}
-{{--    `;--}}
-{{--        document.body.appendChild(overlay);--}}
-{{--    }--}}
-
-{{--    // Listen for the "pageshow" event to handle back/forward navigation--}}
-{{--    window.addEventListener('pageshow', (event) => {--}}
-{{--        // Check if the page is being restored from the cache--}}
-{{--        if (event.persisted) {--}}
-{{--            // Remove the overlay if it exists--}}
-{{--            const overlay = document.querySelector('.overlay');--}}
-{{--            if (overlay) {--}}
-{{--                document.body.removeChild(overlay);--}}
-{{--            }--}}
-{{--        }--}}
-{{--    });--}}
-{{--</script>--}}
-
-{{--<script>--}}
-{{--    document.addEventListener("DOMContentLoaded", () => {--}}
-{{--        showOverlay();--}}
-{{--    });--}}
-{{--</script>--}}
+    // Listen for the "pageshow" event to handle back/forward navigation
+    window.addEventListener('pageshow', (event) => {
+        const overlay = document.getElementById('contentOverlay');
+        if (overlay && overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+        }
+    });
+</script>
 
 <!-- Flatpickr JS -->
 {{--<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>--}}
@@ -389,8 +382,8 @@
                 }
             }
 
-            // If navigating within the same page or page reload, restore exact scroll
-            if (savedScroll !== null && lastPath === currentPath) {
+            // If navigating within the session, restore exact scroll across route changes (no jumping)
+            if (savedScroll !== null) {
                 const targetY = parseInt(savedScroll, 10);
                 if (!isNaN(targetY)) {
                     if (os && typeof os.scroll === 'function') {
@@ -402,10 +395,10 @@
                 }
             }
 
-            // If navigating to an active link (or first load of route), scroll active item into view
+            // If no saved scroll exists (initial direct URL visit), scroll active item into view
             if ($active.length) {
                 if (os && typeof os.scroll === 'function') {
-                    os.scroll({ el: $active[0], block: 'center', scroll: 'ifneeded' });
+                    os.scroll({ el: $active[0], block: 'center', scroll: 'ifneeded' }, 0);
                 } else {
                     $active[0].scrollIntoView({ block: 'center', inline: 'nearest' });
                 }
@@ -415,6 +408,7 @@
         // Run when DOM and AdminLTE are ready
         $(document).ready(function () {
             syncSidebarTheme();
+            syncSidebarSelectedPosition();
 
             // Save on beforeunload
             window.addEventListener('beforeunload', saveSidebarScroll);
@@ -424,9 +418,15 @@
                 saveSidebarScroll();
             });
 
-            // Also listen to click on nav-links so position is captured right before unload
+            // Listen to click on nav-links: immediately save position, update active highlight, and show overlay inside overlay-wrapper
             $(document).on('click', '.main-sidebar .sidebar .nav-link', function () {
                 saveSidebarScroll();
+                const href = $(this).attr('href');
+                if (href && href !== '#' && !href.startsWith('javascript:')) {
+                    $('.main-sidebar .sidebar .nav-link').removeClass('active');
+                    $(this).addClass('active');
+                    showOverlay();
+                }
             });
 
             // Handle treeview animation finishes
@@ -442,9 +442,7 @@
         });
 
         $(window).on('load', function () {
-            // Allow AdminLTE layout and treeview initialization to complete
-            setTimeout(syncSidebarSelectedPosition, 50);
-            setTimeout(syncSidebarSelectedPosition, 300);
+            syncSidebarSelectedPosition();
         });
 
         // Expose globally so customize page swatch changes can call it
