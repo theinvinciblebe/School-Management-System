@@ -70,24 +70,79 @@ class AttendanceController extends Controller
         return response()->json(['attendance' => $attendance]);
     }
 
-    public function requestList()
+    public function requestList(Request $request)
     {
-        $requests = DB::table('attendance_edit_requests')
+        $user = auth()->user();
+        $isAdmin = ($user->role == 0);
+        $tab = $request->query('tab', 'all');
+        $search = $request->query('search');
+
+        $baseQuery = DB::table('attendance_edit_requests')
             ->join('class', 'attendance_edit_requests.class_id', '=', 'class.class_id')
             ->join('teacher', 'attendance_edit_requests.teacher_id', '=', 'teacher.teacher_id')
             ->join('section', 'attendance_edit_requests.section_id', '=', 'section.section_id')
+            ->leftJoin('users', 'teacher.user_id', '=', 'users.id')
             ->select(
-                'attendance_edit_requests.id', // Include the ID
+                'attendance_edit_requests.id',
                 'class.name as class_name',
                 'teacher.name as teacher_name',
+                'teacher.teacher_id',
+                'users.email as teacher_email',
                 'section.name as section_name',
                 'attendance_edit_requests.date',
                 'attendance_edit_requests.reason',
-                'attendance_edit_requests.status'
-            )
-            ->get();
+                'attendance_edit_requests.status',
+                'attendance_edit_requests.created_at',
+                'attendance_edit_requests.updated_at',
+                DB::raw('(SELECT id FROM notifications WHERE target_type = "attendance_request" AND target_id = attendance_edit_requests.id ORDER BY id DESC LIMIT 1) as notification_id')
+            );
 
-        return view('attendance.request_list', compact('requests'));
+        if (!$isAdmin) {
+            $teacher = DB::table('teacher')->where('user_id', $user->id)->first();
+            $baseQuery->where('attendance_edit_requests.teacher_id', $teacher->teacher_id ?? 0);
+        }
+
+        // Tab counts for metrics
+        $countsQuery = DB::table('attendance_edit_requests')
+            ->join('teacher', 'attendance_edit_requests.teacher_id', '=', 'teacher.teacher_id');
+        if (!$isAdmin) {
+            $teacher = DB::table('teacher')->where('user_id', $user->id)->first();
+            $countsQuery->where('attendance_edit_requests.teacher_id', $teacher->teacher_id ?? 0);
+        }
+        $all = $countsQuery->select('attendance_edit_requests.status')->get();
+        $counts = [
+            'total' => $all->count(),
+            'pending' => $all->where('status', 'Pending')->count(),
+            'approved' => $all->where('status', 'Approved')->count(),
+            'rejected' => $all->where('status', 'Rejected')->count(),
+            'completed' => $all->where('status', 'Completed')->count(),
+        ];
+
+        // Search query
+        if ($search) {
+            $baseQuery->where(function ($q) use ($search) {
+                $q->where('class.name', 'like', "%{$search}%")
+                    ->orWhere('teacher.name', 'like', "%{$search}%")
+                    ->orWhere('section.name', 'like', "%{$search}%")
+                    ->orWhere('attendance_edit_requests.reason', 'like', "%{$search}%")
+                    ->orWhere('attendance_edit_requests.date', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply Tab Filter
+        if ($tab === 'pending') {
+            $baseQuery->where('attendance_edit_requests.status', 'Pending');
+        } elseif ($tab === 'approved') {
+            $baseQuery->where('attendance_edit_requests.status', 'Approved');
+        } elseif ($tab === 'rejected') {
+            $baseQuery->where('attendance_edit_requests.status', 'Rejected');
+        } elseif ($tab === 'completed') {
+            $baseQuery->where('attendance_edit_requests.status', 'Completed');
+        }
+
+        $requests = $baseQuery->orderBy('attendance_edit_requests.id', 'desc')->paginate(15);
+
+        return view('attendance.request_list', compact('requests', 'counts', 'tab', 'search', 'isAdmin'));
     }
 
 
@@ -190,6 +245,15 @@ class AttendanceController extends Controller
                     'date' => $attendanceRequest->date,
                     'status' => $request->status,
                 ],
+            ]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Attendance edit request has been {$request->status} successfully.",
+                'status' => $request->status,
+                'status_slug' => $newStatus,
             ]);
         }
 

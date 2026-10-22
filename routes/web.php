@@ -140,7 +140,7 @@ Route::middleware(['auth', 'role:0', 'log.activity'])->group(function () {
 
     // Attendance Approvals
     Route::get('/attendance/request-list', [AttendanceController::class, 'requestList'])->name('attendance.requestList');
-    Route::put('/attendance/edit-request/{id}', [AttendanceController::class, 'updateRequestStatus'])->name('attendance.updateRequestStatus');
+    Route::match(['PUT', 'POST'], '/attendance/edit-request/{id}', [AttendanceController::class, 'updateRequestStatus'])->name('attendance.updateRequestStatus');
 
     // Accounting Approvals & Deletions
     Route::put('/purchase-req/{id}/approve', [AccountingController::class, 'Purchaseapprove'])->name('purchase_req.approve');
