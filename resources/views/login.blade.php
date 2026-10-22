@@ -11,7 +11,7 @@
     $themeCookie = request()->cookie('theme') ?? ($_COOKIE['theme'] ?? null);
     $isDark = ($themeCookie === 'dark-mode');
 
-    // Test accounts for quick role-testing
+    // Test accounts with real user images
     $testAccounts = [
         [
             'role' => 0,
@@ -22,6 +22,7 @@
             'password' => '123456',
             'badge' => __('Full Access'),
             'icon' => 'fas fa-user-shield',
+            'image' => asset('assets/dist/img/avatar5.png'),
             'color' => '#ef4444',
             'bg' => 'rgba(239, 68, 68, 0.12)',
             'border' => 'rgba(239, 68, 68, 0.3)'
@@ -35,6 +36,7 @@
             'password' => '123456',
             'badge' => __('Teaching & Marks'),
             'icon' => 'fas fa-chalkboard-teacher',
+            'image' => asset('teachers_image/1738645193.jpg'),
             'color' => '#3b82f6',
             'bg' => 'rgba(59, 130, 246, 0.12)',
             'border' => 'rgba(59, 130, 246, 0.3)'
@@ -48,6 +50,7 @@
             'password' => '123456',
             'badge' => __('Learning & Marks'),
             'icon' => 'fas fa-user-graduate',
+            'image' => asset('students_image/1738571728.jpg'),
             'color' => '#10b981',
             'bg' => 'rgba(16, 185, 129, 0.12)',
             'border' => 'rgba(16, 185, 129, 0.3)'
@@ -61,6 +64,7 @@
             'password' => '123456',
             'badge' => __('Fees & Expenses'),
             'icon' => 'fas fa-file-invoice-dollar',
+            'image' => asset('staffs_image/1741584558.jpg'),
             'color' => '#f59e0b',
             'bg' => 'rgba(245, 158, 11, 0.12)',
             'border' => 'rgba(245, 158, 11, 0.3)'
@@ -74,6 +78,7 @@
             'password' => '123456',
             'badge' => __('Front Desk & Staff'),
             'icon' => 'fas fa-concierge-bell',
+            'image' => asset('staffs_image/1741581999.png'),
             'color' => '#8b5cf6',
             'bg' => 'rgba(139, 92, 246, 0.12)',
             'border' => 'rgba(139, 92, 246, 0.3)'
@@ -112,7 +117,7 @@
             --accent-glow: rgba(79, 70, 229, 0.25);
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --card-border: rgba(226, 232, 240, 0.8);
+            --card-border: rgba(226, 232, 240, 0.85);
             --text-main: #0f172a;
             --text-muted: #64748b;
             --input-bg: #f8fafc;
@@ -230,7 +235,7 @@
         @media (max-width: 992px) {
             .auth-container {
                 grid-template-columns: 1fr;
-                max-width: 540px;
+                max-width: 560px;
                 min-height: auto;
                 margin: 70px 16px 24px;
             }
@@ -260,18 +265,18 @@
         }
 
         .showcase-brand-logo {
-            width: 64px;
-            height: 64px;
+            width: 68px;
+            height: 68px;
             object-fit: cover;
             border-radius: 18px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.35);
             background: #ffffff;
             padding: 4px;
         }
 
         .showcase-brand-text h2 {
-            font-size: 1.6rem;
+            font-size: 1.65rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             line-height: 1.2;
@@ -363,7 +368,7 @@
 
         /* Right Form Column */
         .auth-form-side {
-            padding: 48px 44px;
+            padding: 44px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -373,7 +378,7 @@
 
         @media (max-width: 576px) {
             .auth-form-side {
-                padding: 32px 22px;
+                padding: 30px 20px;
             }
         }
 
@@ -382,7 +387,7 @@
             display: none;
             align-items: center;
             gap: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         @media (max-width: 992px) {
@@ -392,9 +397,9 @@
         }
 
         .mobile-logo {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
             object-fit: cover;
             border: 2px solid var(--primary);
             padding: 3px;
@@ -414,19 +419,19 @@
         }
 
         .form-header {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-header h1 {
-            font-size: 1.85rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--text-main);
             letter-spacing: -0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .form-header p {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: var(--text-muted);
         }
 
@@ -434,14 +439,15 @@
         .test-accounts-panel {
             background: var(--input-bg);
             border: 1px dashed var(--input-border);
-            border-radius: 18px;
-            padding: 18px;
-            margin-bottom: 24px;
-            transition: border-color 0.2s ease;
+            border-radius: 20px;
+            padding: 16px 16px 14px;
+            margin-bottom: 22px;
+            transition: all 0.25s ease;
         }
 
         .test-accounts-panel:hover {
             border-color: var(--primary);
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.06);
         }
 
         .panel-heading {
@@ -452,7 +458,7 @@
         }
 
         .panel-title {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -463,15 +469,21 @@
         }
 
         .panel-hint {
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             color: var(--primary);
             font-weight: 600;
         }
 
         .role-cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
+        }
+
+        @media (max-width: 576px) {
+            .role-cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            }
         }
 
         .role-pill-btn {
@@ -479,20 +491,21 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            padding: 10px 8px;
+            gap: 6px;
+            padding: 10px 6px;
             background: var(--card-bg);
             border: 1.5px solid var(--input-border);
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
             user-select: none;
+            position: relative;
         }
 
         .role-pill-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
             border-color: var(--role-color, var(--primary));
         }
 
@@ -502,21 +515,50 @@
             box-shadow: 0 0 0 2px var(--role-border, rgba(99, 102, 241, 0.25));
         }
 
-        .role-pill-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        /* Avatar Container in Role Button */
+        .role-pill-avatar-wrapper {
+            position: relative;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.95rem;
-            color: var(--role-color, var(--primary));
-            background: var(--role-bg, rgba(99, 102, 241, 0.1));
-            transition: transform 0.2s ease;
         }
 
-        .role-pill-btn:hover .role-pill-icon {
-            transform: scale(1.1);
+        .role-pill-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--role-color, var(--primary));
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            background: var(--card-bg);
+        }
+
+        .role-pill-btn:hover .role-pill-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .role-pill-btn.active .role-pill-avatar {
+            box-shadow: 0 0 0 3px var(--card-bg), 0 0 0 5px var(--role-color, var(--primary));
+        }
+
+        .role-pill-badge-icon {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.58rem;
+            color: #ffffff;
+            border: 2px solid var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .role-pill-label {
@@ -527,35 +569,144 @@
         }
 
         .role-pill-badge {
-            font-size: 0.65rem;
+            font-size: 0.64rem;
             color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 90px;
+            max-width: 85px;
         }
 
-        /* Selected Role Feedback Banner */
-        .selected-account-banner {
-            display: none;
-            margin-top: 10px;
-            padding: 8px 12px;
-            background: rgba(99, 102, 241, 0.08);
-            border-radius: 10px;
-            font-size: 0.8rem;
-            color: var(--text-main);
-            align-items: center;
-            justify-content: space-between;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .selected-account-banner.active {
+        /* ACTIVE USER SHOWCASE PROFILE CARD */
+        .active-user-showcase {
             display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 16px;
+            margin-bottom: 22px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-user-showcase::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--active-color, var(--primary));
+            border-radius: 4px 0 0 4px;
+            transition: background 0.3s ease;
+        }
+
+        .active-avatar-ring {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+        }
+
+        .active-user-img {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2.5px solid var(--active-color, var(--primary));
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--card-bg);
+        }
+
+        .active-badge-icon {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            color: #ffffff;
+            border: 2.5px solid var(--card-bg);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+            transition: background 0.3s ease;
+        }
+
+        .active-user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .active-name-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 3px;
+            flex-wrap: wrap;
+        }
+
+        .active-name {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.2px;
+        }
+
+        .active-role-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .active-email-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .active-email {
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .active-sep {
+            color: var(--input-border);
+        }
+
+        .active-access-badge {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .active-user-check {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
         /* Form Inputs */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             position: relative;
         }
 
@@ -564,7 +715,7 @@
             font-size: 0.875rem;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 7px;
         }
 
         .input-wrapper {
@@ -628,7 +779,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             font-size: 0.875rem;
         }
 
@@ -712,8 +863,8 @@
 
         /* Footer link to admission */
         .admission-footer-link {
-            margin-top: 24px;
-            padding-top: 20px;
+            margin-top: 22px;
+            padding-top: 18px;
             border-top: 1px solid var(--input-border);
             text-align: center;
             font-size: 0.88rem;
@@ -840,11 +991,11 @@
                 <p>{{ __('Select a test account below or enter your credentials') }}</p>
             </div>
 
-            <!-- QUICK TEST ACCOUNTS SELECTOR -->
+            <!-- QUICK TEST ACCOUNTS SELECTOR WITH USER IMAGES -->
             <div class="test-accounts-panel">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <i class="fas fa-vial text-primary"></i>
+                        <i class="fas fa-users text-primary"></i>
                         {{ __('Quick Test Accounts') }}
                     </span>
                     <span class="panel-hint">
@@ -861,25 +1012,61 @@
                                 data-password="{{ $account['password'] }}"
                                 data-name="{{ $account['name'] }}"
                                 data-rolename="{{ $account['display_role'] }}"
+                                data-image="{{ $account['image'] }}"
+                                data-color="{{ $account['color'] }}"
+                                data-bg="{{ $account['bg'] }}"
+                                data-border="{{ $account['border'] }}"
+                                data-icon="{{ $account['icon'] }}"
+                                data-badge="{{ $account['badge'] }}"
                                 style="--role-color: {{ $account['color'] }}; --role-bg: {{ $account['bg'] }}; --role-border: {{ $account['border'] }};"
                                 title="Auto-fill {{ $account['display_role'] }} ({{ $account['email'] }})">
-                            <div class="role-pill-icon">
-                                <i class="{{ $account['icon'] }}"></i>
+                            <div class="role-pill-avatar-wrapper">
+                                <img src="{{ $account['image'] }}"
+                                     alt="{{ $account['display_role'] }}"
+                                     class="role-pill-avatar"
+                                     onerror="this.onerror=null; this.src='{{ asset('assets/dist/img/avatar.png') }}'">
+                                <span class="role-pill-badge-icon" style="background: {{ $account['color'] }};">
+                                    <i class="{{ $account['icon'] }}"></i>
+                                </span>
                             </div>
                             <span class="role-pill-label">{{ $account['display_role'] }}</span>
                             <span class="role-pill-badge">{{ $account['badge'] }}</span>
                         </button>
                     @endforeach
                 </div>
+            </div>
 
-                <div id="selectedAccountBanner" class="selected-account-banner active">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-check-circle text-success" id="bannerCheckIcon"></i>
-                        <span>
-                            Loaded: <strong id="bannerRoleName">Admin</strong> (<span id="bannerEmail" style="opacity: 0.85;">admin@mail.com</span>)
+            <!-- ACTIVE USER PROFILE SHOWCASE CARD -->
+            <div id="activeUserShowcase"
+                 class="active-user-showcase"
+                 style="--active-color: {{ $testAccounts[0]['color'] }};">
+                <div class="active-avatar-ring">
+                    <img id="activeUserImg"
+                         src="{{ $testAccounts[0]['image'] }}"
+                         alt="{{ $testAccounts[0]['name'] }}"
+                         class="active-user-img"
+                         onerror="this.onerror=null; this.src='{{ asset('assets/dist/img/avatar.png') }}'">
+                    <span id="activeUserBadgeIcon" class="active-badge-icon" style="background: {{ $testAccounts[0]['color'] }};">
+                        <i class="{{ $testAccounts[0]['icon'] }}" id="activeUserIconTag"></i>
+                    </span>
+                </div>
+                <div class="active-user-details">
+                    <div class="active-name-wrap">
+                        <span id="activeUserName" class="active-name">{{ $testAccounts[0]['name'] }}</span>
+                        <span id="activeRoleTag"
+                              class="active-role-tag"
+                              style="color: {{ $testAccounts[0]['color'] }}; background: {{ $testAccounts[0]['bg'] }}; border: 1px solid {{ $testAccounts[0]['border'] }};">
+                            {{ $testAccounts[0]['display_role'] }}
                         </span>
                     </div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">PWD: 123456</span>
+                    <div class="active-email-wrap">
+                        <span id="activeUserEmail" class="active-email">{{ $testAccounts[0]['email'] }}</span>
+                        <span class="active-sep">•</span>
+                        <span class="active-access-badge" id="activeAccessBadge">{{ $testAccounts[0]['badge'] }}</span>
+                    </div>
+                </div>
+                <div class="active-user-check" title="Credentials loaded & ready">
+                    <i class="fas fa-check"></i>
                 </div>
             </div>
 
@@ -979,12 +1166,20 @@
             const togglePasswordBtn = document.getElementById('togglePasswordBtn');
             const togglePasswordIcon = document.getElementById('togglePasswordIcon');
             const roleButtons = document.querySelectorAll('.role-pill-btn');
-            const bannerRoleName = document.getElementById('bannerRoleName');
-            const bannerEmail = document.getElementById('bannerEmail');
             const loginForm = document.getElementById('loginForm');
             const submitBtn = document.getElementById('submitBtn');
             const submitBtnText = document.getElementById('submitBtnText');
             const submitBtnIcon = document.getElementById('submitBtnIcon');
+
+            // Active user showcase elements
+            const activeUserShowcase = document.getElementById('activeUserShowcase');
+            const activeUserImg = document.getElementById('activeUserImg');
+            const activeUserBadgeIcon = document.getElementById('activeUserBadgeIcon');
+            const activeUserIconTag = document.getElementById('activeUserIconTag');
+            const activeUserName = document.getElementById('activeUserName');
+            const activeRoleTag = document.getElementById('activeRoleTag');
+            const activeUserEmail = document.getElementById('activeUserEmail');
+            const activeAccessBadge = document.getElementById('activeAccessBadge');
 
             // 1. Password Visibility Toggle
             if (togglePasswordBtn && passwordInput && togglePasswordIcon) {
@@ -997,7 +1192,34 @@
                 });
             }
 
-            // 2. Role Selector (Quick 1-Click Credentials Populator)
+            // Function to update the active user profile card
+            function updateActiveUserCard(data) {
+                if (!activeUserShowcase) return;
+
+                // Subtle pop animation on avatar
+                if (activeUserImg) {
+                    activeUserImg.style.transform = 'scale(0.88)';
+                    setTimeout(() => {
+                        activeUserImg.src = data.image;
+                        activeUserImg.style.transform = 'scale(1)';
+                    }, 120);
+                }
+
+                activeUserShowcase.style.setProperty('--active-color', data.color);
+                if (activeUserBadgeIcon) activeUserBadgeIcon.style.background = data.color;
+                if (activeUserIconTag) activeUserIconTag.className = data.icon;
+                if (activeUserName) activeUserName.textContent = data.name;
+                if (activeRoleTag) {
+                    activeRoleTag.textContent = data.roleName;
+                    activeRoleTag.style.color = data.color;
+                    activeRoleTag.style.background = data.bg;
+                    activeRoleTag.style.borderColor = data.border;
+                }
+                if (activeUserEmail) activeUserEmail.textContent = data.email;
+                if (activeAccessBadge) activeAccessBadge.textContent = data.badge;
+            }
+
+            // 2. Role Selector (Quick 1-Click User Image & Credentials Populator)
             roleButtons.forEach(btn => {
                 btn.addEventListener('click', function () {
                     roleButtons.forEach(b => b.classList.remove('active'));
@@ -1005,22 +1227,27 @@
 
                     const email = this.getAttribute('data-email');
                     const password = this.getAttribute('data-password');
+                    const name = this.getAttribute('data-name');
                     const roleName = this.getAttribute('data-rolename');
+                    const image = this.getAttribute('data-image');
+                    const color = this.getAttribute('data-color');
+                    const bg = this.getAttribute('data-bg');
+                    const border = this.getAttribute('data-border');
+                    const icon = this.getAttribute('data-icon');
+                    const badge = this.getAttribute('data-badge');
 
                     emailInput.value = email;
                     passwordInput.value = password;
 
-                    // Update loaded indicator banner
-                    if (bannerRoleName && bannerEmail) {
-                        bannerRoleName.textContent = roleName;
-                        bannerEmail.textContent = email;
-                    }
+                    // Update the active user image showcase card
+                    updateActiveUserCard({
+                        email, name, roleName, image, color, bg, border, icon, badge
+                    });
 
-                    // Gentle highlight feedback animation
+                    // Gentle highlight feedback animation on form inputs
                     [emailInput, passwordInput].forEach(input => {
                         input.style.transition = 'all 0.15s ease';
-                        input.style.borderColor = 'var(--primary)';
-                        input.style.backgroundColor = 'var(--input-bg)';
+                        input.style.borderColor = color || 'var(--primary)';
                         setTimeout(() => {
                             input.style.borderColor = '';
                         }, 400);
@@ -1028,7 +1255,36 @@
                 });
             });
 
-            // 3. Form Submit Feedback Spinner
+            // 3. Typing Email auto-syncs with matching role image
+            if (emailInput) {
+                emailInput.addEventListener('input', function() {
+                    const typedEmail = this.value.trim().toLowerCase();
+                    let matchedBtn = null;
+                    roleButtons.forEach(btn => {
+                        if (btn.getAttribute('data-email').toLowerCase() === typedEmail) {
+                            matchedBtn = btn;
+                        }
+                    });
+
+                    if (matchedBtn) {
+                        roleButtons.forEach(b => b.classList.remove('active'));
+                        matchedBtn.classList.add('active');
+                        updateActiveUserCard({
+                            email: matchedBtn.getAttribute('data-email'),
+                            name: matchedBtn.getAttribute('data-name'),
+                            roleName: matchedBtn.getAttribute('data-rolename'),
+                            image: matchedBtn.getAttribute('data-image'),
+                            color: matchedBtn.getAttribute('data-color'),
+                            bg: matchedBtn.getAttribute('data-bg'),
+                            border: matchedBtn.getAttribute('data-border'),
+                            icon: matchedBtn.getAttribute('data-icon'),
+                            badge: matchedBtn.getAttribute('data-badge')
+                        });
+                    }
+                });
+            }
+
+            // 4. Form Submit Feedback Spinner
             if (loginForm && submitBtn) {
                 loginForm.addEventListener('submit', function (e) {
                     if (!emailInput.value || !passwordInput.value) {
@@ -1042,7 +1298,7 @@
                 });
             }
 
-            // 4. Dark / Light Theme Toggle Handler
+            // 5. Dark / Light Theme Toggle Handler
             const themeToggleBtn = document.getElementById('loginThemeToggle');
             const themeIcon = document.getElementById('loginThemeIcon');
             const themeLabel = document.getElementById('loginThemeLabel');
