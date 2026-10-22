@@ -1,5 +1,9 @@
 @php
-    $customizes = $customizes ?? \Illuminate\Support\Facades\DB::table('customize')->first();
+    try {
+        $customizes = $customizes ?? \Illuminate\Support\Facades\DB::table('customize')->first();
+    } catch (\Throwable $e) {
+        $customizes = null;
+    }
     $brandLogoFile = $customizes->brand_logo ?? null;
     $brandLogo = (!empty($brandLogoFile) && file_exists(public_path('customize_images/' . $brandLogoFile)))
         ? asset('customize_images/' . $brandLogoFile)
