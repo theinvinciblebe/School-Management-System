@@ -2,11 +2,13 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "node patch-vercel.cjs && vite build",
+        "postinstall": "node patch-vercel.cjs"
     },
     "devDependencies": {
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
+        "vercel-php": "^0.7.4",
         "vite": "^5.4.11"
     }
 }
