@@ -489,6 +489,21 @@
     })();
 </script>
 
+<script>
+    // Bottom-of-page immediate preloader dismissal: ensures preloader is never stuck after scripts execute
+    (function() {
+        if (typeof window.dismissPreloader === 'function') {
+            window.dismissPreloader();
+        } else {
+            var p = document.getElementById('systemPreloader') || document.querySelector('.system-preloader');
+            if (p) {
+                p.classList.add('preloader-hidden');
+                setTimeout(function() { if (p && p.parentNode) p.remove(); }, 350);
+            }
+        }
+    })();
+</script>
+
 {{--@stack('scripts')--}}
 
 </body>

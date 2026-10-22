@@ -168,39 +168,41 @@
         }, true);
 
         // Fresh Start preloader controller: gracefully fades out when page is fully ready
-        (function() {
-            var isDismissed = false;
-            function dismissPreloader() {
-                if (isDismissed) return;
-                isDismissed = true;
-                var preloader = document.getElementById('systemPreloader') || document.querySelector('.system-preloader');
-                if (!preloader) return;
-                preloader.classList.add('preloader-hidden');
-                setTimeout(function() {
-                    if (preloader && preloader.parentNode) preloader.remove();
-                }, 450);
-            }
+        function dismissPreloader() {
+            var preloader = document.getElementById('systemPreloader') || document.querySelector('.system-preloader') || document.querySelector('.preloader');
+            if (!preloader) return;
+            preloader.classList.add('preloader-hidden');
+            preloader.style.opacity = '0';
+            preloader.style.pointerEvents = 'none';
+            setTimeout(function() {
+                if (preloader && preloader.parentNode) {
+                    preloader.parentNode.removeChild(preloader);
+                }
+            }, 450);
+        }
+        window.dismissPreloader = dismissPreloader;
 
-            if (document.readyState === 'complete') {
-                setTimeout(dismissPreloader, 400);
-            } else {
-                window.addEventListener('load', function() {
-                    setTimeout(dismissPreloader, 400);
-                });
-                // Safety fallback timeout
-                setTimeout(dismissPreloader, 1500);
-            }
+        // Dismiss on interactive/complete state, DOMContentLoaded, and window load
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(dismissPreloader, 100);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(dismissPreloader, 200);
+            setTimeout(function() {
+                try {
+                    sessionStorage.removeItem('is_route_navigating');
+                    document.documentElement.classList.remove('hide-preloader');
+                } catch(e) {}
+            }, 300);
+        });
+        window.addEventListener('load', function() {
+            setTimeout(dismissPreloader, 100);
+        });
 
-            // Cleanup navigation suppression after layout is mounted
-            window.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    try {
-                        sessionStorage.removeItem('is_route_navigating');
-                        document.documentElement.classList.remove('hide-preloader');
-                    } catch(e) {}
-                }, 400);
-            });
-        })();
+        // Safety fallback timers so the preloader can NEVER remain stuck
+        setTimeout(dismissPreloader, 500);
+        setTimeout(dismissPreloader, 1000);
+        setTimeout(dismissPreloader, 1800);
     </script>
 
     <title>{{ $customizes->url_title ?? config('app.name') }}</title>
@@ -581,6 +583,18 @@
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
         }
 
+        @keyframes preloaderAutoDismiss {
+            0%, 75% {
+                opacity: 1;
+                visibility: visible;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+        }
+
         .system-preloader,
         .preloader {
             position: fixed !important;
@@ -598,6 +612,7 @@
             opacity: 1;
             visibility: visible;
             transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s ease !important;
+            animation: preloaderAutoDismiss 1.8s ease 0.4s forwards !important;
         }
 
         .system-preloader.preloader-hidden,
@@ -605,6 +620,7 @@
             opacity: 0 !important;
             visibility: hidden !important;
             pointer-events: none !important;
+            animation: none !important;
         }
 
         html.dark-mode .system-preloader,
