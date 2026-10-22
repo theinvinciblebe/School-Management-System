@@ -163,13 +163,20 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $request->id,
-            'password' => 'nullable|string|min:6',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,ico|max:3072',
             'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,ico|max:3072',
-        ]);
+        ];
+
+        if ($request->filled('password_confirmation')) {
+            $rules['password'] = 'required|string|min:6|confirmed';
+        } else {
+            $rules['password'] = 'nullable|string|min:6';
+        }
+
+        $request->validate($rules);
 
         $user = User::findOrFail($request->id);
         $user->name = $request->name;
@@ -179,6 +186,20 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
         }
 
+        // Handle photo removal
+        if ($request->has('remove_photo') && $request->remove_photo == '1') {
+            if ($user->photo && $user->photo !== 'noimg.jpg') {
+                foreach (['admin_image', 'teachers_image', 'students_image', 'staffs_image'] as $dir) {
+                    $path = public_path($dir . '/' . $user->photo);
+                    if (file_exists($path) && is_file($path)) {
+                        @unlink($path);
+                    }
+                }
+            }
+            $user->photo = null;
+        }
+
+        // Handle new photo upload
         $newPhoto = $this->handleImageUpload($request, (int)$user->role, $user->photo);
         if ($newPhoto) {
             $user->photo = $newPhoto;
@@ -186,6 +207,21 @@ class UserController extends Controller
         }
 
         $user->save();
+
+        // Optionally update phone and address if provided for linked role
+        $extraData = [];
+        if ($request->has('phone')) $extraData['phone'] = $request->phone;
+        if ($request->has('address')) $extraData['address'] = $request->address;
+
+        if (!empty($extraData)) {
+            if ($user->role == 1) {
+                DB::table('teacher')->where('user_id', $user->id)->update($extraData);
+            } elseif ($user->role == 2) {
+                DB::table('student')->where('user_id', $user->id)->update($extraData);
+            } elseif ($user->role == 3 || $user->role == 4) {
+                DB::table('staff')->where('user_id', $user->id)->update($extraData);
+            }
+        }
 
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }

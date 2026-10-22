@@ -17,35 +17,55 @@ class ClassRoutineController extends Controller
     public function showClasses()
     {
         $user = Auth::user();
-        $classes = collect(); // Initialize as an empty collection to prevent errors
+        $userRole = (int) $user->role;
+        $classes = collect();
 
-        // If user is an admin
-        if (in_array($user->role, [0, 3, 4])) {
-            $classes = \Illuminate\Support\Facades\DB::table('class')->get();
+        // If user is an admin or staff or accountant
+        if (in_array($userRole, [0, 3, 4])) {
+            $classes = DB::table('class')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+                ->select('class.*', 'teacher.name as teacher_name')
+                ->get();
         }
         // If user is a teacher
-        else if ($user->role === 1) {
+        else if ($userRole === 1) {
             $classes = DB::table('class')
-                ->leftjoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
                 ->where('teacher.user_id', $user->id)
-                ->select('class.*') // Select only class columns to avoid conflicts
+                ->select('class.*', 'teacher.name as teacher_name')
                 ->get();
         }
         // If user is a student
-        else if ($user->role === 2) {
+        else if ($userRole === 2) {
             $classes = DB::table('class')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
                 ->join('student_classes', 'class.class_id', '=', 'student_classes.class_id')
                 ->join('student', 'student_classes.student_id', '=', 'student.student_id')
                 ->where('student.user_id', $user->id)
-                ->select('class.*')
+                ->select('class.*', 'teacher.name as teacher_name')
                 ->get();
         }
-        return view('class_routine.select_class', compact('classes'));
+
+        // Attach routine counts and subject counts
+        foreach ($classes as $class) {
+            $class->routine_count = DB::table('class_routine')->where('class_id', $class->class_id)->count();
+            $class->subject_count = DB::table('subject')->where('class_id', $class->class_id)->count();
+        }
+
+        $allSubjects = DB::table('subject')->get();
+        $totalRoutines = DB::table('class_routine')->count();
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        return view('class_routine.select_class', compact('classes', 'allSubjects', 'totalRoutines', 'daysOfWeek'));
     }
 
     public function showClassRoutine($class_id)
     {
-        $class = DB::table('class')->where('class_id', $class_id)->first();
+        $class = DB::table('class')
+            ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+            ->select('class.*', 'teacher.name as teacher_name')
+            ->where('class.class_id', $class_id)
+            ->first();
 
         if (!$class) {
             return redirect()->route('class_routines.show_classes')->with('error', 'Class not found.');
@@ -65,12 +85,17 @@ class ClassRoutineController extends Controller
     public function index($class_id)
     {
         // Fetch class and subjects
-        $class = DB::table('class')->where('class_id', $class_id)->first();
+        $class = DB::table('class')
+            ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+            ->select('class.*', 'teacher.name as teacher_name')
+            ->where('class.class_id', $class_id)
+            ->first();
 
         if (!$class) {
             return redirect()->route('class_routines.show_classes')->with('error', 'Class not found.');
         }
 
+        $allClasses = DB::table('class')->select('class_id', 'name', 'class_code', 'class_room')->get();
         $subjects = DB::table('subject')->where('class_id', $class_id)->get();
         $routines = DB::table('class_routine')
             ->join('subject', 'class_routine.subject_id', '=', 'subject.subject_id')
@@ -80,11 +105,10 @@ class ClassRoutineController extends Controller
             ->orderBy('time_start')
             ->get();
 
-            // Define days of the week
-            $daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        // Define days of the week in standard Monday-Sunday sequence
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-
-        return view('class_routine.index', compact('class', 'subjects', 'routines', 'daysOfWeek'));
+        return view('class_routine.index', compact('class', 'allClasses', 'subjects', 'routines', 'daysOfWeek'));
     }
 
     /**
