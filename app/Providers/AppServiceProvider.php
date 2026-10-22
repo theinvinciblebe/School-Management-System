@@ -62,19 +62,23 @@ class AppServiceProvider extends ServiceProvider
             $view->with('classes', $classes);
         });
 
-        $classes = DB::table('class')->get(); // Fetch classes
-        view()->share('classes', $classes); // Share to all views
+        if (!app()->runningInConsole()) {
+            try {
+                $classes = DB::table('class')->get(); // Fetch classes
+                view()->share('classes', $classes); // Share to all views
 
+                $defaultClassId = $classes->first()->class_id ?? null; // Get the first class or null
+                view()->share('defaultClassId', $defaultClassId);
 
-        $defaultClassId = $classes->first()->class_id ?? null; // Get the first class or null
-        view()->share('defaultClassId', $defaultClassId);
+                $users = DB::table('users')->get();
+                view()->share('username', $users); // Share to all views
 
-        $users = DB::table('users')->get();
-        view()->share('username', $users); // Share to all views
-
-        $customizes = DB::table('customize')->first(); // Fetch single row
-        view()->share('customizes', $customizes); // Share to all views
-
+                $customizes = DB::table('customize')->first(); // Fetch single row
+                view()->share('customizes', $customizes); // Share to all views
+            } catch (\Throwable $e) {
+                // Database or tables might not exist yet during setup
+            }
+        }
     }
 
 }

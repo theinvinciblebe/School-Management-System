@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activity_logs', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('ip_address');
-            $table->string('geo_location')->nullable();
-            $table->timestamp('timestamp');
-            $table->timestamps();
+        if (!Schema::hasTable('activity_logs')) {
+            Schema::create('activity_logs', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->string('ip_address');
+                $table->string('geo_location')->nullable();
+                $table->timestamp('timestamp');
+                $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            });
+        }
     }
 
     /**

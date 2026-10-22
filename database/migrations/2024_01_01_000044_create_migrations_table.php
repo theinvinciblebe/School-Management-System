@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('migrations', function (Blueprint $table) {
-            $table->id();
-            $table->string('migration');
-            $table->integer('batch');
-        });
+        if (!Schema::hasTable('migrations')) {
+            Schema::create('migrations', function (Blueprint $table) {
+                $table->id();
+                $table->string('migration');
+                $table->integer('batch');
+            });
+        }
     }
 
     /**
