@@ -80,28 +80,133 @@ class StudentController extends Controller
         return view('student_section.student_info.add_student_to_class', compact('allStudents', 'class','class_id', 'sections'));
     }
 
+    public function info(Request $request)
+    {
+        // 1. All classes with assigned teacher name
+        $classes = DB::table('class')
+            ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+            ->select('class.*', 'teacher.name as teacher_name')
+            ->orderBy('class.name')
+            ->get();
+
+        // 2. Sections grouped by class_id
+        $sections = DB::table('section')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('class_id');
+
+        // 3. Student count per class
+        $studentCounts = DB::table('student_classes')
+            ->select('class_id', DB::raw('count(*) as count'))
+            ->groupBy('class_id')
+            ->pluck('count', 'class_id');
+
+        // 4. Gender breakdown per class
+        $classGenderStats = DB::table('student_classes')
+            ->join('student', 'student_classes.student_id', '=', 'student.student_id')
+            ->select(
+                'student_classes.class_id',
+                DB::raw("SUM(CASE WHEN student.sex = 0 THEN 1 ELSE 0 END) as male_count"),
+                DB::raw("SUM(CASE WHEN student.sex = 1 THEN 1 ELSE 0 END) as female_count")
+            )
+            ->groupBy('student_classes.class_id')
+            ->get()
+            ->keyBy('class_id');
+
+        // 5. Overall Institutional Metrics
+        $totalClasses = $classes->count();
+        $totalSections = DB::table('section')->count();
+        $totalStudents = DB::table('student')->count();
+        $enrolledStudentsCount = DB::table('student_classes')->distinct('student_id')->count('student_id');
+        $unenrolledCount = max(0, $totalStudents - $enrolledStudentsCount);
+        $totalMale = DB::table('student')->where('sex', 0)->count();
+        $totalFemale = DB::table('student')->where('sex', 1)->count();
+
+        // 6. Global Student Directory (for instant cross-class student lookup)
+        $studentsDirectory = DB::table('student')
+            ->leftJoin('student_classes', 'student.student_id', '=', 'student_classes.student_id')
+            ->leftJoin('class', 'student_classes.class_id', '=', 'class.class_id')
+            ->leftJoin('section', 'student_classes.section_id', '=', 'section.section_id')
+            ->leftJoin('parent', 'student.parent_id', '=', 'parent.parent_id')
+            ->select(
+                'student.*',
+                'class.class_id',
+                'class.name as class_name',
+                'section.name as section_name',
+                'student_classes.roll',
+                'parent.name as parent_name',
+                'parent.phone as parent_phone',
+                'parent.email as parent_email'
+            )
+            ->orderBy('student.name')
+            ->get();
+
+        return view('student_section.student_info.hub', compact(
+            'classes',
+            'sections',
+            'studentCounts',
+            'classGenderStats',
+            'totalClasses',
+            'totalSections',
+            'totalStudents',
+            'enrolledStudentsCount',
+            'unenrolledCount',
+            'totalMale',
+            'totalFemale',
+            'studentsDirectory'
+        ));
+    }
+
     public function showByClass($class_id)
     {
+        $class = DB::table('class')
+            ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+            ->select('class.*', 'teacher.name as teacher_name')
+            ->where('class.class_id', $class_id)
+            ->first();
+
+        if (!$class) {
+            return redirect()->route('dashboard')->with('error', 'Class not found.');
+        }
+
+        $allClasses = DB::table('class')->orderBy('name')->get();
+
         $students = DB::table('student')
-            ->join('student_classes', 'student.student_id', '=', 'student_classes.student_id') // Correct table
+            ->join('student_classes', 'student.student_id', '=', 'student_classes.student_id')
             ->join('section', 'student_classes.section_id', '=', 'section.section_id')
-            ->join('class', 'student_classes.class_id', '=', 'class.class_id') // Match with class_id
-            ->join('parent', 'student.parent_id', '=', 'parent.parent_id')
+            ->join('class', 'student_classes.class_id', '=', 'class.class_id')
+            ->leftJoin('parent', 'student.parent_id', '=', 'parent.parent_id')
             ->select(
                 'student.*',
                 'class.name as class_name',
                 'section.name as section_name',
                 'section.section_id',
                 'parent.name as parent_name',
-                'student_classes.roll'
+                'parent.phone as parent_phone',
+                'parent.email as parent_email',
+                'student_classes.roll',
+                'student_classes.id as student_class_id'
             )
-            ->where('student_classes.class_id', $class_id) // Correct filter
+            ->where('student_classes.class_id', $class_id)
+            ->orderBy('student_classes.roll')
             ->get();
 
         $sections = DB::table('section')->where('class_id', $class_id)->get();
-        $class = DB::table('class')->where('class_id', $class_id)->first();
 
-        return view('student_section.student_info.index', compact('students', 'sections', 'class'));
+        // Available students who are not in this class yet
+        $enrolledIds = $students->pluck('student_id')->toArray();
+        $availableStudents = DB::table('student')
+            ->leftJoin('parent', 'student.parent_id', '=', 'parent.parent_id')
+            ->select('student.student_id', 'student.name', 'student.email', 'student.phone', 'parent.name as parent_name')
+            ->whereNotIn('student.student_id', !empty($enrolledIds) ? $enrolledIds : [0])
+            ->orderBy('student.name')
+            ->get();
+
+        // Next suggested roll number
+        $lastRoll = $students->max('roll');
+        $suggestedRoll = $lastRoll ? str_pad(intval($lastRoll) + 1, 4, '0', STR_PAD_LEFT) : '0001';
+
+        return view('student_section.student_info.index', compact('students', 'sections', 'class', 'allClasses', 'availableStudents', 'suggestedRoll'));
     }
 
     /**

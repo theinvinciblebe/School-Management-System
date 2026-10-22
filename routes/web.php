@@ -97,7 +97,9 @@ Route::middleware(['auth', 'log.activity'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications.get');
     Route::get('/user-notifications', [NotificationController::class, 'userNotifications'])->name('notifications.user');
 
-    // Classmate Roster (shared view)
+    // Student Information Hub & Class Roster (shared view)
+    Route::get('/students/information', [StudentController::class, 'info'])->name('students.info');
+    Route::get('/students/info', [StudentController::class, 'info']);
     Route::get('/students/class/{class_id}', [StudentController::class, 'showByClass'])->name('students.byClass');
 });
 

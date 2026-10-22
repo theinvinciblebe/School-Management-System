@@ -70,25 +70,11 @@
                         <p>Admit Student</p>
                     </a>
                 </li>
-                <li class="nav-item {{ Request::is('students/class/*') ? 'menu-is-opening menu-open' : ''}}">
-                    <a href="#" class="nav-link {{ Request::is('students/class/*') ? 'active' : '' }}">
+                <li class="nav-item">
+                    <a href="{{ route('students.info') }}" class="nav-link {{ Request::is('students/info*') || Request::is('students/information*') || Request::is('students/class/*') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>
-                            Student Information
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
+                        <p>Student Information</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        @foreach($classes as $class)
-                            <li class="nav-item">
-                                <a href="{{ route('students.byClass', ['class_id' => $class->class_id]) }}"
-                                   class="nav-link {{ request()->is('students/class/'.$class->class_id) ? 'active' : '' }}">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>{{ $class->name }}</p>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
                 </li>
 
                 <li class="nav-item {{ Request::is('marks/class/*') ? 'menu-is-opening menu-open' : '' }}">
