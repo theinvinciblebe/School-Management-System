@@ -1,0 +1,45 @@
+process.env.LAMBDA_TASK_ROOT = process.env.LAMBDA_TASK_ROOT || "/var/task";
+
+let orig;
+try {
+  orig = require("./launcher-orig.js");
+} catch (e) {
+  try {
+    orig = require("./launcher.js");
+  } catch (err) {
+    orig = null;
+  }
+}
+
+async function launcher(event, context) {
+  if (!orig) {
+    try {
+      orig = require("./launcher-orig.js");
+    } catch (e) {
+      orig = null;
+    }
+  }
+
+  const e = { ...event };
+  if (Array.isArray(e.body)) {
+    e.body = Buffer.from(e.body);
+  } else if (typeof e.body === "string") {
+    e.body = Buffer.from(e.body, e.isBase64Encoded ? "base64" : "utf8");
+  } else {
+    e.body = undefined;
+  }
+  const h = e.headers || {};
+  e.host = e.host || h["x-forwarded-host"] || h.host;
+
+  if (orig && typeof orig.launcher === "function") {
+    return orig.launcher(e, context);
+  } else if (orig && typeof orig === "function") {
+    return orig(e, context);
+  }
+
+  throw new Error("Cannot find launcher function in launcher-orig.js");
+}
+
+module.exports = launcher;
+module.exports.launcher = launcher;
+module.exports.default = launcher;

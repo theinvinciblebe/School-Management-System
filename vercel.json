@@ -1,6 +1,7 @@
 {
   "version": 2,
   "framework": null,
+  "buildCommand": "node patch-vercel.cjs && vite build",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.4"
