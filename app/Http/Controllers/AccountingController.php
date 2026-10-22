@@ -239,19 +239,28 @@ class AccountingController extends Controller
             ]);
         }
 
-        $userName = Auth::user()->name;
-        // Find Admins (assuming role_id 1 is admin)
-        $admins = User::where('role', 0)->get();
+        $student = DB::table('student_classes')
+            ->join('student', 'student_classes.student_id', '=', 'student.id')
+            ->where('student_classes.id', $request->student_class_id)
+            ->select('student.name')
+            ->first();
+        $studentName = $student->name ?? 'Student';
 
-        foreach ($admins as $admin) {
-            Notification::create([
-                'user_id' => Auth::id(),
-                'admin_id' => $admin->id,
-                'type' => 'Fee Request',
-                'message' => "New fee receipt request from {$userName}. Requires approval.",
-                'is_read' => false
-            ]);
-        }
+        Notification::notifyAdmins([
+            'type' => 'Fee Request',
+            'target_id' => $receiptId,
+            'target_type' => 'fee_receipt',
+            'action_url' => route('fee_receipt.show', $receiptId),
+            'status' => 'pending',
+            'message' => "New fee receipt request for {$studentName} ($" . number_format($request->paid ?? 0, 2) . ") from {$userName}. Requires approval.",
+            'data' => [
+                'receipt_no' => $request->receipt_no,
+                'student_name' => $studentName,
+                'paid' => $request->paid ?? 0,
+                'paid_via' => $request->paid_via,
+                'grand_total' => $grandTotal,
+            ],
+        ]);
 
         return redirect()->route('fee_receipt.index')->with('success', 'Fee receipt created successfully. Waiting for admin approval.');
     }
@@ -577,15 +586,19 @@ class AccountingController extends Controller
             ]);
 
 
-        // Send a notification to the requesting user
-        DB::table('notifications')->insert([
-            'user_id' => $feeRequest->user_id, // Requesting user ID
-            'admin_id' => $adminId, // Admin who approved
+        // Update notification status and notify user
+        Notification::updateTargetStatus('fee_receipt', $id, 'approved');
+        Notification::notifyUser($feeRequest->user_id, [
             'type' => 'Fee Approval',
-            'message' => 'Your fee receipt request has been approved!',
-            'is_read' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'target_id' => $id,
+            'target_type' => 'fee_receipt',
+            'action_url' => route('fee_receipt.show', $id),
+            'status' => 'approved',
+            'message' => 'Your fee receipt request #' . ($feeRequest->receipt_no ?? $id) . ' has been approved!',
+            'data' => [
+                'receipt_no' => $feeRequest->receipt_no ?? $id,
+                'paid' => $feeRequest->paid ?? 0,
+            ],
         ]);
 
         DB::table('transactions')->insert([
@@ -616,15 +629,18 @@ class AccountingController extends Controller
         DB::table('fee_receipt')
             ->where('id', $id)->update(['status' => 'rejected']);
 
-        // Send a notification to the requesting user
-        DB::table('notifications')->insert([
-            'user_id' => $feeRequest->user_id, // Requesting user ID
-            'admin_id' => Auth::id(), // Admin who approved
+        // Update notification status and notify user
+        Notification::updateTargetStatus('fee_receipt', $id, 'rejected');
+        Notification::notifyUser($feeRequest->user_id, [
             'type' => 'Fee Rejected',
-            'message' => 'Your fee receipt request has been rejected!',
-            'is_read' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'target_id' => $id,
+            'target_type' => 'fee_receipt',
+            'action_url' => route('fee_receipt.show', $id),
+            'status' => 'rejected',
+            'message' => 'Your fee receipt request #' . ($feeRequest->receipt_no ?? $id) . ' has been rejected!',
+            'data' => [
+                'receipt_no' => $feeRequest->receipt_no ?? $id,
+            ],
         ]);
 
         return response()->json(['success' => 'Fee receipt rejected.']);
@@ -726,18 +742,21 @@ class AccountingController extends Controller
         }
 
 
-        // Find Admins (assuming role_id 1 is admin)
-        $admins = User::where('role', 0)->get();
-
-        foreach ($admins as $admin) {
-            Notification::create([
-                'user_id' => Auth::id(),
-                'admin_id' => $admin->id,
-                'type' => 'Purchase Request',
-                'message' => "New purchase request from {$request->requisitioner}. Requires approval.",
-                'is_read' => false
-            ]);
-        }
+        Notification::notifyAdmins([
+            'type' => 'Purchase Request',
+            'target_id' => $purchaseRequestId,
+            'target_type' => 'purchase_request',
+            'action_url' => route('purchase_req.show', $purchaseRequestId),
+            'status' => 'pending',
+            'message' => "New purchase request from {$request->requisitioner} for $" . number_format($grandTotal, 2) . ". Requires approval.",
+            'data' => [
+                'requisitioner' => $request->requisitioner,
+                'department' => $request->department,
+                'total' => $grandTotal,
+                'purpose' => $request->purpose,
+                'vendor' => $request->vendor,
+            ],
+        ]);
 
         return redirect()->route('purchase_req.index')->with('success', 'Purchase request added successfully!');
     }
@@ -883,15 +902,19 @@ class AccountingController extends Controller
                 'status' => 'approved',
                 'approved_by' => $adminId, // Store approver's ID
             ]);
-        // Send a notification to the requesting user
-        DB::table('notifications')->insert([
-            'user_id' => $purchaseRequest->user_id, // Requesting user ID
-            'admin_id' => Auth::id(), // Admin who approved
+        // Update pending notification and notify requesting user
+        Notification::updateTargetStatus('purchase_request', $id, 'approved');
+        Notification::notifyUser($purchaseRequest->user_id, [
             'type' => 'Purchase Approval',
-            'message' => 'Your purchase request has been approved!',
-            'is_read' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'target_id' => $id,
+            'target_type' => 'purchase_request',
+            'action_url' => route('purchase_req.show', $id),
+            'status' => 'approved',
+            'message' => 'Your purchase request for ' . ($purchaseRequest->department ?? 'General') . ' ($' . number_format($purchaseRequest->total ?? 0, 2) . ') has been approved!',
+            'data' => [
+                'requisitioner' => $purchaseRequest->requisitioner ?? '',
+                'total' => $purchaseRequest->total ?? 0,
+            ],
         ]);
 
         // Update status and store approver ID
@@ -935,15 +958,18 @@ class AccountingController extends Controller
             ->where('id', $id)
             ->update(['status' => 'rejected']);
 
-        // Send a notification to the requesting user
-        DB::table('notifications')->insert([
-            'user_id' => $purchaseRequest->user_id, // Requesting user ID
-            'admin_id' => Auth::id(), // Admin who approved
+        // Update pending notification and notify requesting user
+        Notification::updateTargetStatus('purchase_request', $id, 'rejected');
+        Notification::notifyUser($purchaseRequest->user_id, [
             'type' => 'Purchase Rejected',
-            'message' => 'Your purchase request has been rejected!',
-            'is_read' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'target_id' => $id,
+            'target_type' => 'purchase_request',
+            'action_url' => route('purchase_req.show', $id),
+            'status' => 'rejected',
+            'message' => 'Your purchase request for ' . ($purchaseRequest->department ?? 'General') . ' has been rejected.',
+            'data' => [
+                'requisitioner' => $purchaseRequest->requisitioner ?? '',
+            ],
         ]);
 
         return response()->json(['success' => 'purchase request rejected.']);

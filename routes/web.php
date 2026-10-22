@@ -84,9 +84,17 @@ Route::middleware(['auth', 'log.activity'])->group(function () {
     Route::get('/user-profile/data', [UserController::class, 'getProfile'])->name('user.getprofile');
     Route::put('/user-profile/update', [UserController::class, 'updateProfile'])->name('user_profile.update');
 
-    // User Inbox & Notifications
-    Route::get('/Userinbox', [InboxController::class, 'UserInbox'])->name('message.Userinbox');
-    Route::put('/notifications/read/{id}', [InboxController::class, 'markAsRead']);
+    // Unified Inbox & Notifications
+    Route::get('/inbox', [InboxController::class, 'index'])->name('message.inbox');
+    Route::get('/Userinbox', [InboxController::class, 'index'])->name('message.Userinbox');
+    Route::get('/inbox/detail/{id}', [InboxController::class, 'getDetail'])->name('inbox.detail');
+    Route::put('/notifications/read/{id}', [InboxController::class, 'markAsRead'])->name('notifications.markRead');
+    Route::put('/notifications/unread/{id}', [InboxController::class, 'markAsUnread'])->name('notifications.markUnread');
+    Route::post('/notifications/toggle-star/{id}', [InboxController::class, 'toggleStar'])->name('notifications.toggleStar');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::post('/notifications/bulk-action', [InboxController::class, 'bulkAction'])->name('notifications.bulkAction');
+    Route::post('/notifications/delete', [NotificationController::class, 'bulkDelete'])->name('notifications.bulkDelete');
+    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications.get');
     Route::get('/user-notifications', [NotificationController::class, 'userNotifications'])->name('notifications.user');
 
     // Classmate Roster (shared view)
@@ -117,10 +125,8 @@ Route::middleware(['auth', 'role:0', 'log.activity'])->group(function () {
     // Activity Logs
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity.logs');
 
-    // Admin Messages & Notifications
-    Route::get('/inbox', [InboxController::class, 'AdminInbox'])->name('message.inbox');
-    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications.get');
-    Route::post('/notifications/delete', [NotificationController::class, 'bulkDelete'])->name('notifications.bulkDelete');
+    // Admin Messages & Approval Quick Action
+    Route::post('/inbox/quick-action', [InboxController::class, 'quickAction'])->name('inbox.quickAction');
 
     // Teacher Management (CRUD)
     Route::post('/teachers/store', [TeacherController::class, 'store'])->name('teachers.store');

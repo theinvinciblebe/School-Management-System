@@ -328,7 +328,7 @@
     });
 </script>
 
-@if(Auth::check() && (Auth::user()->role == 0 || Auth::user()->role == 3))
+@if(Auth::check())
 
     <audio id="notif-sound" src="{{ asset('audio/notify.mp3') }}" preload="auto"></audio>
 
@@ -341,48 +341,124 @@
                 .then(data => {
                     let notificationList = document.getElementById('notification-list');
                     let notificationBadge = document.getElementById('notification-badge');
+                    let headerCount = document.getElementById('notification-header-count');
+
+                    if (!notificationList || !notificationBadge) return;
 
                     notificationList.innerHTML = '';
 
                     let previousCount = parseInt(localStorage.getItem('previousNotificationCount')) || 0;
-                    let currentCount = data.length;
+                    let currentCount = Array.isArray(data) ? data.length : 0;
 
-                    // 🔔 Only play sound when there are new notifications
-                    if (currentCount > previousCount) {
-                        document.getElementById('notif-sound').play();
-                        toastr.info(`📢 You have ${currentCount - previousCount} new notification(s)!`);
+                    // 🔔 Play sound only on increase
+                    if (currentCount > previousCount && previousCount >= 0) {
+                        let audio = document.getElementById('notif-sound');
+                        if (audio) {
+                            audio.play().catch(e => console.log('Audio autoplay prevented'));
+                        }
+                        if (typeof toastr !== 'undefined') {
+                            toastr.info(`📢 You have ${currentCount - previousCount} new notification(s)!`);
+                        }
                     }
 
-                    // Save the current count for next time
                     localStorage.setItem('previousNotificationCount', currentCount);
 
+                    if (headerCount) {
+                        headerCount.textContent = currentCount;
+                    }
+
                     if (currentCount > 0) {
-                        notificationBadge.textContent = currentCount;
+                        notificationBadge.textContent = currentCount > 99 ? '99+' : currentCount;
                         notificationBadge.style.display = 'inline-block';
 
                         data.forEach(notification => {
                             let notificationItem = document.createElement('a');
-                            notificationItem.href = "{{ Auth::user()->role == 0 ? '/inbox' : '/Userinbox' }}";
-                            notificationItem.className = "dropdown-item text-truncate";
-                            notificationItem.style.maxWidth = "250px";
-                            notificationItem.title = notification.message;
-                            notificationItem.innerHTML = `<i class="fas fa-envelope mr-2"></i> ${notification.message.substring(0, 35)}...`;
+                            notificationItem.href = notification.action_url || "{{ route('message.inbox') }}";
+                            notificationItem.className = "dropdown-item py-2 px-3 border-bottom d-flex align-items-start";
+                            notificationItem.style.whiteSpace = "normal";
+
+                            let iconClass = notification.icon || 'fas fa-bell';
+                            let statusColor = notification.status_color || 'primary';
+                            let statusBadge = '';
+                            if (notification.status && notification.status !== 'info') {
+                                statusBadge = `<span class="badge badge-${statusColor} text-uppercase px-1 ml-1" style="font-size: 9px;">${notification.status}</span>`;
+                            }
+
+                            notificationItem.innerHTML = `
+                                <div class="mr-3 mt-1">
+                                    <span class="btn btn-sm btn-${statusColor} btn-circle p-1" style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                        <i class="${iconClass}" style="font-size: 11px;"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="font-weight-bold text-dark text-truncate" style="font-size: 13px; max-width: 140px;">
+                                            ${notification.type || 'Notification'}
+                                        </span>
+                                        ${statusBadge}
+                                    </div>
+                                    <p class="text-muted mb-1 text-sm text-truncate" style="max-width: 200px; font-size: 12px; margin: 0;">
+                                        ${notification.message}
+                                    </p>
+                                    <span class="text-xs text-muted" style="font-size: 10px;">
+                                        <i class="far fa-clock mr-1"></i>${notification.time_ago || 'recently'}
+                                    </span>
+                                </div>
+                            `;
+
+                            notificationItem.addEventListener('click', function (e) {
+                                fetch(`/notifications/read/${notification.id}`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    }
+                                });
+                            });
+
                             notificationList.appendChild(notificationItem);
                         });
                     } else {
                         notificationBadge.style.display = 'none';
-                        notificationList.innerHTML = `<p class="dropdown-item text-center">No new notifications</p>`;
+                        notificationList.innerHTML = `
+                            <p class="dropdown-item text-center text-muted py-4 mb-0">
+                                <i class="fas fa-bell-slash fa-2x mb-2 text-secondary d-block"></i>
+                                No new notifications
+                            </p>
+                        `;
                     }
                 })
                 .catch(error => console.error('Error fetching notifications:', error));
         }
 
-        // Call immediately and every 10 seconds
-        fetchNotifications();
-        setInterval(fetchNotifications, 10000);
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchNotifications();
+            setInterval(fetchNotifications, 12000);
+
+            // Handle Mark all read button
+            let markAllBtn = document.getElementById('mark-all-read-btn');
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    fetch('/notifications/mark-all-read', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.success) {
+                            if (typeof toastr !== 'undefined') toastr.success('All marked as read');
+                            fetchNotifications();
+                        }
+                    });
+                });
+            }
+        });
     </script>
-
-
 @endif
 
 

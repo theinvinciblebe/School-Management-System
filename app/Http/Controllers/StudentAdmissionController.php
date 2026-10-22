@@ -70,7 +70,8 @@ class StudentAdmissionController extends Controller
         }
 
         // Use query builder
-        DB::table('admission')->insert([
+        $course = implode(', ', $request->input('courses', []));
+        $admissionId = DB::table('admission')->insertGetId([
             'full_name' => $request->input('name'),
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
@@ -85,31 +86,34 @@ class StudentAdmissionController extends Controller
             'mode' => $request->input('mode'),
             'subject' => $request->input('subject'),
             'work_exp' => $request->input('work_exp'),
-            'course' => implode(', ', $request->input('courses', [])), // Assuming courses[] from frontend
+            'course' => $course,
             'education' => json_encode($request->input('education', [])),
             'guardian_name' => $request->input('guardian_name'),
             'guardian_relationship' => $request->input('guardian_relationship'),
             'guardian_email' => $request->input('guardian_email'),
             'guardian_phone' => $request->input('guardian_phone'),
             'reference' => $request->input('reference'),
-            //'consent' => $request->has('consent'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         $userName = $request->input('name');
-        // Find Admins (assuming role_id 1 is admin)
-        $admins = User::where('role', 0)->get();
 
-        foreach ($admins as $admin) {
-            Notification::create([
-                //'user_id' => 1,
-                'admin_id' => $admin->id,
-                'type' => 'Admission',
-                'message' => "New apply from {$userName}. Requires approval.",
-                'is_read' => false
-            ]);
-        }
+        Notification::notifyAdmins([
+            'type' => 'Admission',
+            'target_id' => $admissionId,
+            'target_type' => 'admission',
+            'action_url' => route('studentsAdmission.show', $admissionId),
+            'status' => 'pending',
+            'message' => "New admission application from {$userName}" . ($course ? " for {$course}" : '') . ". Requires approval.",
+            'data' => [
+                'name' => $userName,
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'course' => $course,
+                'country' => $request->input('country'),
+            ],
+        ]);
 
         return response()->json(['message' => 'Form submitted successfully']);
     }
@@ -212,8 +216,9 @@ class StudentAdmissionController extends Controller
 //            'updated_at' => now(),
 //        ]);
 
+        Notification::updateTargetStatus('admission', $id, 'approved');
 
-        return response()->json(['success' => 'Admission  request approved successfully.']);
+        return response()->json(['success' => 'Admission request approved successfully.']);
     }catch (\Exception $e) {
         Log::error('Approval Error: ' . $e->getMessage());
         return response()->json(['error' => 'Something went wrong.'], 500);
@@ -235,19 +240,12 @@ class StudentAdmissionController extends Controller
         DB::table('admission')
             ->where('id', $id)->update([
                 'status' => 'rejected',
-                'decide_by' => $adminId, // Store approver's ID
+                'decide_by' => $adminId,
             ]);
 
-        // Send a notification to the requesting user
-//        DB::table('notifications')->insert([
-//            'user_id' => $purchaseRequest->user_id, // Requesting user ID
-//            'admin_id' => Auth::id(), // Admin who approved
-//            'type' => 'Purchase Rejected',
-//            'message' => 'Your purchase request has been rejected!',
-//            'is_read' => 0,
-//            'created_at' => now(),
-//            'updated_at' => now(),
-//        ]);
+        Notification::updateTargetStatus('admission', $id, 'rejected');
+
+        return response()->json(['success' => 'Admission request rejected successfully.']);
 
         return response()->json(['success' => 'purchase request rejected.']);
         //return redirect()->back()->with('success', 'Fee receipt rejected!');

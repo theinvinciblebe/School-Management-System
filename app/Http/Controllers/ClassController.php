@@ -28,59 +28,84 @@ class ClassController extends Controller
     public function myClass()
     {
         $user = Auth::user();
-        $classes = collect(); // Initialize as an empty collection to prevent errors
+        $userRole = (int) $user->role;
+        $classes = collect();
 
-        // If user is an admin
-        if ($user->role === 0) {
-            $classes = DB::table('class')->get();
+        // If user is an admin or staff or accountant
+        if (in_array($userRole, [0, 3, 4])) {
+            $classes = DB::table('class')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+                ->select('class.*', 'teacher.name as teacher_name')
+                ->get();
         }
         // If user is a teacher
-        else if ($user->role === 1) {
+        else if ($userRole === 1) {
             $classes = DB::table('class')
-                ->leftjoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
                 ->where('teacher.user_id', $user->id)
-                ->select('class.*') // Select only class columns to avoid conflicts
+                ->select('class.*', 'teacher.name as teacher_name')
                 ->get();
         }
         // If user is a student
-        else if ($user->role === 2) {
+        else if ($userRole === 2) {
             $classes = DB::table('class')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
                 ->join('student_classes', 'class.class_id', '=', 'student_classes.class_id')
                 ->join('student', 'student_classes.student_id', '=', 'student.student_id')
                 ->where('student.user_id', $user->id)
-                ->select('class.*')
+                ->select('class.*', 'teacher.name as teacher_name')
                 ->get();
         }
 
-//        dd([
-//            'user_id' => $user->id,
-//            'user_role' => $user->role,
-//        ]);
+        // Attach metrics for each class
+        $classIds = $classes->pluck('class_id')->toArray();
+        foreach ($classes as $item) {
+            $item->subject_count = DB::table('subject')->where('class_id', $item->class_id)->count();
+            $item->student_count = DB::table('student_classes')->where('class_id', $item->class_id)->count();
+            $item->routine_count = DB::table('class_routine')->where('class_id', $item->class_id)->count();
+        }
 
-        return view('myClass.index', compact('classes'));
+        $totalSubjects = DB::table('subject')->whereIn('class_id', $classIds)->count();
+        $totalMaterials = DB::table('class_materials')
+            ->join('subject', 'class_materials.subject_id', '=', 'subject.subject_id')
+            ->whereIn('subject.class_id', $classIds)
+            ->count();
+
+        return view('myClass.index', compact('classes', 'totalSubjects', 'totalMaterials'));
     }
 
     public function getSubject($class_id)
     {
-        // Check if the class exists
-        $classExists = DB::table('class')->where('class_id', $class_id)->exists();
-        if (!$classExists) {
-            return redirect()->back()->with('error', 'Class not found.');
+        // Fetch the class details with teacher
+        $class = DB::table('class')
+            ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+            ->where('class.class_id', $class_id)
+            ->select('class.*', 'teacher.name as teacher_name')
+            ->first();
+
+        if (!$class) {
+            return redirect()->route('myClass.index')->with('error', 'Class not found.');
         }
-        $class = DB::table('class')->where('class_id', $class_id)->first();
-        // Fetch the subjects for this class
+
+        // Fetch all subjects for this class (leftJoin teacher to include subjects without teacher)
         $subjects = DB::table('subject')
-            ->join('teacher', 'subject.teacher_id', '=', 'teacher.teacher_id')
+            ->leftJoin('teacher', 'subject.teacher_id', '=', 'teacher.teacher_id')
             ->where('subject.class_id', $class_id)
-            ->select('subject.*', 'teacher.name as teacher_name') // Fetch class name
+            ->select('subject.*', 'teacher.name as teacher_name')
             ->get();
 
-        // Debugging: Check if subjects are found
-        if ($subjects->isEmpty()) {
-            return redirect()->back()->with('error', 'No subjects found for this class.');
+        // Attach material and routine count to each subject
+        foreach ($subjects as $sub) {
+            $sub->material_count = DB::table('class_materials')->where('subject_id', $sub->subject_id)->count();
+            $sub->routine_count = DB::table('class_routine')->where('subject_id', $sub->subject_id)->count();
         }
 
-        return view('myClass.getSubjects', compact('subjects', 'class'));
+        // Fetch all classes for quick switching
+        $allClasses = DB::table('class')->select('class_id', 'name', 'class_code', 'class_room')->get();
+        $classRoutineCount = DB::table('class_routine')->where('class_id', $class_id)->count();
+        $classStudentCount = DB::table('student_classes')->where('class_id', $class_id)->count();
+
+        return view('myClass.getSubjects', compact('subjects', 'class', 'allClasses', 'classRoutineCount', 'classStudentCount'));
     }
     public function getMaterials($subject_id)
     {

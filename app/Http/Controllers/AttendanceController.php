@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -119,7 +121,7 @@ class AttendanceController extends Controller
         }
 
         // Insert the edit request into the attendance_edit_requests table
-        DB::table('attendance_edit_requests')->insert([
+        $editRequestId = DB::table('attendance_edit_requests')->insertGetId([
             'teacher_id' => $teacher->teacher_id,
             'date' => $request->date,
             'reason' => $request->reason,
@@ -128,6 +130,23 @@ class AttendanceController extends Controller
             'section_id' => $attendanceData->section_id,
             'created_at' => now(),
             'updated_at' => now(),
+        ]);
+
+        $className = DB::table('class')->where('class_id', $attendanceData->class_id)->value('name') ?? 'Class';
+
+        Notification::notifyAdmins([
+            'type' => 'Attendance Request',
+            'target_id' => $editRequestId,
+            'target_type' => 'attendance_request',
+            'action_url' => route('attendance.requestList'),
+            'status' => 'pending',
+            'message' => "Teacher {$teacher->name} requested attendance edit for {$className} on {$request->date}.",
+            'data' => [
+                'teacher_name' => $teacher->name,
+                'class_name' => $className,
+                'date' => $request->date,
+                'reason' => $request->reason,
+            ],
         ]);
 
         return redirect()->back()->with('success', 'Attendance edit request submitted successfully. Please wait for approval.');
@@ -145,23 +164,36 @@ class AttendanceController extends Controller
         // Get the request details
         $attendanceRequest = DB::table('attendance_edit_requests')->where('id', $id)->first();
 
-        if ($request->status === 'Approved') {
-            // Enable attendance editing for the teacher
-            DB::table('attendance_edit_requests')->where('id', $id)->update([
-                'status' => 'Approved',
-                'updated_at' => now(),
-            ]);
+        if (!$attendanceRequest) {
+            return redirect()->back()->with('error', 'Request not found.');
+        }
 
-            // Optional: Track in a separate table or log if needed
-        } else {
-            // Update status to 'Rejected'
-            DB::table('attendance_edit_requests')->where('id', $id)->update([
-                'status' => 'Rejected',
-                'updated_at' => now(),
+        $newStatus = $request->status === 'Approved' ? 'approved' : 'rejected';
+
+        DB::table('attendance_edit_requests')->where('id', $id)->update([
+            'status' => $request->status,
+            'updated_at' => now(),
+        ]);
+
+        Notification::updateTargetStatus('attendance_request', $id, $newStatus);
+
+        $teacher = DB::table('teacher')->where('teacher_id', $attendanceRequest->teacher_id)->first();
+        if ($teacher && $teacher->user_id) {
+            Notification::notifyUser($teacher->user_id, [
+                'type' => 'Attendance ' . $request->status,
+                'target_id' => $id,
+                'target_type' => 'attendance_request',
+                'action_url' => route('attendance.requestList'),
+                'status' => $newStatus,
+                'message' => "Your attendance edit request for {$attendanceRequest->date} has been {$request->status}.",
+                'data' => [
+                    'date' => $attendanceRequest->date,
+                    'status' => $request->status,
+                ],
             ]);
         }
 
-            return redirect()->back()->with('success', 'Request status updated successfully.');
+        return redirect()->back()->with('success', 'Request status updated successfully.');
     }
 
 
