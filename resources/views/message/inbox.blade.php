@@ -124,16 +124,68 @@
     /* Quick action buttons on row */
     .row-actions {
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.15s ease;
     }
     .mail-row:hover .row-actions {
         opacity: 1;
     }
 
-    /* Custom Scrollbar for Mailbox */
+    /* Overflow Prevention & Fixed Table Layout */
+    .mailbox-card {
+        min-width: 0;
+        overflow: hidden;
+    }
+    .mailbox-table {
+        table-layout: fixed;
+        width: 100% !important;
+        margin-bottom: 0;
+    }
+    .mailbox-table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .mail-message-cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+    }
+    .mail-message-cell span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     .mailbox-scroll {
         max-height: 650px;
         overflow-y: auto;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    /* Responsive column widths */
+    @media (max-width: 1200px) {
+        .col-sender {
+            width: 150px !important;
+        }
+        .col-category {
+            width: 125px !important;
+        }
+    }
+    @media (max-width: 991px) {
+        .col-category {
+            display: none !important;
+        }
+        .col-sender {
+            width: 140px !important;
+        }
+    }
+    @media (max-width: 767px) {
+        .col-status {
+            width: 100px !important;
+        }
+        .col-actions {
+            width: 70px !important;
+        }
     }
 
     /* Modal styling */
@@ -330,68 +382,64 @@
             </div>
 
             <!-- Main Mailbox Panel -->
-            <div class="col-lg-9 col-md-8">
-                <div class="card shadow-sm border-0" style="border-radius: 14px; overflow: hidden;">
+            <div class="col-lg-9 col-md-8" style="min-width: 0;">
+                <div class="card shadow-sm border-0 mailbox-card" style="border-radius: 14px; overflow: hidden; min-width: 0;">
 
                     <!-- Top Action & Search Bar -->
-                    <div class="card-header border-bottom py-3 px-3">
-                        <div class="row align-items-center">
+                    <div class="card-header border-bottom py-2 px-3 d-flex justify-content-between align-items-center flex-wrap" style="gap: 10px;">
 
-                            <!-- Left: Bulk Controls -->
-                            <div class="col-md-7 mb-2 mb-md-0 d-flex align-items-center">
-                                <div class="custom-control custom-checkbox mr-3">
-                                    <input type="checkbox" class="custom-control-input" id="checkAll">
-                                    <label class="custom-control-label" for="checkAll"></label>
-                                </div>
-
-                                <div class="btn-group mr-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="refreshBtn" title="Refresh list">
-                                        <i class="fas fa-sync-alt" id="refreshIcon"></i>
-                                    </button>
-                                </div>
-
-                                <div class="btn-group mr-2" id="bulkActionsGroup" style="display: none;">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" id="bulkMarkReadBtn" title="Mark selected as read">
-                                        <i class="far fa-envelope-open mr-1"></i> Read
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="bulkMarkUnreadBtn" title="Mark selected as unread">
-                                        <i class="far fa-envelope mr-1"></i> Unread
-                                    </button>
-                                    <button type="button" class="btn btn-outline-warning btn-sm" id="bulkStarBtn" title="Star selected">
-                                        <i class="fas fa-star mr-1"></i> Star
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" id="bulkDeleteBtn" title="Delete selected">
-                                        <i class="far fa-trash-alt mr-1"></i> Delete
-                                    </button>
-                                </div>
-
-                                <span class="text-xs text-muted ml-2" id="selectedCountText"></span>
+                        <!-- Left: Bulk Controls -->
+                        <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+                            <div class="custom-control custom-checkbox mr-2">
+                                <input type="checkbox" class="custom-control-input" id="checkAll">
+                                <label class="custom-control-label" for="checkAll"></label>
                             </div>
 
-                            <!-- Right: Search Form -->
-                            <div class="col-md-5">
-                                <form method="GET" action="{{ route('message.inbox') }}" class="m-0">
-                                    <input type="hidden" name="tab" value="{{ $tab }}">
-                                    @if($type)
-                                        <input type="hidden" name="type" value="{{ $type }}">
-                                    @endif
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" name="search" class="form-control" placeholder="Search message, sender, type..." value="{{ $search ?? '' }}">
-                                        <div class="input-group-append">
-                                            @if($search)
-                                                <a href="{{ route('message.inbox', ['tab' => $tab, 'type' => $type]) }}" class="btn btn-default" title="Clear search">
-                                                    <i class="fas fa-times"></i>
-                                                </a>
-                                            @endif
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="refreshBtn" title="Refresh list">
+                                <i class="fas fa-sync-alt" id="refreshIcon"></i>
+                            </button>
+
+                            <div class="btn-group" id="bulkActionsGroup" style="display: none;">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="bulkMarkReadBtn" title="Mark selected as read">
+                                    <i class="far fa-envelope-open mr-1"></i> Read
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="bulkMarkUnreadBtn" title="Mark selected as unread">
+                                    <i class="far fa-envelope mr-1"></i> Unread
+                                </button>
+                                <button type="button" class="btn btn-outline-warning btn-sm" id="bulkStarBtn" title="Star selected">
+                                    <i class="fas fa-star mr-1"></i> Star
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="bulkDeleteBtn" title="Delete selected">
+                                    <i class="far fa-trash-alt mr-1"></i> Delete
+                                </button>
                             </div>
 
+                            <span class="text-xs text-muted" id="selectedCountText"></span>
                         </div>
+
+                        <!-- Right: Search Form -->
+                        <div class="flex-grow-1 d-flex justify-content-end" style="max-width: 320px; min-width: 200px;">
+                            <form method="GET" action="{{ route('message.inbox') }}" class="m-0 w-100">
+                                <input type="hidden" name="tab" value="{{ $tab }}">
+                                @if($type)
+                                    <input type="hidden" name="type" value="{{ $type }}">
+                                @endif
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="search" class="form-control" placeholder="Search message, sender, type..." value="{{ $search ?? '' }}" style="border-radius: 20px 0 0 20px;">
+                                    <div class="input-group-append">
+                                        @if($search)
+                                            <a href="{{ route('message.inbox', ['tab' => $tab, 'type' => $type]) }}" class="btn btn-default" title="Clear search">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        @endif
+                                        <button type="submit" class="btn btn-primary" style="border-radius: 0 20px 20px 0;">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
 
                     <!-- Notification Rows Container -->
@@ -425,8 +473,17 @@
                                 @endif
                             </div>
                         @else
-                            <div class="table-responsive mailbox-scroll">
-                                <table class="table table-hover mb-0">
+                            <div class="table-responsive mailbox-scroll" style="overflow-x: hidden; width: 100%;">
+                                <table class="table table-hover mb-0 mailbox-table" style="table-layout: fixed; width: 100%;">
+                                    <colgroup>
+                                        <col style="width: 36px;">
+                                        <col style="width: 36px;">
+                                        <col class="col-sender" style="width: 175px;">
+                                        <col class="col-category" style="width: 140px;">
+                                        <col class="col-message" style="width: auto;">
+                                        <col class="col-status" style="width: 135px;">
+                                        <col class="col-actions" style="width: 140px;">
+                                    </colgroup>
                                     <tbody>
                                         @foreach($notifications as $notification)
                                             @php
@@ -450,8 +507,8 @@
                                                 data-id="{{ $notification->id }}"
                                                 data-read="{{ $notification->is_read ? 'true' : 'false' }}">
 
-                                                <!-- Checkbox -->
-                                                <td class="align-middle py-3 pl-3 pr-1" style="width: 36px;" onclick="event.stopPropagation();">
+                                                <!-- 1. Checkbox -->
+                                                <td class="align-middle py-3 pl-3 pr-1 text-center" onclick="event.stopPropagation();">
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" class="custom-control-input mail-select"
                                                                id="rowCheck{{ $notification->id }}"
@@ -460,8 +517,8 @@
                                                     </div>
                                                 </td>
 
-                                                <!-- Star -->
-                                                <td class="align-middle py-3 px-1 text-center" style="width: 36px;" onclick="event.stopPropagation();">
+                                                <!-- 2. Star -->
+                                                <td class="align-middle py-3 px-1 text-center" onclick="event.stopPropagation();">
                                                     <button type="button" class="star-btn {{ $notification->starred ? 'starred' : '' }}"
                                                             data-id="{{ $notification->id }}"
                                                             title="{{ $notification->starred ? 'Unstar' : 'Star' }}">
@@ -469,76 +526,78 @@
                                                     </button>
                                                 </td>
 
-                                                <!-- Avatar / Requester -->
-                                                <td class="align-middle py-3 px-2" style="width: 190px;">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="mail-avatar mr-2 bg-gradient-{{ $catColor }}">
+                                                <!-- 3. Avatar / Requester -->
+                                                <td class="align-middle py-3 px-2 col-sender">
+                                                    <div class="d-flex align-items-center" style="min-width: 0;">
+                                                        <div class="mail-avatar mr-2 bg-gradient-{{ $catColor }} flex-shrink-0">
                                                             {{ $initials }}
                                                         </div>
-                                                        <div class="overflow-hidden" style="max-width: 135px;">
-                                                            <div class="font-weight-bold text-truncate" title="{{ $sender }}">
+                                                        <div class="text-truncate" style="min-width: 0;">
+                                                            <div class="font-weight-bold text-truncate text-sm" title="{{ $sender }}">
                                                                 {{ $sender }}
                                                             </div>
-                                                            <div class="text-xs text-muted text-truncate">
+                                                            <div class="text-xs text-muted text-truncate" title="{{ $notification->user->email ?? 'System' }}">
                                                                 {{ $notification->user->email ?? 'System' }}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
 
-                                                <!-- Category Badge -->
-                                                <td class="align-middle py-3 px-2" style="width: 140px;">
-                                                    <span class="badge badge-{{ $catColor }} py-1 px-2 font-weight-normal text-xs" style="border-radius: 6px;">
+                                                <!-- 4. Category Badge -->
+                                                <td class="align-middle py-3 px-2 col-category">
+                                                    <span class="badge badge-{{ $catColor }} py-1 px-2 font-weight-normal text-xs text-truncate d-inline-block" style="border-radius: 6px; max-width: 100%;">
                                                         <i class="{{ $notification->icon }} mr-1"></i>
                                                         {{ Str::limit($notification->type, 18) }}
                                                     </span>
                                                 </td>
 
-                                                <!-- Message Snippet -->
-                                                <td class="align-middle py-3 px-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="text-truncate mr-2 flex-grow-1" style="max-width: 420px;" title="{{ $notification->message }}">
-                                                            {{ $notification->message }}
-                                                        </span>
-
-                                                        <!-- Status Pill -->
-                                                        @if($status === 'pending')
-                                                            <span class="badge badge-warning text-dark px-2 py-1 ml-1 badge-status" style="border-radius: 12px; font-size: 11px;">
-                                                                <span class="badge-pulse"></span>Pending Approval
-                                                            </span>
-                                                        @elseif($status === 'approved')
-                                                            <span class="badge badge-success px-2 py-1 ml-1 badge-status" style="border-radius: 12px; font-size: 11px;">
-                                                                <i class="fas fa-check mr-1"></i>Approved
-                                                            </span>
-                                                        @elseif($status === 'rejected')
-                                                            <span class="badge badge-danger px-2 py-1 ml-1 badge-status" style="border-radius: 12px; font-size: 11px;">
-                                                                <i class="fas fa-times mr-1"></i>Rejected
-                                                            </span>
-                                                        @endif
-                                                    </div>
+                                                <!-- 5. Message Snippet -->
+                                                <td class="align-middle py-3 px-2 mail-message-cell">
+                                                    <span class="text-truncate d-block text-sm" title="{{ $notification->message }}">
+                                                        {{ $notification->message }}
+                                                    </span>
                                                 </td>
 
-                                                <!-- Quick Hover Actions -->
-                                                <td class="align-middle py-3 px-2 text-right" style="width: 170px;" onclick="event.stopPropagation();">
-                                                    <div class="row-actions d-inline-block">
-                                                        @if($isAdmin && $status === 'pending')
-                                                            <button type="button" class="btn btn-xs btn-success quick-approve-btn mr-1"
-                                                                    data-id="{{ $notification->id }}" title="One-click Approve">
-                                                                <i class="fas fa-check"></i>
+                                                <!-- 6. Status Badge -->
+                                                <td class="align-middle py-3 px-2 text-center col-status">
+                                                    @if($status === 'pending')
+                                                        <span class="badge badge-warning text-dark px-2 py-1 badge-status" style="border-radius: 12px; font-size: 11px;">
+                                                            <span class="badge-pulse"></span>Pending Approval
+                                                        </span>
+                                                    @elseif($status === 'approved')
+                                                        <span class="badge badge-success px-2 py-1 badge-status" style="border-radius: 12px; font-size: 11px;">
+                                                            <i class="fas fa-check mr-1"></i>Approved
+                                                        </span>
+                                                    @elseif($status === 'rejected')
+                                                        <span class="badge badge-danger px-2 py-1 badge-status" style="border-radius: 12px; font-size: 11px;">
+                                                            <i class="fas fa-times mr-1"></i>Rejected
+                                                        </span>
+                                                    @endif
+                                                </td>
+
+                                                <!-- 7. Quick Hover Actions & Timestamp -->
+                                                <td class="align-middle py-3 pr-3 pl-1 text-right col-actions" onclick="event.stopPropagation();">
+                                                    <div class="d-flex align-items-center justify-content-end">
+                                                        <div class="row-actions mr-1">
+                                                            @if($isAdmin && $status === 'pending')
+                                                                <button type="button" class="btn btn-xs btn-success quick-approve-btn mr-1"
+                                                                        data-id="{{ $notification->id }}" title="One-click Approve">
+                                                                    <i class="fas fa-check"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-xs btn-danger quick-reject-btn mr-1"
+                                                                        data-id="{{ $notification->id }}" title="One-click Reject">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button>
+                                                            @endif
+                                                            <button type="button" class="btn btn-xs btn-outline-info preview-row-btn"
+                                                                    data-id="{{ $notification->id }}" title="Quick Review">
+                                                                <i class="fas fa-eye"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-xs btn-danger quick-reject-btn mr-1"
-                                                                    data-id="{{ $notification->id }}" title="One-click Reject">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        @endif
-                                                        <button type="button" class="btn btn-xs btn-outline-info preview-row-btn mr-1"
-                                                                data-id="{{ $notification->id }}" title="Quick Review">
-                                                            <i class="fas fa-eye"></i> Review
-                                                        </button>
+                                                        </div>
+                                                        <span class="text-xs text-muted flex-shrink-0" style="min-width: 50px;">
+                                                            {{ $notification->created_at->diffForHumans(null, true) }}
+                                                        </span>
                                                     </div>
-                                                    <span class="text-xs text-muted ml-2">
-                                                        {{ $notification->created_at->diffForHumans(null, true) }}
-                                                    </span>
                                                 </td>
 
                                             </tr>
