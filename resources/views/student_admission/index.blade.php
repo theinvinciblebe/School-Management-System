@@ -274,7 +274,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="border px-4 py-4 text-center text-gray-500">No admissions found.</td>
+                                    <td colspan="10" class="border px-4 py-4 text-center text-gray-500">No admissions found.</td>
                                 </tr>
                             @endforelse
                             </tbody>
