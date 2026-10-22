@@ -44,8 +44,8 @@ class DashboardController extends Controller
         // Example: Monthly profit & expenses from a transactions table
         $data = DB::table('transactions')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month_num')
-            ->selectRaw('SUM(CASE WHEN type = "profit" THEN amount ELSE 0 END) as profit')
-            ->selectRaw('SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense')
+            ->selectRaw("SUM(CASE WHEN type = 'profit' THEN amount ELSE 0 END) as profit")
+            ->selectRaw("SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense")
             ->groupByRaw('YEAR(date), MONTH(date)')
             ->orderByRaw('YEAR(date), MONTH(date)')
             ->get();
@@ -77,8 +77,8 @@ class DashboardController extends Controller
 
         $data = DB::table('transactions')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month_num')
-            ->selectRaw('SUM(CASE WHEN type = "profit" THEN amount ELSE 0 END) as profit')
-            ->selectRaw('SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense')
+            ->selectRaw("SUM(CASE WHEN type = 'profit' THEN amount ELSE 0 END) as profit")
+            ->selectRaw("SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense")
             ->whereYear('date', $year)
             ->groupByRaw('YEAR(date), MONTH(date)')
             ->orderByRaw('YEAR(date), MONTH(date)')
