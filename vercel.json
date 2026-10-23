@@ -2,6 +2,7 @@
   "version": 2,
   "framework": null,
   "buildCommand": "node patch-vercel.cjs && vite build",
+  "outputDirectory": "public",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.4"
@@ -9,16 +10,15 @@
   },
   "routes": [
     {
-      "src": "/build/(.*)",
-      "dest": "/public/build/$1"
+      "src": "/index\\.php(/.*)?",
+      "dest": "/api/index.php"
     },
     {
-      "src": "/(assets|customize_images|admin_image|staffs_image|students_image|teachers_image|upload_materials|audio|bootstrap)/(.*)",
-      "dest": "/public/$1/$2"
+      "src": "/public/(.*)",
+      "dest": "/$1"
     },
     {
-      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|gif|webp|css|js|woff|woff2|ttf|eot|txt))",
-      "dest": "/public/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",

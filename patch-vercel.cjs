@@ -122,11 +122,17 @@ function searchAndPatch(startDir, maxDepth = 6, currentDepth = 0) {
   if (currentDepth > maxDepth || !fs.existsSync(startDir)) return;
 
   try {
+    // If startDir is itself a vercel-php directory
+    if (path.basename(startDir) === 'vercel-php' || path.basename(startDir).startsWith('vercel-php@')) {
+      patchVercelPhpDir(startDir);
+      return;
+    }
+
     const entries = fs.readdirSync(startDir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(startDir, entry.name);
       if (entry.isDirectory()) {
-        if (['proc', 'sys', 'dev', '.git'].includes(entry.name)) continue;
+        if (['proc', 'sys', 'dev', '.git'].includes(entry.name) || entry.name.startsWith('squashfs')) continue;
         if (entry.name === 'vercel-php' || (entry.name.startsWith('vercel-php@'))) {
           patchVercelPhpDir(fullPath);
         } else {
@@ -138,12 +144,12 @@ function searchAndPatch(startDir, maxDepth = 6, currentDepth = 0) {
 }
 
 const candidateRoots = [
+  '/vercel/path0/.vercel/builders/node_modules/vercel-php',
+  '/vercel/path0/node_modules/vercel-php',
+  path.resolve(__dirname, 'node_modules/vercel-php'),
   '/vercel',
-  '/root',
+  '/root/.vercel',
   path.resolve(__dirname),
-  path.resolve(__dirname, 'node_modules'),
-  path.resolve(__dirname, '..'),
-  process.env.HOME || '',
 ].filter(p => p && fs.existsSync(p));
 
 console.log('[patch-vercel] Searching in roots:', candidateRoots);
