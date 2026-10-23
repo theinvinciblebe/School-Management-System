@@ -1,13 +1,45 @@
 {
   "version": 2,
+  "framework": null,
+  "buildCommand": "bash build-patch.sh && node patch-vercel.cjs && vite build && node -e \"if(process.env.VERCEL && fs.existsSync('public/index.php'))fs.unlinkSync('public/index.php');\"",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.9.0"
+    }
+  },
+  "routes": [
+    {
+      "src": "/(build|assets|customize_images|admin_image|staffs_image|students_image|teachers_image|upload_materials|audio|bootstrap)/(.*)",
+      "dest": "/$1/$2"
+    },
+    {
+      "src": "/public/(build|assets|customize_images|admin_image|staffs_image|students_image|teachers_image|upload_materials|audio|bootstrap)/(.*)",
+      "dest": "/$1/$2"
+    },
+    {
+      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|gif|webp|css|js|woff|woff2|ttf|eot|txt|json|map))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ],
   "env": {
     "APP_KEY": "base64:sEMiMy2kiu9CAZ/+n3FNno6Hdq66cdT9jqSkxxHaHF8=",
     "APP_ENV": "production",
     "APP_DEBUG": "true",
-    "LOG_CHANNEL": "stderr",
-    "SESSION_DRIVER": "cookie",
+    "APP_CONFIG_CACHE": "/tmp/storage/bootstrap/cache/config.php",
+    "APP_EVENTS_CACHE": "/tmp/storage/bootstrap/cache/events.php",
+    "APP_PACKAGES_CACHE": "/tmp/storage/bootstrap/cache/packages.php",
+    "APP_ROUTES_CACHE": "/tmp/storage/bootstrap/cache/routes.php",
+    "APP_SERVICES_CACHE": "/tmp/storage/bootstrap/cache/services.php",
+    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
     "CACHE_STORE": "array",
     "CACHE_DRIVER": "array",
+    "LOG_CHANNEL": "stderr",
+    "SESSION_DRIVER": "cookie",
     "DB_CONNECTION": "pgsql",
     "DB_HOST": "aws-0-ap-northeast-2.pooler.supabase.com",
     "DB_PORT": "5432",
