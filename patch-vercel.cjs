@@ -178,7 +178,7 @@ function searchAndPatch(startDir, maxDepth = 6, currentDepth = 0) {
 if (process.platform === 'linux') {
   try {
     const { execSync } = require('child_process');
-    const stdout = execSync('find /vercel /tmp /root -name "index.js" -path "*vercel-php*" 2>/dev/null', { encoding: 'utf8' });
+    const stdout = execSync('find /vercel /tmp -name "index.js" -path "*vercel-php*" 2>/dev/null || true', { encoding: 'utf8' });
     const files = stdout.split('\n').map(s => s.trim()).filter(Boolean);
     for (const file of files) {
       if (!file.includes('squashfs')) {
@@ -198,7 +198,6 @@ const candidateRoots = [
   path.resolve(__dirname, 'node_modules/vercel-php'),
   '/vercel',
   '/tmp',
-  '/root/.vercel',
   path.resolve(__dirname),
 ].filter(p => p && fs.existsSync(p));
 
