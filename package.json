@@ -2,8 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "node patch-vercel.cjs && vite build",
-        "postinstall": "node patch-vercel.cjs"
+        "build": "vite build"
     },
     "devDependencies": {
         "axios": "^1.6.4",

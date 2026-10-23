@@ -1,0 +1,66 @@
+# Stage 1: Build frontend assets
+FROM node:20-alpine AS frontend
+WORKDIR /app
+COPY package*.json vite.config.mjs ./
+RUN npm install
+COPY resources ./resources
+COPY public ./public
+RUN npm run build
+
+# Stage 2: Production PHP 8.3 with Apache
+FROM php:8.3-apache
+
+# Install PostgreSQL, GD, Zip and required extensions
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    zip \
+    unzip \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install -j$(nproc) pdo_pgsql gd zip bcmath \
+ && apt-get purge -y --auto-remove \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Apache configuration for Laravel
+RUN a2enmod rewrite headers \
+ && sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
+ && printf '<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>\nServerTokens Prod\nServerSignature Off\n' > /etc/apache2/conf-available/laravel.conf \
+ && a2enconf laravel
+
+# PHP production configuration
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+ && printf 'upload_max_filesize = 50M\npost_max_size = 50M\nmemory_limit = 256M\nexpose_php = Off\n' > "$PHP_INI_DIR/conf.d/laravel.ini"
+
+WORKDIR /var/www/html
+
+# Copy application files
+COPY . /var/www/html
+
+# Copy built frontend assets from Stage 1
+COPY --from=frontend /app/public/build /var/www/html/public/build
+
+# Install production PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Set up storage and cache directories with proper permissions
+RUN mkdir -p storage/framework/cache/data \
+             storage/framework/sessions \
+             storage/framework/views \
+             storage/logs \
+             bootstrap/cache \
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
+
+# Dynamic port binding entrypoint script
+RUN printf '#!/bin/sh\nPORT="${PORT:-80}"\nsed -ri "s/Listen [0-9]+/Listen ${PORT}/g" /etc/apache2/ports.conf\nsed -ri "s/<VirtualHost \\*:[0-9]+>/<VirtualHost \\*:${PORT}>/g" /etc/apache2/sites-available/000-default.conf\nexec apache2-foreground\n' > /usr/local/bin/start.sh \
+ && chmod +x /usr/local/bin/start.sh
+
+EXPOSE 80
+
+CMD ["/usr/local/bin/start.sh"]
