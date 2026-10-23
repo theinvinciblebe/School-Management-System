@@ -59,6 +59,38 @@ function patchVercelPhpDir(dir) {
         content = 'process.env.LAMBDA_TASK_ROOT = process.env.LAMBDA_TASK_ROOT || "/var/task";\n' + content;
         changed = true;
       }
+
+      // Track PHP stderr to diagnose port opening / startup failures
+      if (!content.includes("let lastPhpStderr = '';")) {
+        content = "let lastPhpStderr = '';\n" + content;
+        changed = true;
+      }
+      if (content.includes("console.error(`🐘STDERR: ${data.toString()}`);") && !content.includes("lastPhpStderr +=")) {
+        content = content.replace(
+          "console.error(`🐘STDERR: ${data.toString()}`);",
+          "console.error(`🐘STDERR: ${data.toString()}`);\n        lastPhpStderr += data.toString();"
+        );
+        changed = true;
+      }
+
+      // Increase timeout for cold starts (10 seconds instead of 5)
+      if (content.includes("whenPortOpens(3000, 500)")) {
+        content = content.replace("whenPortOpens(3000, 500)", "whenPortOpens(3000, 1000)");
+        changed = true;
+      }
+
+      // Wrap launcher in try/catch to eliminate unhandled rejection (FUNCTION_INVOCATION_FAILED)
+      if (content.includes("async function launcher(event) {") && !content.includes("/* CATCH_INVOCATION_FAIL */")) {
+        content = content.replace(
+          "async function launcher(event) {",
+          "async function launcher(event) {\n    /* CATCH_INVOCATION_FAIL */\n    try {"
+        );
+        content = content.replace(
+          "return (0, helpers_1.transformToAwsResponse)(output);\n}",
+          `return (0, helpers_1.transformToAwsResponse)(output);\n    } catch (err) {\n        console.error('🐘 Fatal launcher error:', err);\n        const msg = (err && err.message) ? err.message : String(err);\n        const stack = (err && err.stack) ? err.stack : '';\n        const bodyHtml = \`<html><body style="font-family:sans-serif;padding:30px;line-height:1.6;background:#fef2f2;color:#991b1b;"><h2>Serverless Function Execution Error</h2><p><strong>Error:</strong> \${msg}</p>\${lastPhpStderr ? \`<p><strong>PHP Stderr:</strong></p><pre style="background:#fff;padding:15px;border-radius:6px;border:1px solid #fca5a5;">\${lastPhpStderr}</pre>\` : ''}<pre style="background:#fff;padding:15px;border-radius:6px;overflow:auto;">\${stack}</pre></body></html>\`;\n        return {\n            statusCode: 500,\n            headers: { 'content-type': 'text/html; charset=utf-8' },\n            body: Buffer.from(bodyHtml).toString('base64'),\n            isBase64Encoded: true\n        };\n    }\n}`
+        );
+        changed = true;
+      }
       
       // Ensure exports for Node ESM compatibility
       if (!content.includes("module.exports.default = launcher;")) {

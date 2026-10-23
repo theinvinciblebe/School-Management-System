@@ -46,6 +46,23 @@ if (!$isWindows) {
             $_SERVER[$key] = $value;
         }
     }
+
+    // Ensure SQLite database file is placed in writable /tmp if SQLite connection is used
+    $dbConn = getenv('DB_CONNECTION') ?: ($_ENV['DB_CONNECTION'] ?? ($_SERVER['DB_CONNECTION'] ?? 'sqlite'));
+    if ($dbConn === 'sqlite') {
+        $sqlitePath = '/tmp/database.sqlite';
+        if (!file_exists($sqlitePath)) {
+            $sourceSqlite = dirname(__DIR__) . '/database/database.sqlite';
+            if (file_exists($sourceSqlite)) {
+                @copy($sourceSqlite, $sqlitePath);
+            } else {
+                @touch($sqlitePath);
+            }
+        }
+        putenv("DB_DATABASE={$sqlitePath}");
+        $_ENV['DB_DATABASE'] = $sqlitePath;
+        $_SERVER['DB_DATABASE'] = $sqlitePath;
+    }
 }
 
 // 3. Fallback APP_KEY if not configured in Vercel Dashboard
