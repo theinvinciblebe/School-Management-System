@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": null,
-  "buildCommand": "node patch-vercel.cjs && vite build",
+  "buildCommand": "node patch-vercel.cjs && vite build && node -e \"if(process.env.VERCEL && fs.existsSync('public/index.php'))fs.unlinkSync('public/index.php');\"",
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
@@ -10,15 +10,16 @@
   },
   "routes": [
     {
-      "src": "/index\\.php(/.*)?",
-      "dest": "/api/index.php"
+      "src": "/(build|assets|customize_images|admin_image|staffs_image|students_image|teachers_image|upload_materials|audio|bootstrap)/(.*)",
+      "dest": "/$1/$2"
     },
     {
-      "src": "/public/(.*)",
+      "src": "/public/(build|assets|customize_images|admin_image|staffs_image|students_image|teachers_image|upload_materials|audio|bootstrap)/(.*)",
+      "dest": "/$1/$2"
+    },
+    {
+      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|gif|webp|css|js|woff|woff2|ttf|eot|txt|json|map))",
       "dest": "/$1"
-    },
-    {
-      "handle": "filesystem"
     },
     {
       "src": "/(.*)",

@@ -76,7 +76,24 @@ register_shutdown_function(function () {
 
 // 5. Execute Laravel application
 try {
-    require __DIR__ . '/../public/index.php';
+    if (file_exists(__DIR__ . '/../public/index.php')) {
+        require __DIR__ . '/../public/index.php';
+    } else {
+        if (!defined('LARAVEL_START')) {
+            define('LARAVEL_START', microtime(true));
+        }
+
+        $baseDir = dirname(__DIR__);
+
+        if (file_exists($maintenance = $baseDir . '/storage/framework/maintenance.php')) {
+            require $maintenance;
+        }
+
+        require $baseDir . '/vendor/autoload.php';
+
+        (require_once $baseDir . '/bootstrap/app.php')
+            ->handleRequest(\Illuminate\Http\Request::capture());
+    }
 } catch (\Throwable $e) {
     if (!headers_sent()) {
         http_response_code(500);
