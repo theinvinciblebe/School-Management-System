@@ -47,9 +47,26 @@ if (!$isWindows) {
         }
     }
 
-    // Ensure SQLite database file is placed in writable /tmp if SQLite connection is used
-    $dbConn = getenv('DB_CONNECTION') ?: ($_ENV['DB_CONNECTION'] ?? ($_SERVER['DB_CONNECTION'] ?? 'sqlite'));
-    if ($dbConn === 'sqlite') {
+    // Fallback Supabase database configuration if not provided by Vercel environment
+    $dbConn = getenv('DB_CONNECTION') ?: ($_ENV['DB_CONNECTION'] ?? ($_SERVER['DB_CONNECTION'] ?? 'pgsql'));
+    if ($dbConn === 'pgsql') {
+        $dbDefaults = [
+            'DB_CONNECTION' => 'pgsql',
+            'DB_HOST'       => 'aws-0-ap-northeast-2.pooler.supabase.com',
+            'DB_PORT'       => '5432',
+            'DB_DATABASE'   => 'postgres',
+            'DB_USERNAME'   => 'postgres.hapxmwmprjotfyllihci',
+            'DB_PASSWORD'   => 'sDrc[hz5]^D!',
+            'DB_SSLMODE'    => 'require',
+        ];
+        foreach ($dbDefaults as $key => $value) {
+            if (empty(getenv($key)) && empty($_ENV[$key])) {
+                putenv("{$key}={$value}");
+                $_ENV[$key] = $value;
+                $_SERVER[$key] = $value;
+            }
+        }
+    } elseif ($dbConn === 'sqlite') {
         $sqlitePath = '/tmp/database.sqlite';
         if (!file_exists($sqlitePath)) {
             $sourceSqlite = dirname(__DIR__) . '/database/database.sqlite';

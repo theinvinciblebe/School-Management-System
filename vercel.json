@@ -39,6 +39,13 @@
     "CACHE_STORE": "array",
     "CACHE_DRIVER": "array",
     "LOG_CHANNEL": "stderr",
-    "SESSION_DRIVER": "cookie"
+    "SESSION_DRIVER": "cookie",
+    "DB_CONNECTION": "pgsql",
+    "DB_HOST": "aws-0-ap-northeast-2.pooler.supabase.com",
+    "DB_PORT": "5432",
+    "DB_DATABASE": "postgres",
+    "DB_USERNAME": "postgres.hapxmwmprjotfyllihci",
+    "DB_PASSWORD": "sDrc[hz5]^D!",
+    "DB_SSLMODE": "require"
   }
 }
