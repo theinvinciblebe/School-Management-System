@@ -2,11 +2,23 @@
 
 @section('content')
     <style>
-        .profile-card {
+        /* Baseline Card Styles */
+        .profile-card,
+        .form-card {
+            background-color: #ffffff;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .profile-card {
+            overflow: hidden;
+        }
+        .profile-card-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            border-top-left-radius: 12px !important;
+            border-top-right-radius: 12px !important;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
         .profile-header-banner {
             height: 90px;
@@ -26,6 +38,7 @@
             border: 4px solid #fff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             background-color: #f8f9fa;
+            transition: border-color 0.25s ease, background-color 0.25s ease;
         }
         .profile-avatar-badge {
             position: absolute;
@@ -48,9 +61,13 @@
             transform: scale(1.1);
             background-color: #0056b3;
         }
-        .form-card {
-            border-radius: 12px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        .profile-preview-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            transition: border-color 0.25s ease, background-color 0.25s ease;
         }
         .profile-nav-pills .nav-link {
             border-radius: 8px;
@@ -58,6 +75,10 @@
             padding: 10px 18px;
             color: #495057;
             transition: all 0.2s ease;
+        }
+        .profile-nav-pills .nav-link:hover {
+            background-color: #f1f3f5;
+            color: #007bff;
         }
         .profile-nav-pills .nav-link.active {
             background-color: #007bff;
@@ -67,6 +88,7 @@
         .input-group-text {
             background-color: #f8f9fa;
             border-color: #ced4da;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
         .custom-file-upload-box {
             border: 2px dashed #007bff;
@@ -84,6 +106,164 @@
         }
         .toggle-password:hover {
             color: #007bff;
+        }
+
+        /* =========================================================
+           Dark Mode Overrides for User Profile
+           ========================================================= */
+        .dark-mode .profile-card,
+        .dark-mode .form-card {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+        }
+        .dark-mode .profile-card-header {
+            background-color: #2b3035 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .dark-mode .profile-avatar-img {
+            border-color: #343a40 !important;
+            background-color: #2b3035 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .dark-mode .profile-avatar-badge {
+            border-color: #343a40 !important;
+        }
+        .dark-mode .profile-preview-img {
+            background-color: #2b3035 !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        .dark-mode .profile-nav-pills .nav-link {
+            color: #cbd5e1 !important;
+        }
+        .dark-mode .profile-nav-pills .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            color: #60a5fa !important;
+        }
+        .dark-mode .profile-nav-pills .nav-link.active {
+            background-color: #007bff !important;
+            color: #ffffff !important;
+            box-shadow: 0 3px 12px rgba(0, 123, 255, 0.5) !important;
+        }
+        .dark-mode .custom-file-upload-box {
+            background-color: rgba(0, 123, 255, 0.08) !important;
+            border-color: rgba(0, 123, 255, 0.4) !important;
+        }
+        .dark-mode .custom-file-upload-box:hover {
+            background-color: rgba(0, 123, 255, 0.14) !important;
+            border-color: #38bdf8 !important;
+        }
+        .dark-mode .text-dark {
+            color: #f8f9fa !important;
+        }
+        .dark-mode .text-muted {
+            color: #94a3b8 !important;
+        }
+        .dark-mode .list-group-item {
+            background-color: transparent !important;
+            color: #f8f9fa !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        .dark-mode .list-group-flush {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        .dark-mode .badge-light {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            color: #4ade80 !important;
+            border-color: rgba(74, 222, 128, 0.4) !important;
+        }
+        .dark-mode .btn-outline-secondary {
+            color: #cbd5e1 !important;
+            border-color: #64748b !important;
+        }
+        .dark-mode .btn-outline-secondary:hover {
+            background-color: #64748b !important;
+            color: #ffffff !important;
+        }
+        .dark-mode .btn-light {
+            background-color: #2b3035 !important;
+            border-color: #4b545c !important;
+            color: #cbd5e1 !important;
+        }
+        .dark-mode .btn-light:hover {
+            background-color: #3e444a !important;
+            color: #ffffff !important;
+        }
+        .dark-mode .input-group-text {
+            background-color: #2b3035 !important;
+            border-color: #4b545c !important;
+            color: #94a3b8 !important;
+        }
+        .dark-mode .form-control {
+            background-color: #2c3238 !important;
+            border-color: #4b545c !important;
+            color: #ffffff !important;
+        }
+        .dark-mode .form-control:focus {
+            background-color: #2c3238 !important;
+            border-color: #007bff !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+        }
+        .dark-mode .form-control::placeholder {
+            color: #6c757d !important;
+        }
+        .dark-mode .form-control.bg-light,
+        .dark-mode .form-control[readonly],
+        .dark-mode .form-control:disabled {
+            background-color: #23272b !important;
+            border-color: #3e444a !important;
+            color: #cbd5e1 !important;
+        }
+        .dark-mode .border-top,
+        .dark-mode .border-bottom {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        .dark-mode .alert-info {
+            background-color: rgba(23, 162, 184, 0.15) !important;
+            color: #7dd3fc !important;
+            border: 1px solid rgba(23, 162, 184, 0.3) !important;
+        }
+        .dark-mode .toggle-password {
+            color: #94a3b8 !important;
+        }
+        .dark-mode .toggle-password:hover {
+            color: #38bdf8 !important;
+        }
+        .dark-mode .table {
+            color: #e2e8f0 !important;
+        }
+        .dark-mode .table-bordered,
+        .dark-mode .table-bordered th,
+        .dark-mode .table-bordered td {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        .dark-mode .table th.bg-light,
+        .dark-mode th.bg-light {
+            background-color: #2b3035 !important;
+            color: #f1f5f9 !important;
+        }
+        .dark-mode .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+        }
+        .dark-mode .table-striped tbody tr:nth-of-type(even) {
+            background-color: transparent !important;
+        }
+        .dark-mode .modal-content {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+        .dark-mode .modal-footer.bg-light {
+            background-color: #2b3035 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .dark-mode .breadcrumb-item.active {
+            color: #94a3b8 !important;
+        }
+        .dark-mode .breadcrumb-item + .breadcrumb-item::before {
+            color: #64748b !important;
         }
     </style>
 
@@ -213,7 +393,7 @@
         <!-- Right Column: Form & Settings Tabs -->
         <div class="col-lg-8 col-md-7 mb-4">
             <div class="card form-card border-0">
-                <div class="card-header bg-white border-bottom p-3">
+                <div class="card-header profile-card-header border-bottom p-3">
                     <ul class="nav nav-pills profile-nav-pills" id="profileTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="settings-tab" data-toggle="pill" href="#settings" role="tab" aria-controls="settings" aria-selected="true">
@@ -250,8 +430,7 @@
                                             <img id="form-photo-preview"
                                                  src="{{ $user->photo_url }}"
                                                  alt="{{ $user->name }}"
-                                                 class="rounded-circle shadow-sm border"
-                                                 style="width: 90px; height: 90px; object-fit: cover; background-color: #fff;"
+                                                 class="rounded-circle shadow-sm profile-preview-img"
                                                  onerror="this.src='{{ asset('user-profile-default.png') }}';">
                                         </div>
                                         <div class="flex-grow-1 text-center text-sm-left">
@@ -486,8 +665,8 @@
                             <label class="d-block font-weight-bold text-dark mb-2">Profile Photo</label>
                             <div class="position-relative d-inline-block" style="width: 105px; height: 105px;">
                                 <img id="modal-profile-photo-preview" src="{{ $user->photo_url }}" alt="Profile Photo"
-                                     class="rounded-circle shadow-sm border"
-                                     style="width: 100%; height: 100%; object-fit: cover; background: #f8f9fa;">
+                                     class="rounded-circle shadow-sm profile-preview-img"
+                                     style="width: 100%; height: 100%; object-fit: cover;">
                                 <label for="modal-profile-photo-input" class="btn btn-sm btn-primary rounded-circle shadow position-absolute"
                                        style="bottom: 2px; right: 2px; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer;"
                                        title="Change profile picture">
