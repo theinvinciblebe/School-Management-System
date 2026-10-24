@@ -121,7 +121,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 mb-3 d-flex" id="user-panel" style="cursor: pointer;">
         <div class="image" >
-            <img id="profilePhoto" src="{{ asset('noimg.jpg') }}"
+            <img id="profilePhoto" src="{{ Auth::user()->photo_url ?? asset('noimg.jpg') }}"
                  class="img-circle elevation-2"
                  alt="User Image"
                  width="50" height="50">
