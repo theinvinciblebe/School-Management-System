@@ -141,6 +141,20 @@
         }
         window.showOverlay = showOverlay;
 
+        function hideOverlay() {
+            try {
+                sessionStorage.removeItem('is_route_navigating');
+            } catch(e) {}
+            var overlay = document.getElementById('contentOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+                if (overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
+                }
+            }
+        }
+        window.hideOverlay = hideOverlay;
+
         // Global link navigation tracker: ensures route changes never show the system preloader
         document.addEventListener('click', function(e) {
             var a = e.target.closest('a');
@@ -161,6 +175,9 @@
 
         // Forms navigation tracker: ensure form submissions don't trigger the system preloader
         document.addEventListener('submit', function(e) {
+            if (e.target && (e.target.getAttribute('data-no-overlay') === 'true' || e.target.getAttribute('data-ajax') === 'true')) {
+                return;
+            }
             try {
                 sessionStorage.setItem('is_route_navigating', '1');
                 showOverlay();

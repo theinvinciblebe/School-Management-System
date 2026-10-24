@@ -207,12 +207,20 @@
         }
     }
 
+    function hideOverlay() {
+        const overlay = document.getElementById("contentOverlay");
+        if (overlay) {
+            overlay.style.display = "none";
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }
+    }
+    window.hideOverlay = hideOverlay;
+
     // Listen for the "pageshow" event to handle back/forward navigation
     window.addEventListener('pageshow', (event) => {
-        const overlay = document.getElementById('contentOverlay');
-        if (overlay && overlay.parentNode) {
-            overlay.parentNode.removeChild(overlay);
-        }
+        hideOverlay();
     });
 </script>
 

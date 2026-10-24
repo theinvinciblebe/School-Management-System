@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('staff_id')->nullable();
             $table->date('date');
-            $table->enum('status', ['Present', 'Absent', 'Undefined'])->default('Undefined');
+            $table->string('status', 50)->default('Undefined');
             $table->string('time_in')->nullable();
             $table->string('time_out')->nullable();
             $table->timestamps();

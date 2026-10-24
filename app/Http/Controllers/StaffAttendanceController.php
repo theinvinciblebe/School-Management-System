@@ -23,11 +23,10 @@ class StaffAttendanceController extends Controller
      */
     public function index()
     {
-        $departments = DB::table('department')->get();
+        $departments = DB::table('department')->orderBy('name', 'asc')->get();
 
         return view('staff.staff_attendance', compact('departments'));
     }
-
 
     public function getAttendance(Request $request)
     {
@@ -35,102 +34,130 @@ class StaffAttendanceController extends Controller
             // Validate the input
             $request->validate([
                 'date' => 'required|date',
-                'department_id' => 'required',
+                'department_id' => 'nullable',
             ]);
 
-            // Fetch staff
-            $staffQuery = DB::table('staff');
-            if ($request->department_id !== 'all') {
-                $staffQuery->where('department_id', $request->department_id);
+            $departmentId = $request->query('department_id', 'all');
+
+            // Fetch staff with department details
+            $staffQuery = DB::table('staff')
+                ->leftJoin('department', 'staff.department_id', '=', 'department.id')
+                ->select(
+                    'staff.staff_id',
+                    'staff.name',
+                    'staff.position',
+                    'staff.photo',
+                    'staff.department_id',
+                    'department.name as department_name'
+                );
+
+            if ($departmentId !== 'all' && !empty($departmentId)) {
+                $staffQuery->where('staff.department_id', $departmentId);
             }
-            $staff = $staffQuery->get();
+
+            $staff = $staffQuery->orderBy('staff.name', 'asc')->get();
 
             if ($staff->isEmpty()) {
-                return response()->json(['staff' => []]);
+                return response()->json([
+                    'staff' => [],
+                    'summary' => [
+                        'total' => 0,
+                        'present' => 0,
+                        'absent' => 0,
+                        'late' => 0,
+                        'undefined' => 0,
+                        'rate' => 0,
+                    ]
+                ], 200);
             }
 
-            // Fetch attendance records
+            // Fetch attendance records for given date
             $attendanceRecords = DB::table('staff_attendance')
                 ->where('date', $request->date)
                 ->whereIn('staff_id', $staff->pluck('staff_id'))
                 ->get()
                 ->keyBy('staff_id');
 
+            $attendanceExists = $attendanceRecords->isNotEmpty();
+
             // Map staff with attendance data
-            $staffAttendance = $staff->map(function ($staff) use ($attendanceRecords) {
-                $attendance = $attendanceRecords->get($staff->staff_id);
+            $staffAttendance = $staff->map(function ($s) use ($attendanceRecords) {
+                $attendance = $attendanceRecords->get($s->staff_id);
 
                 return [
-                    'staff_id' => $staff->staff_id,
-                    'name' => $staff->name,
-                    'status' => $attendance->status ?? 'Undefined', // Defaults to 'Undefined'
+                    'staff_id' => $s->staff_id,
+                    'name' => $s->name,
+                    'position' => $s->position ?? 'Staff',
+                    'department_id' => $s->department_id,
+                    'department_name' => $s->department_name ?? 'General Staff',
+                    'photo' => $s->photo ?? null,
+                    'status' => $attendance->status ?? 'Undefined',
                     'time_in' => $attendance->time_in ?? null,
                     'time_out' => $attendance->time_out ?? null,
                 ];
             });
 
-            return response()->json(['staff' => $staffAttendance], 200);
+            // Calculate aggregate statistics
+            $total = $staffAttendance->count();
+            $present = $staffAttendance->where('status', 'Present')->count();
+            $absent = $staffAttendance->where('status', 'Absent')->count();
+            $late = $staffAttendance->where('status', 'Late')->count();
+            $undefined = $total - ($present + $absent + $late);
+            $rate = $total > 0 ? round((($present + $late) / $total) * 100, 1) : 0;
+
+            return response()->json([
+                'staff' => $staffAttendance,
+                'attendance_exists' => $attendanceExists,
+                'summary' => [
+                    'total' => $total,
+                    'present' => $present,
+                    'absent' => $absent,
+                    'late' => $late,
+                    'undefined' => $undefined,
+                    'rate' => $rate,
+                ]
+            ], 200);
         } catch (\Exception $e) {
-            // Log the error
-            \Log::error('Error fetching attendance:', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Internal Server Error'], 500);
+            \Log::error('Error fetching staff attendance:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal Server Error: ' . $e->getMessage()], 500);
         }
     }
 
-
     public function saveAttendance(Request $request)
     {
-        \Log::info('Submitted Attendance Data:', $request->all()); // Log submitted data
-
         // Validate the attendance data
         $validator = \Validator::make($request->all(), [
             'date' => 'required|date',
             'attendance' => 'required|array',
-            'attendance.*.status' => 'required|in:Present,Absent,Undefined',
-            'attendance.*.time_in' => [
-                'nullable',
-                'date_format:H:i', // Validate 24-hour time format
-                function ($attribute, $value, $fail) use ($request) {
-                    $key = explode('.', $attribute)[1];
-                    if ($request->attendance[$key]['status'] === 'Present' && !$value) {
-                        $fail("The $attribute field is required when status is Present.");
-                    }
-                },
-            ],
-            'attendance.*.time_out' => [
-                'nullable',
-                'date_format:H:i', // Validate 24-hour time format
-                function ($attribute, $value, $fail) use ($request) {
-                    $key = explode('.', $attribute)[1];
-                    if ($request->attendance[$key]['status'] === 'Present' && !$value) {
-                        $fail("The $attribute field is required when status is Present.");
-                    }
-                    if ($request->attendance[$key]['status'] === 'Present' &&
-                        isset($request->attendance[$key]['time_in']) &&
-                        $value <= $request->attendance[$key]['time_in']
-                    ) {
-                        $fail("The $attribute field must be a time after time_in.");
-                    }
-                },
-            ],
+            'attendance.*.status' => 'required|string',
+            'attendance.*.time_in' => 'nullable|string',
+            'attendance.*.time_out' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
-            \Log::error('Validation Errors:', $validator->errors()->toArray());
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+            }
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $attendanceData = $request->attendance;
 
         foreach ($attendanceData as $staffId => $data) {
-            // Skip saving if the status is "Undefined"
-            if ($data['status'] === 'Undefined') {
+            $status = $data['status'] ?? 'Undefined';
+
+            // Skip or clear if undefined
+            if ($status === 'Undefined') {
+                DB::table('staff_attendance')
+                    ->where('staff_id', $staffId)
+                    ->where('date', $request->date)
+                    ->delete();
                 continue;
             }
 
-            // Convert time to 24-hour format
-            $data['time_in'] = convertTo24HourFormat($data['time_in'] ?? null);
-            $data['time_out'] = convertTo24HourFormat($data['time_out'] ?? null);
+            // Convert time to 24-hour format if Present or Late
+            $timeIn = in_array($status, ['Present', 'Late']) ? convertTo24HourFormat($data['time_in'] ?? null) : null;
+            $timeOut = in_array($status, ['Present', 'Late']) ? convertTo24HourFormat($data['time_out'] ?? null) : null;
 
             // Save or update attendance
             DB::table('staff_attendance')->updateOrInsert(
@@ -139,15 +166,22 @@ class StaffAttendanceController extends Controller
                     'date' => $request->date,
                 ],
                 [
-                    'status' => $data['status'],
-                    'time_in' => $data['status'] === 'Present' ? $data['time_in'] : null,
-                    'time_out' => $data['status'] === 'Present' ? $data['time_out'] : null,
+                    'status' => $status,
+                    'time_in' => $timeIn,
+                    'time_out' => $timeOut,
                     'updated_at' => now(),
                 ]
             );
         }
 
-        return redirect()->back()->with('success', 'Attendance saved successfully.');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Staff attendance saved successfully.'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Staff attendance saved successfully.');
     }
 
 
@@ -185,31 +219,56 @@ class StaffAttendanceController extends Controller
         //
     }
 
-    // View detailed attendance for a specific date
-
-    public function view($date)
+    public function view($date, Request $request)
     {
-        $attendance = DB::table('staff_attendance')
-            ->join('staff', 'staff_attendance.staff_id', '=', 'staff.staff_id')
-            ->where('staff_attendance.date', $date)
-            ->select('staff.name', 'staff_attendance.*')
-            ->orderBy('staff.name')
-            ->get();
-
-        return view('staff.staff_attendance_show', compact('attendance', 'date'));
+        return redirect()->route('staffAttendance.index', ['date' => $date, 'tab' => 'report']);
     }
-    public function attendancePDF($date)
+
+    public function attendancePDF($date, Request $request)
     {
-        $attendance = DB::table('staff_attendance')
-            ->join('staff', 'staff_attendance.staff_id', '=', 'staff.staff_id')
-            ->where('staff_attendance.date', $date)
-            ->select('staff.name', 'staff_attendance.*')
-            ->orderBy('staff.name')
-            ->get();
+        $department_id = $request->query('department_id');
 
-        $pdf = PDF::loadView('staff.staff_attendance_pdf', compact('attendance', 'date'));
+        $query = DB::table('staff')
+            ->leftJoin('department', 'staff.department_id', '=', 'department.id')
+            ->leftJoin('staff_attendance', function ($join) use ($date) {
+                $join->on('staff.staff_id', '=', 'staff_attendance.staff_id')
+                    ->where('staff_attendance.date', '=', $date);
+            })
+            ->select(
+                'staff.staff_id',
+                'staff.name as staff_name',
+                'staff.position',
+                'department.name as department_name',
+                'staff_attendance.status',
+                'staff_attendance.time_in',
+                'staff_attendance.time_out'
+            );
 
-        return $pdf->stream('staff_attendance_' . $date . '.pdf');
+        if ($department_id && $department_id !== 'all') {
+            $query->where('staff.department_id', $department_id);
+            $department = DB::table('department')->where('id', $department_id)->first();
+            $departmentName = $department->name ?? 'All Departments';
+        } else {
+            $departmentName = 'All Departments';
+        }
+
+        $records = $query->orderBy('staff.name', 'asc')->get();
+
+        $total = $records->count();
+        $present = $records->where('status', 'Present')->count();
+        $absent = $records->where('status', 'Absent')->count();
+        $late = $records->where('status', 'Late')->count();
+        $undefined = $total - ($present + $absent + $late);
+        $rate = $total > 0 ? round((($present + $late) / $total) * 100, 1) : 0;
+
+        $customize = DB::table('customize')->first();
+        $schoolName = $customize->brand_title ?? config('app.name', 'School Management System');
+
+        $pdf = PDF::loadView('staff.staff_attendance_pdf', compact(
+            'records', 'date', 'departmentName', 'total', 'present', 'absent', 'late', 'undefined', 'rate', 'schoolName'
+        ));
+
+        return $pdf->download("Staff_Attendance_Report_{$date}.pdf");
     }
 
 
