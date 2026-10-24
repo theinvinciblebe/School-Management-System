@@ -112,22 +112,108 @@
         padding: 1.75rem 1.5rem;
         position: relative;
     }
-    .dark-mode .class-card {
-        background-color: #1e293b;
+    /* Dark Mode Optimization */
+    .dark-mode .card {
+        background-color: #2b2d30;
         border-color: rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
+    }
+    .dark-mode .card-header {
+        background-color: #2b2d30 !important;
+        border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+        color: #f1f5f9;
+    }
+    .dark-mode .card-footer {
+        background-color: #242628 !important;
+        border-top-color: rgba(255, 255, 255, 0.08) !important;
+        color: #94a3b8;
+    }
+    .dark-mode .class-card {
+        background-color: #2b2d30 !important;
+        border-color: rgba(255, 255, 255, 0.08);
+        color: #f1f5f9;
     }
     .dark-mode .class-card:hover {
         border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35) !important;
+    }
+    .dark-mode .class-card .text-dark,
+    .dark-mode .text-dark {
+        color: #f1f5f9 !important;
+    }
+    .dark-mode .bg-light {
+        background-color: #1e1e1e !important;
+        color: #f1f5f9 !important;
+    }
+    .dark-mode .bg-white {
+        background-color: #2b2d30 !important;
+        color: #f1f5f9 !important;
     }
     .dark-mode .process-step-card {
-        background: rgba(99, 102, 241, 0.1);
-        border-color: rgba(99, 102, 241, 0.3);
+        background: rgba(99, 102, 241, 0.12);
+        border-color: rgba(99, 102, 241, 0.35);
+        color: #f1f5f9;
     }
     .dark-mode .tab-pills-container .nav-pills .nav-link {
         color: #94a3b8;
     }
     .dark-mode .tab-pills-container .nav-pills .nav-link.active {
         color: #fff;
+    }
+    .dark-mode .student-table {
+        color: #f1f5f9;
+    }
+    .dark-mode .student-table thead tr.bg-light,
+    .dark-mode .student-table thead th {
+        background-color: #1e1e1e !important;
+        color: #94a3b8 !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    .dark-mode .student-table td {
+        border-color: rgba(255, 255, 255, 0.06) !important;
+        color: #f1f5f9;
+    }
+    .dark-mode .student-table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+    }
+    .dark-mode .badge-light {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #f1f5f9 !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    .dark-mode .input-group-text {
+        background-color: #1e1e1e !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+        color: #94a3b8;
+    }
+    .dark-mode #unifiedSearchInput {
+        background-color: #1e1e1e !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+        color: #f1f5f9 !important;
+    }
+    .dark-mode #unifiedSearchInput::placeholder {
+        color: #64748b;
+    }
+    .dark-mode .btn-outline-secondary {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #94a3b8;
+    }
+    .dark-mode .btn-outline-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+    .dark-mode .modal-content {
+        background-color: #2b2d30;
+        color: #f1f5f9;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .dark-mode .modal-content .card.bg-light {
+        background-color: #1e1e1e !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    }
+    .dark-mode .modal-footer {
+        background-color: #242628 !important;
+        border-top-color: rgba(255, 255, 255, 0.08) !important;
     }
     .gender-bar {
         height: 8px;
@@ -282,7 +368,7 @@
 
         <!-- Navigation Tabs: Class Roster Cards vs Global Student Directory -->
         <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; overflow: hidden;">
-            <div class="card-header bg-white border-bottom p-3">
+            <div class="card-header border-bottom p-3">
                 <div class="row align-items-center">
                     <div class="col-lg-6 mb-2 mb-lg-0 tab-pills-container">
                         <ul class="nav nav-pills" id="processTabs" role="tablist">
@@ -634,7 +720,7 @@
             </div>
 
             <!-- Footer Meta -->
-            <div class="card-footer bg-light p-3 d-flex justify-content-between align-items-center flex-wrap">
+            <div class="card-footer border-top p-3 d-flex justify-content-between align-items-center flex-wrap">
                 <span class="text-xs text-muted">
                     <i class="fas fa-info-circle mr-1"></i> Institutional Student Management System &bull; Total records: <b>{{ $totalStudents }}</b>
                 </span>

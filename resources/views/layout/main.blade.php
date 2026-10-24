@@ -163,12 +163,17 @@
   <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper {{ $isDark ? 'dark-mode' : '' }}" id="contentWrapper" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}">
         <div class="overlay-wrapper" id="mainOverlayWrapper">
-            @yield('content')
+            <!-- Main Content Section -->
+            <section class="content pb-4">
+                <div class="container-fluid">
+                    @yield('content')
 
-            <!-- Include Global Toastr Notifications -->
-            @include('layout.toastr')
-        </div>
-    </div>
+                    <!-- Include Global Toastr Notifications -->
+                    @include('layout.toastr')
+                </div><!-- /.container-fluid -->
+            </section><!-- /.content -->
+        </div><!-- /.overlay-wrapper -->
+    </div><!-- /.content-wrapper -->
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">

@@ -17,6 +17,180 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AccountingController extends Controller
 {
+    public function dashboard(Request $request)
+    {
+        $this->authorizeAccountingAccess();
+
+        $selectedYear = (int)$request->input('year', now()->year);
+
+        // Overall Financial KPIs
+        $totalIncome = (float)DB::table('transactions')->where('type', 'profit')->sum('amount');
+        $totalExpense = (float)DB::table('transactions')->where('type', 'expense')->sum('amount');
+        $netBalance = $totalIncome - $totalExpense;
+
+        // Current Month KPIs
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        $monthIncome = (float)DB::table('transactions')
+            ->where('type', 'profit')
+            ->whereYear('date', $currentYear)
+            ->whereMonth('date', $currentMonth)
+            ->sum('amount');
+        $monthExpense = (float)DB::table('transactions')
+            ->where('type', 'expense')
+            ->whereYear('date', $currentYear)
+            ->whereMonth('date', $currentMonth)
+            ->sum('amount');
+        $monthNet = $monthIncome - $monthExpense;
+
+        // Purchase Requests KPIs
+        $totalPRCount = DB::table('purchase_request')->count();
+        $pendingPRCount = DB::table('purchase_request')->where('status', 'pending')->count();
+        $pendingPRAmount = (float)DB::table('purchase_request')->where('status', 'pending')->sum('total');
+        $approvedPRAmount = (float)DB::table('purchase_request')->where('status', 'approved')->sum('total');
+
+        // Fee Receipts KPIs
+        $totalFRCount = DB::table('fee_receipt')->count();
+        $pendingFRCount = DB::table('fee_receipt')->where('status', 'pending')->count();
+        $pendingFRAmount = (float)DB::table('fee_receipt')->where('status', 'pending')->sum('paid');
+        $totalCollectedFees = (float)DB::table('fee_receipt')->where('status', 'approved')->sum('paid');
+        $totalOutstandingFees = (float)DB::table('fee_receipt')->sum('remaining_balance');
+
+        // Available years for dropdown
+        $availableYears = DB::table('transactions')
+            ->selectRaw('YEAR(date) as year')
+            ->groupByRaw('YEAR(date)')
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->toArray();
+        if (empty($availableYears)) {
+            $availableYears = [now()->year];
+        }
+        if (!in_array(now()->year, $availableYears)) {
+            $availableYears[] = now()->year;
+            rsort($availableYears);
+        }
+
+        // Monthly trends for selectedYear
+        $monthlyIncomeMap = DB::table('transactions')
+            ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
+            ->where('type', 'profit')
+            ->whereYear('date', $selectedYear)
+            ->groupBy(DB::raw('MONTH(date)'))
+            ->pluck('total', 'month')
+            ->toArray();
+
+        $monthlyExpenseMap = DB::table('transactions')
+            ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
+            ->where('type', 'expense')
+            ->whereYear('date', $selectedYear)
+            ->groupBy(DB::raw('MONTH(date)'))
+            ->pluck('total', 'month')
+            ->toArray();
+
+        $monthlyIncomeData = [];
+        $monthlyExpenseData = [];
+        $monthlyNetData = [];
+        $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        for ($m = 1; $m <= 12; $m++) {
+            $inc = (float)($monthlyIncomeMap[$m] ?? 0);
+            $exp = (float)($monthlyExpenseMap[$m] ?? 0);
+            $monthlyIncomeData[] = round($inc, 2);
+            $monthlyExpenseData[] = round($exp, 2);
+            $monthlyNetData[] = round($inc - $exp, 2);
+        }
+
+        // Category breakdowns for selectedYear
+        $expenseCategories = DB::table('transactions')
+            ->select('category', DB::raw('SUM(amount) as total'))
+            ->where('type', 'expense')
+            ->whereYear('date', $selectedYear)
+            ->groupBy('category')
+            ->orderByDesc('total')
+            ->limit(6)
+            ->get();
+
+        $incomeCategories = DB::table('transactions')
+            ->select('category', DB::raw('SUM(amount) as total'))
+            ->where('type', 'profit')
+            ->whereYear('date', $selectedYear)
+            ->groupBy('category')
+            ->orderByDesc('total')
+            ->limit(6)
+            ->get();
+
+        // Pending items requiring action
+        $pendingPurchaseRequests = DB::table('purchase_request')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->limit(6)
+            ->get();
+
+        $pendingFeeReceipts = DB::table('fee_receipt as fr')
+            ->leftJoin('student_classes as sc', 'fr.student_class_id', '=', 'sc.id')
+            ->leftJoin('student as s', 'sc.student_id', '=', 's.student_id')
+            ->leftJoin('class as c', 'sc.class_id', '=', 'c.class_id')
+            ->select('fr.*', 's.name as student_name', 'c.name as class_name')
+            ->where('fr.status', 'pending')
+            ->orderBy('fr.created_at', 'desc')
+            ->limit(6)
+            ->get();
+
+        // Recent Purchase Requests
+        $recentPurchaseRequests = DB::table('purchase_request')
+            ->orderBy('id', 'desc')
+            ->limit(6)
+            ->get();
+
+        // Recent Fee Receipts
+        $recentFeeReceipts = DB::table('fee_receipt as fr')
+            ->leftJoin('student_classes as sc', 'fr.student_class_id', '=', 'sc.id')
+            ->leftJoin('student as s', 'sc.student_id', '=', 's.student_id')
+            ->leftJoin('class as c', 'sc.class_id', '=', 'c.class_id')
+            ->select('fr.*', 's.name as student_name', 'c.name as class_name')
+            ->orderBy('fr.id', 'desc')
+            ->limit(6)
+            ->get();
+
+        // Recent Transactions
+        $recentTransactions = DB::table('transactions')
+            ->orderBy('date', 'desc')
+            ->orderBy('id', 'desc')
+            ->limit(8)
+            ->get();
+
+        return view('accounting.index', compact(
+            'totalIncome',
+            'totalExpense',
+            'netBalance',
+            'monthIncome',
+            'monthExpense',
+            'monthNet',
+            'totalPRCount',
+            'pendingPRCount',
+            'pendingPRAmount',
+            'approvedPRAmount',
+            'totalFRCount',
+            'pendingFRCount',
+            'pendingFRAmount',
+            'totalCollectedFees',
+            'totalOutstandingFees',
+            'selectedYear',
+            'availableYears',
+            'monthNames',
+            'monthlyIncomeData',
+            'monthlyExpenseData',
+            'monthlyNetData',
+            'expenseCategories',
+            'incomeCategories',
+            'pendingPurchaseRequests',
+            'pendingFeeReceipts',
+            'recentPurchaseRequests',
+            'recentFeeReceipts',
+            'recentTransactions'
+        ));
+    }
+
     public function transactions(){
         // Get unique years for the dropdown
         $this->authorizeAccountingAccess();
@@ -100,6 +274,13 @@ class AccountingController extends Controller
         }
     }
 
+    protected function sectionDurationExpression(): string
+    {
+        return DB::getDriverName() === 'sqlite'
+            ? "CAST(((strftime('%Y', sec.end_date) - strftime('%Y', sec.start_date)) * 12 + (strftime('%m', sec.end_date) - strftime('%m', sec.start_date))) AS INTEGER) as section_duration_months"
+            : "TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months";
+    }
+
     public function getStudentFee()
     {
         $this->authorizeAccountingAccess();
@@ -117,7 +298,7 @@ class AccountingController extends Controller
                 'sc.roll',
                 'c.name as class_name',
                 'sec.name as section_name',
-                DB::raw('TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months'),
+                DB::raw($this->sectionDurationExpression()),
                 'fr.receipt_no',
 //                'fr.paid',
 //                'fr.previous_balance',
@@ -140,7 +321,7 @@ class AccountingController extends Controller
                 'sc.roll',
                 'c.name as class_name',
                 'sec.name as section_name',
-                DB::raw('TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months'),
+                DB::raw($this->sectionDurationExpression()),
                 'sec.start_date'
             )
             ->get();
@@ -171,7 +352,7 @@ class AccountingController extends Controller
                 'sc.roll',
                 'c.name as class_name',
                 'sec.name as section_name',
-                DB::raw('TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months'),
+                DB::raw($this->sectionDurationExpression()),
                 'sec.start_date'
             )
             ->where('sc.id', $id)
@@ -390,7 +571,7 @@ class AccountingController extends Controller
                 'sc.roll',
                 'c.name as class_name',
                 'sec.name as section_name',
-                DB::raw('TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months'),
+                DB::raw($this->sectionDurationExpression()),
                 'fr.receipt_no',
                 'fr.date as receipt_date',
                 'fr.paid',
@@ -451,7 +632,7 @@ class AccountingController extends Controller
                 'sc.roll',
                 'c.name as class_name',
                 'sec.name as section_name',
-                DB::raw('TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months'),
+                DB::raw($this->sectionDurationExpression()),
                 'fr.receipt_no',
                 'fr.paid',
                 'fr.grand_total',
@@ -496,7 +677,7 @@ class AccountingController extends Controller
                 'sc.roll',
                 'c.name as class_name',
                 'sec.name as section_name',
-                DB::raw('TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months'),
+                DB::raw($this->sectionDurationExpression()),
                 'fr.receipt_no',
                 'fr.paid',
                 'fr.grand_total',

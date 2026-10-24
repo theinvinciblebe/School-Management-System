@@ -169,9 +169,7 @@ Route::middleware(['auth', 'role:0', 'log.activity'])->group(function () {
 // =========================================================================
 Route::middleware(['auth', 'role:0,3,4', 'log.activity'])->group(function () {
 
-    Route::get('/accounting', function () {
-        return view('accounting.index');
-    });
+    Route::get('/accounting', [AccountingController::class, 'dashboard'])->name('accounting.index');
 
     // Profit & Transactions (Admin & Accountant)
     Route::middleware(['role:0,3'])->group(function () {

@@ -932,6 +932,16 @@
             will-change: margin-left;
         }
 
+        .content-wrapper {
+            min-width: 0;
+            overflow-x: clip;
+        }
+        @supports not (overflow-x: clip) {
+            .content-wrapper {
+                overflow-x: hidden;
+            }
+        }
+
         .nav-sidebar .nav-link {
             transition: background-color 0.18s cubic-bezier(0.2, 0, 0, 1),
                         color 0.18s cubic-bezier(0.2, 0, 0, 1),

@@ -390,7 +390,7 @@
     </style>
 
     <!-- Page Header & Action Bar -->
-    <div class="content-header p-0 mb-3 no-print">
+    <div class="content-header p-0 pt-2 pb-3 no-print">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
             <div>
                 <h2 class="m-0 font-weight-bold text-dark">
