@@ -22,6 +22,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (DB::getDriverName() === 'sqlite') {
+            try {
+                $pdo = DB::connection()->getPdo();
+                if ($pdo instanceof \PDO) {
+                    $pdo->sqliteCreateFunction('YEAR', function ($date) {
+                        return $date ? (int) date('Y', strtotime($date)) : null;
+                    });
+                    $pdo->sqliteCreateFunction('MONTH', function ($date) {
+                        return $date ? (int) date('m', strtotime($date)) : null;
+                    });
+                    $pdo->sqliteCreateFunction('DAY', function ($date) {
+                        return $date ? (int) date('d', strtotime($date)) : null;
+                    });
+                }
+            } catch (\Throwable $e) {
+                // Ignore if DB connection not established yet
+            }
+        }
         //this for subject sidebar (select only class that contain subject)
 //        $classes = DB::table('class')
 //            ->join('subject', 'class.class_id', '=', 'subject.class_id')
