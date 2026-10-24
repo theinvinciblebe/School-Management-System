@@ -364,6 +364,7 @@ Route::middleware(['auth', 'role:0,1', 'log.activity'])->group(function () {
 
     // Attendance Management
     Route::get('/attendance/class/{class_id}', [AttendanceController::class, 'index'])->name('attendance.show');
+    Route::get('/attendance/pdf/{class_id}/{date}', [AttendanceController::class, 'exportPdf'])->name('attendance.exportPdf');
     Route::post('/attendance/update', [AttendanceController::class, 'update'])->name('attendance.update');
     Route::get('/get-sections/{class_id}', [AttendanceController::class, 'getSections']);
     Route::get('/get-students/{section_id}', [AttendanceController::class, 'getStudents']);

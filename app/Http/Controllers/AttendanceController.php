@@ -51,23 +51,55 @@ class AttendanceController extends Controller
 
 
 
-    public function viewAttendance($class_id, $date)
+    public function viewAttendance($class_id, $date, Request $request = null)
     {
-        // Get attendance records for the given class and date
-        $attendance = DB::table('attendance')
-            ->join('student_classes', 'attendance.student_class_id', '=', 'student_classes.id')
+        $section_id = $request ? $request->query('section_id') : null;
+
+        $query = DB::table('student_classes')
             ->join('student', 'student_classes.student_id', '=', 'student.student_id')
+            ->join('section', 'student_classes.section_id', '=', 'section.section_id')
+            ->leftJoin('attendance', function ($join) use ($date) {
+                $join->on('attendance.student_class_id', '=', 'student_classes.id')
+                    ->where('attendance.date', '=', $date);
+            })
             ->select(
+                'student.student_id',
                 'student.name as student_name',
+                'student.photo as student_photo',
                 'student_classes.roll',
+                'section.name as section_name',
+                'section.section_id',
                 'attendance.status'
             )
-            ->where('student_classes.class_id', $class_id)
-            ->where('attendance.date', $date)
-            ->get();
+            ->where('student_classes.class_id', $class_id);
 
-        // Return as JSON for frontend JavaScript to render
-        return response()->json(['attendance' => $attendance]);
+        if ($section_id) {
+            $query->where('student_classes.section_id', $section_id);
+        }
+
+        $attendance = $query->orderBy('student_classes.roll', 'asc')->get();
+
+        // Calculate summary metrics
+        $total = $attendance->count();
+        $present = $attendance->where('status', 1)->count();
+        $absent = $attendance->where('status', 2)->count();
+        $medical = $attendance->where('status', 3)->count();
+        $late = $attendance->where('status', 4)->count();
+        $undefined = $total - ($present + $absent + $medical + $late);
+        $rate = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+
+        return response()->json([
+            'attendance' => $attendance,
+            'summary' => [
+                'total' => $total,
+                'present' => $present,
+                'absent' => $absent,
+                'medical' => $medical,
+                'late' => $late,
+                'undefined' => $undefined,
+                'rate' => $rate,
+            ]
+        ]);
     }
 
     public function requestList(Request $request)
@@ -276,11 +308,67 @@ class AttendanceController extends Controller
                 $join->on('attendance.student_class_id', '=', 'student_classes.id')
                     ->where('attendance.date', '=', $request->date);
             })
-            ->select('student_classes.id as student_class_id', 'student.name', 'student_classes.roll', 'attendance.status')
+            ->select(
+                'student_classes.id as student_class_id',
+                'student.student_id',
+                'student.name',
+                'student.photo',
+                'student_classes.roll',
+                'attendance.status'
+            )
             ->where('student_classes.section_id', $section_id)
+            ->orderBy('student_classes.roll', 'asc')
             ->get();
 
         return response()->json(['students' => $students]);
+    }
+
+    public function exportPdf($class_id, $date, Request $request)
+    {
+        $section_id = $request->query('section_id');
+        $class = DB::table('class')->where('class_id', $class_id)->first();
+        if (!$class) {
+            return redirect()->back()->with('error', 'Class not found.');
+        }
+
+        $query = DB::table('student_classes')
+            ->join('student', 'student_classes.student_id', '=', 'student.student_id')
+            ->join('section', 'student_classes.section_id', '=', 'section.section_id')
+            ->leftJoin('attendance', function ($join) use ($date) {
+                $join->on('attendance.student_class_id', '=', 'student_classes.id')
+                    ->where('attendance.date', '=', $date);
+            })
+            ->select(
+                'student.student_id',
+                'student.name as student_name',
+                'student_classes.roll',
+                'section.name as section_name',
+                'attendance.status'
+            )
+            ->where('student_classes.class_id', $class_id);
+
+        if ($section_id) {
+            $query->where('student_classes.section_id', $section_id);
+        }
+
+        $records = $query->orderBy('student_classes.roll', 'asc')->get();
+
+        $total = $records->count();
+        $present = $records->where('status', 1)->count();
+        $absent = $records->where('status', 2)->count();
+        $medical = $records->where('status', 3)->count();
+        $late = $records->where('status', 4)->count();
+        $undefined = $total - ($present + $absent + $medical + $late);
+        $rate = $total > 0 ? round(($present / $total) * 100, 1) : 0;
+
+        $customize = DB::table('customize')->first();
+        $schoolName = $customize->brand_title ?? config('app.name', 'School Management System');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('attendance.pdf_report', compact(
+            'class', 'records', 'date', 'total', 'present', 'absent', 'medical', 'late', 'undefined', 'rate', 'schoolName'
+        ));
+
+        return $pdf->download("Attendance_Report_{$class->name}_{$date}.pdf");
     }
 
 
