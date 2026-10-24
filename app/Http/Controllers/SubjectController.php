@@ -38,18 +38,21 @@ class SubjectController extends Controller
     public function classesSubject()
     {
         $user = Auth::user();
-        $classes = collect(); // Initialize as an empty collection to prevent errors
+        $classes = collect();
 
-        // If user is an admin
+        // If user is an admin / accountant / receptionist
         if (in_array($user->role, [0, 3, 4])) {
-            $classes = DB::table('class')->get();
+            $classes = DB::table('class')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+                ->select('class.*', 'teacher.name as teacher_name')
+                ->get();
         }
         // If user is a teacher
         else if ($user->role === 1) {
             $classes = DB::table('class')
-                ->leftjoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
                 ->where('teacher.user_id', $user->id)
-                ->select('class.*') // Select only class columns to avoid conflicts
+                ->select('class.*', 'teacher.name as teacher_name')
                 ->get();
         }
         // If user is a student
@@ -57,17 +60,55 @@ class SubjectController extends Controller
             $classes = DB::table('class')
                 ->join('student_classes', 'class.class_id', '=', 'student_classes.class_id')
                 ->join('student', 'student_classes.student_id', '=', 'student.student_id')
+                ->leftJoin('teacher', 'class.teacher_id', '=', 'teacher.teacher_id')
                 ->where('student.user_id', $user->id)
-                ->select('class.*')
+                ->select('class.*', 'teacher.name as teacher_name')
                 ->get();
         }
 
-//        dd([
-//            'user_id' => $user->id,
-//            'user_role' => $user->role,
-//        ]);
+        $classIds = $classes->pluck('class_id')->toArray();
 
-        return view('subject.indexClass', compact('classes'));
+        // Subjects grouped by class with assigned teachers
+        $subjectsByClass = DB::table('subject')
+            ->leftJoin('teacher', 'subject.teacher_id', '=', 'teacher.teacher_id')
+            ->whereIn('subject.class_id', $classIds)
+            ->select('subject.*', 'teacher.name as teacher_name')
+            ->get()
+            ->groupBy('class_id');
+
+        // Student counts per class
+        $studentCounts = DB::table('student_classes')
+            ->whereIn('class_id', $classIds)
+            ->select('class_id', DB::raw('count(*) as count'))
+            ->groupBy('class_id')
+            ->pluck('count', 'class_id');
+
+        // Sections per class
+        $sectionsByClass = DB::table('section')
+            ->whereIn('class_id', $classIds)
+            ->get()
+            ->groupBy('class_id');
+
+        // Teachers for modal assignment
+        $teachers = DB::table('teacher')->get();
+
+        // Summary Statistics
+        $totalClasses = $classes->count();
+        $totalSubjects = DB::table('subject')->whereIn('class_id', $classIds)->count();
+        $totalTeachers = DB::table('teacher')->count();
+        $totalStudents = DB::table('student_classes')->whereIn('class_id', $classIds)->count();
+
+        return view('subject.indexClass', compact(
+            'classes',
+            'subjectsByClass',
+            'studentCounts',
+            'sectionsByClass',
+            'teachers',
+            'totalClasses',
+            'totalSubjects',
+            'totalTeachers',
+            'totalStudents'
+        ));
     }
 
 

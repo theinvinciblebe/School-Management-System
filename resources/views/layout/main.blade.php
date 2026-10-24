@@ -210,8 +210,19 @@
                 if (navbarThemeToggle) {
                     navbarThemeToggle.classList.add('is-dark');
                     navbarThemeToggle.classList.remove('is-light');
-                    navbarThemeToggle.setAttribute('title', '{{ __("Switch to Light Mode") }}');
-                    navbarThemeToggle.setAttribute('aria-label', '{{ __("Switch to Light Mode") }}');
+                    navbarThemeToggle.setAttribute('title', '{{ __("Switch to light theme") }}');
+                    navbarThemeToggle.setAttribute('aria-label', '{{ __("Switch to light theme") }}');
+                    navbarThemeToggle.setAttribute('aria-pressed', 'true');
+                    const sun = navbarThemeToggle.querySelector('.lucide-sun');
+                    const moon = navbarThemeToggle.querySelector('.lucide-moon');
+                    if (sun) {
+                        sun.classList.remove('rotate-0', 'scale-100', 'opacity-100');
+                        sun.classList.add('-rotate-90', 'scale-0', 'opacity-0');
+                    }
+                    if (moon) {
+                        moon.classList.remove('rotate-90', 'scale-0', 'opacity-0');
+                        moon.classList.add('rotate-0', 'scale-100', 'opacity-100');
+                    }
                 }
                 document.querySelectorAll('.theme-icon-sun').forEach(function (el) { el.classList.add('d-none'); });
                 document.querySelectorAll('.theme-icon-moon').forEach(function (el) { el.classList.remove('d-none'); });
@@ -234,8 +245,19 @@
                 if (navbarThemeToggle) {
                     navbarThemeToggle.classList.remove('is-dark');
                     navbarThemeToggle.classList.add('is-light');
-                    navbarThemeToggle.setAttribute('title', '{{ __("Switch to Dark Mode") }}');
-                    navbarThemeToggle.setAttribute('aria-label', '{{ __("Switch to Dark Mode") }}');
+                    navbarThemeToggle.setAttribute('title', '{{ __("Switch to dark theme") }}');
+                    navbarThemeToggle.setAttribute('aria-label', '{{ __("Switch to dark theme") }}');
+                    navbarThemeToggle.setAttribute('aria-pressed', 'false');
+                    const sun = navbarThemeToggle.querySelector('.lucide-sun');
+                    const moon = navbarThemeToggle.querySelector('.lucide-moon');
+                    if (sun) {
+                        sun.classList.remove('-rotate-90', 'scale-0', 'opacity-0');
+                        sun.classList.add('rotate-0', 'scale-100', 'opacity-100');
+                    }
+                    if (moon) {
+                        moon.classList.remove('rotate-0', 'scale-100', 'opacity-100');
+                        moon.classList.add('rotate-90', 'scale-0', 'opacity-0');
+                    }
                 }
                 document.querySelectorAll('.theme-icon-sun').forEach(function (el) { el.classList.remove('d-none'); });
                 document.querySelectorAll('.theme-icon-moon').forEach(function (el) { el.classList.add('d-none'); });

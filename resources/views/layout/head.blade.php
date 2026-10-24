@@ -1212,136 +1212,131 @@
             color: #ffffff !important;
         }
 
-        /* Navbar Theme Switcher Pill */
-        .navbar-theme-pill-btn {
-            background: transparent;
-            border: none;
-            outline: none;
-            padding: 4px 6px;
-            cursor: pointer;
+        /* Modern Portfolio Theme Switch Button (from rbp-portfolio.vercel.app) */
+        #navbarThemeToggle {
+            position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            width: 2rem;  /* 32px - h-8 w-8 */
+            height: 2rem; /* 32px */
+            cursor: pointer;
             border-radius: 9999px;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-color: #ffffff;
+            color: #0a0a0a;
+            border: none;
+            outline: none;
+            padding: 0;
+            box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.08);
+            transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.15s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        .navbar-theme-pill-btn:hover {
-            transform: scale(1.06);
+
+        #navbarThemeToggle:hover {
+            background-color: #f4f4f5;
+            box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.14);
         }
-        .navbar-theme-pill-btn:active {
-            transform: scale(0.94);
+
+        #navbarThemeToggle:active {
+            transform: scale(0.92);
         }
-        .navbar-theme-pill-btn:focus-visible {
-            outline: 2px solid #6366f1;
+
+        #navbarThemeToggle:focus-visible,
+        #navbarThemeToggle.focus-ring:focus-visible {
+            outline: 2px solid #3b82f6;
             outline-offset: 2px;
         }
 
-        .navbar-theme-track {
+        /* Dark Mode Theme Switcher Styling */
+        html.dark-mode #navbarThemeToggle,
+        #navbarThemeToggle.is-dark {
+            background-color: #171717;
+            color: #fafafa;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+        }
+
+        html.dark-mode #navbarThemeToggle:hover,
+        #navbarThemeToggle.is-dark:hover {
+            background-color: #262626;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22);
+        }
+
+        /* Inner Icon Container (relative h-4 w-4) */
+        #navbarThemeToggle .relative.h-4.w-4,
+        #navbarThemeToggle > span {
             position: relative;
-            width: 48px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5px;
-            border-radius: 9999px;
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            border: 1.5px solid #94a3b8;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
-            transition: background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            box-sizing: border-box;
+            display: inline-block;
+            width: 1rem;  /* 16px */
+            height: 1rem; /* 16px */
         }
 
-        .navbar-theme-pill-btn.is-dark .navbar-theme-track,
-        html.dark-mode .navbar-theme-track {
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-            border-color: #6366f1;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 0 10px rgba(99, 102, 241, 0.35);
-        }
-
-        .navbar-theme-track .track-icon {
-            font-size: 0.65rem;
-            line-height: 1;
-            pointer-events: none;
-            z-index: 1;
-            transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
-        }
-
-        .navbar-theme-track .track-sun {
-            color: #f59e0b;
-            opacity: 0.9;
-        }
-
-        .navbar-theme-track .track-moon {
-            color: #cbd5e1;
-            opacity: 0.3;
-        }
-
-        .navbar-theme-pill-btn.is-dark .navbar-theme-track .track-sun,
-        html.dark-mode .navbar-theme-track .track-sun {
-            opacity: 0.2;
-            transform: scale(0.7);
-        }
-
-        .navbar-theme-pill-btn.is-dark .navbar-theme-track .track-moon,
-        html.dark-mode .navbar-theme-track .track-moon {
-            color: #38bdf8;
-            opacity: 1;
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.6));
-        }
-
-        .navbar-theme-knob {
+        /* Sun and Moon SVG Lucide Icons */
+        #navbarThemeToggle svg.lucide {
             position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 18px;
-            height: 18px;
-            background: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        background-color 0.35s ease,
-                        box-shadow 0.35s ease;
-            z-index: 2;
+            top: 0;
+            left: 0;
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: center center;
         }
 
-        .knob-icon-sun,
-        .knob-icon-moon {
-            font-size: 0.58rem;
-            transition: opacity 0.25s ease, transform 0.25s ease;
+        /* Light Mode Icon States */
+        #navbarThemeToggle .lucide-sun {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
         }
 
-        .knob-icon-sun {
-            color: #d97706;
-            display: inline-block;
+        #navbarThemeToggle .lucide-moon {
+            transform: rotate(90deg) scale(0);
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .knob-icon-moon {
-            color: #4f46e5;
-            display: none;
+        /* Dark Mode Icon States */
+        html.dark-mode #navbarThemeToggle .lucide-sun,
+        #navbarThemeToggle.is-dark .lucide-sun {
+            transform: rotate(-90deg) scale(0);
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .navbar-theme-pill-btn.is-dark .navbar-theme-knob,
-        html.dark-mode .navbar-theme-knob {
-            transform: translateX(23px);
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), 0 0 10px rgba(165, 180, 252, 0.7);
+        html.dark-mode #navbarThemeToggle .lucide-moon,
+        #navbarThemeToggle.is-dark .lucide-moon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        .navbar-theme-pill-btn.is-dark .knob-icon-sun,
-        html.dark-mode .navbar-theme-knob .knob-icon-sun {
-            display: none;
+        /* Explicit Light Mode Override when toggling via JS */
+        #navbarThemeToggle.is-light .lucide-sun {
+            transform: rotate(0deg) scale(1) !important;
+            opacity: 1 !important;
+            pointer-events: auto;
         }
 
-        .navbar-theme-pill-btn.is-dark .knob-icon-moon,
-        html.dark-mode .navbar-theme-knob .knob-icon-moon {
-            display: inline-block;
+        #navbarThemeToggle.is-light .lucide-moon {
+            transform: rotate(90deg) scale(0) !important;
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        #navbarThemeToggle.is-dark .lucide-sun {
+            transform: rotate(-90deg) scale(0) !important;
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        #navbarThemeToggle.is-dark .lucide-moon {
+            transform: rotate(0deg) scale(1) !important;
+            opacity: 1 !important;
+            pointer-events: auto;
         }
     </style>
 
