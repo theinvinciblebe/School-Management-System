@@ -92,9 +92,6 @@ class AppServiceProvider extends ServiceProvider
                 $defaultClassId = $classes->first()->class_id ?? null; // Get the first class or null
                 view()->share('defaultClassId', $defaultClassId);
 
-                $users = DB::table('users')->get();
-                view()->share('username', $users); // Share to all views
-
                 $customizes = DB::table('customize')->first(); // Fetch single row
                 view()->share('customizes', $customizes); // Share to all views
             } catch (\Throwable $e) {

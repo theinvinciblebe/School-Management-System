@@ -61,7 +61,7 @@ if (!$isWindows) {
         $dbDefaults = [
             'DB_CONNECTION' => 'pgsql',
             'DB_HOST'       => 'aws-0-ap-northeast-2.pooler.supabase.com',
-            'DB_PORT'       => '5432',
+            'DB_PORT'       => '6543',
             'DB_DATABASE'   => 'postgres',
             'DB_USERNAME'   => 'postgres.hapxmwmprjotfyllihci',
             'DB_PASSWORD'   => 'sDrc[hz5]^D!',

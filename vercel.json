@@ -1,11 +1,13 @@
 {
   "version": 2,
   "framework": null,
+  "regions": ["icn1"],
   "buildCommand": "vite build && node -e \"if(process.env.VERCEL && fs.existsSync('public/index.php'))fs.unlinkSync('public/index.php');\"",
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php-bridge@1.0.4"
+      "runtime": "vercel-php-bridge@1.0.4",
+      "regions": ["icn1"]
     }
   },
   "routes": [
@@ -44,7 +46,7 @@
     "SESSION_DRIVER": "cookie",
     "DB_CONNECTION": "pgsql",
     "DB_HOST": "aws-0-ap-northeast-2.pooler.supabase.com",
-    "DB_PORT": "5432",
+    "DB_PORT": "6543",
     "DB_DATABASE": "postgres",
     "DB_USERNAME": "postgres.hapxmwmprjotfyllihci",
     "DB_PASSWORD": "sDrc[hz5]^D!",

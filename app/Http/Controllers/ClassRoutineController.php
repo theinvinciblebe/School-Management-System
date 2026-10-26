@@ -46,10 +46,30 @@ class ClassRoutineController extends Controller
                 ->get();
         }
 
-        // Attach routine counts and subject counts
+        // Efficiently attach routine counts and subject counts in 2 bulk queries instead of 2*N queries
+        $classIds = $classes->pluck('class_id')->filter()->all();
+        $routineCounts = [];
+        $subjectCounts = [];
+
+        if (!empty($classIds)) {
+            $routineCounts = DB::table('class_routine')
+                ->whereIn('class_id', $classIds)
+                ->select('class_id', DB::raw('count(*) as count'))
+                ->groupBy('class_id')
+                ->pluck('count', 'class_id')
+                ->all();
+
+            $subjectCounts = DB::table('subject')
+                ->whereIn('class_id', $classIds)
+                ->select('class_id', DB::raw('count(*) as count'))
+                ->groupBy('class_id')
+                ->pluck('count', 'class_id')
+                ->all();
+        }
+
         foreach ($classes as $class) {
-            $class->routine_count = DB::table('class_routine')->where('class_id', $class->class_id)->count();
-            $class->subject_count = DB::table('subject')->where('class_id', $class->class_id)->count();
+            $class->routine_count = $routineCounts[$class->class_id] ?? 0;
+            $class->subject_count = $subjectCounts[$class->class_id] ?? 0;
         }
 
         $allSubjects = DB::table('subject')->get();
