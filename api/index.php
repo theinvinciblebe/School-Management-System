@@ -26,6 +26,10 @@ foreach ($requiredDirs as $dir) {
 
 // 2. Set environment variables for cache and storage paths on serverless (Linux/Vercel)
 if (!$isWindows) {
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = 443;
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
     $envOverrides = [
         'APP_CONFIG_CACHE'    => $tmpStorage . '/bootstrap/cache/config.php',
         'APP_EVENTS_CACHE'    => $tmpStorage . '/bootstrap/cache/events.php',

@@ -27,6 +27,7 @@
     }
   ],
   "env": {
+    "APP_URL": "https://school-management-system-eta-gray.vercel.app",
     "APP_KEY": "base64:sEMiMy2kiu9CAZ/+n3FNno6Hdq66cdT9jqSkxxHaHF8=",
     "APP_ENV": "production",
     "APP_DEBUG": "true",
