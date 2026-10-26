@@ -1,11 +1,11 @@
 {
   "version": 2,
   "framework": null,
-  "buildCommand": "bash build-patch.sh && node patch-vercel.cjs && vite build && node -e \"if(process.env.VERCEL && fs.existsSync('public/index.php'))fs.unlinkSync('public/index.php');\"",
+  "buildCommand": "vite build && node -e \"if(process.env.VERCEL && fs.existsSync('public/index.php'))fs.unlinkSync('public/index.php');\"",
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.9.0"
+      "runtime": "vercel-php-bridge@1.0.4"
     }
   },
   "routes": [
