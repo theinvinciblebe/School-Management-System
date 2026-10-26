@@ -4,6 +4,10 @@
  * Serverless Front Controller for Vercel
  */
 
+// Suppress deprecations in production output
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+ini_set('display_errors', '0');
+
 // 1. Prepare writable directories for storage, caches, and compiled views
 // On Vercel (Linux), /tmp is the only writable filesystem. Locally on Windows, use project storage.
 $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
