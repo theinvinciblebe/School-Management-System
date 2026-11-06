@@ -22,7 +22,8 @@ class ExamMarkController extends Controller
         $students = DB::table('student_classes')
             ->join('student', 'student_classes.student_id', '=', 'student.student_id')
             ->where('student_classes.class_id', $class_id)
-            ->select('student_classes.id as student_class_id', 'student.name', 'student_classes.roll')
+            ->select('student_classes.id as student_class_id', 'student.name', 'student_classes.roll', 'student.photo')
+            ->orderBy('student_classes.roll', 'asc')
             ->get();
 
         // Fetch existing marks for the subject, exam, and class

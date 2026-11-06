@@ -2,862 +2,1424 @@
 
 @push('styles')
 <style>
-/* ═══════════════════════════════════════════════════
-   MANAGE MARKS – Modern Clean UI
-═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════
+   GRADEBOOK / MANAGE MARKS – Next-Gen SaaS UI
+══════════════════════════════════════════════════════════════════ */
 
-/* Page layout */
-.marks-wrap { max-width: 1100px; margin: 0 auto; padding: 0 1rem 3rem; }
-
-/* Page heading */
-.marks-heading { display:flex; align-items:center; gap:.85rem; margin-bottom:1.6rem; }
-.marks-heading-icon {
-    width:46px; height:46px; border-radius:12px;
-    background:linear-gradient(135deg,#6366f1,#818cf8);
-    display:flex; align-items:center; justify-content:center;
-    color:#fff; font-size:1.1rem; flex-shrink:0;
-    box-shadow:0 4px 12px rgba(99,102,241,.35);
-}
-.marks-heading h1 { font-size:1.35rem; font-weight:700; margin:0; line-height:1.2; }
-.marks-heading p  { font-size:.82rem; color:#94a3b8; margin:0; }
-
-/* Card */
-.mk-card {
-    background:#fff; border-radius:16px;
-    box-shadow:0 2px 16px rgba(0,0,0,.07);
-    border:1px solid #e8ecf2; overflow:hidden;
-    margin-bottom:1.25rem;
-}
-html.dark-mode .mk-card {
-    background:#1e2130; border-color:#2d3348;
-    box-shadow:0 2px 16px rgba(0,0,0,.35);
-}
-.mk-card-header {
-    padding:1rem 1.4rem; border-bottom:1px solid #e8ecf2;
-    display:flex; align-items:center; justify-content:space-between;
-    background:#fafbff;
-}
-html.dark-mode .mk-card-header { background:#252840; border-color:#2d3348; }
-.mk-card-header-left { display:flex; align-items:center; gap:.75rem; }
-.mk-step-num {
-    width:28px; height:28px; border-radius:8px; flex-shrink:0;
-    background:linear-gradient(135deg,#6366f1,#818cf8);
-    color:#fff; font-size:.8rem; font-weight:700;
-    display:flex; align-items:center; justify-content:center;
-}
-.mk-card-title { font-size:.95rem; font-weight:700; margin:0; }
-.mk-card-sub   { font-size:.78rem; color:#94a3b8; margin:0; }
-.mk-card-body  { padding:1.4rem; }
-
-/* Form labels */
-.mk-label { font-size:.8rem; font-weight:600; color:#374151; margin-bottom:.35rem; display:block; letter-spacing:.01em; }
-html.dark-mode .mk-label { color:#cbd5e1; }
-
-/* Select / input */
-.mk-control {
-    width:100%; padding:.6rem .85rem; border-radius:10px;
-    border:1.5px solid #d1d5db; font-size:.88rem;
-    background:#fff; color:#111; outline:none;
-    transition:border-color .18s, box-shadow .18s;
-}
-.mk-control:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.14); }
-html.dark-mode .mk-control { background:#1a1d2e; border-color:#3a3f5a; color:#e2e8f0; }
-html.dark-mode .mk-control:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,.18); }
-
-/* Buttons */
-.mk-btn {
-    display:inline-flex; align-items:center; gap:.45rem;
-    padding:.6rem 1.3rem; border-radius:10px; font-size:.88rem;
-    font-weight:600; cursor:pointer; border:none; outline:none;
-    transition:all .18s;
-}
-.mk-btn-primary {
-    background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff;
-    box-shadow:0 3px 10px rgba(99,102,241,.35);
-}
-.mk-btn-primary:hover { transform:translateY(-1px); box-shadow:0 5px 16px rgba(99,102,241,.45); }
-.mk-btn-primary:disabled { opacity:.55; cursor:not-allowed; transform:none; }
-.mk-btn-ghost {
-    background:transparent; color:#6366f1;
-    border:1.5px solid #6366f1;
-}
-.mk-btn-ghost:hover { background:rgba(99,102,241,.08); }
-.mk-btn-success {
-    background:linear-gradient(135deg,#10b981,#059669); color:#fff;
-    box-shadow:0 3px 10px rgba(16,185,129,.3);
-}
-.mk-btn-success:hover { transform:translateY(-1px); box-shadow:0 5px 16px rgba(16,185,129,.4); }
-.mk-btn-sm { padding:.42rem .9rem; font-size:.8rem; border-radius:8px; }
-
-/* Status badge */
-.mk-status-badge {
-    display:inline-flex; align-items:center; gap:.35rem;
-    padding:.28rem .75rem; border-radius:20px; font-size:.75rem; font-weight:600;
-}
-.mk-status-idle  { background:#f1f5f9; color:#64748b; }
-.mk-status-ready { background:#dcfce7; color:#15803d; }
-html.dark-mode .mk-status-idle  { background:#252840; color:#94a3b8; }
-html.dark-mode .mk-status-ready { background:#14532d40; color:#4ade80; }
-
-/* Alert */
-.mk-alert {
-    padding:.85rem 1.1rem; border-radius:12px; font-size:.85rem;
-    margin-bottom:1.2rem; display:flex; align-items:flex-start; gap:.6rem;
-}
-.mk-alert-success { background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
-.mk-alert-danger  { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
-html.dark-mode .mk-alert-success { background:#14532d40; color:#4ade80; border-color:#166534; }
-html.dark-mode .mk-alert-danger  { background:#7f1d1d40; color:#fca5a5; border-color:#991b1b; }
-
-/* Toolbar row (search + filter chips) */
-.marks-toolbar {
-    display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; margin-bottom:1rem;
-}
-.mk-search-wrap { position:relative; flex:1; min-width:200px; }
-.mk-search-wrap i { position:absolute; left:.75rem; top:50%; transform:translateY(-50%); color:#9ca3af; font-size:.85rem; }
-.mk-search { padding:.55rem .85rem .55rem 2.2rem; border-radius:10px; border:1.5px solid #d1d5db; font-size:.85rem; width:100%; background:#fff; color:#111; outline:none; transition:border-color .18s, box-shadow .18s; }
-.mk-search:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.14); }
-html.dark-mode .mk-search { background:#1a1d2e; border-color:#3a3f5a; color:#e2e8f0; }
-html.dark-mode .mk-search:focus { border-color:#818cf8; }
-
-.mk-chips { display:flex; gap:.4rem; }
-.mk-chip {
-    padding:.35rem .8rem; border-radius:20px; font-size:.77rem; font-weight:600;
-    border:1.5px solid #e2e8f0; background:#f8fafc; color:#64748b; cursor:pointer;
-    transition:all .15s;
-}
-.mk-chip.active { background:#6366f1; color:#fff; border-color:#6366f1; }
-html.dark-mode .mk-chip { background:#252840; border-color:#3a3f5a; color:#94a3b8; }
-html.dark-mode .mk-chip.active { background:#6366f1; color:#fff; }
-
-/* Quick-fill bar */
-.mk-quickfill {
-    display:none; align-items:center; gap:.75rem; flex-wrap:wrap;
-    padding:.85rem 1rem; border-radius:12px;
-    background:#f0f4ff; border:1.5px solid #c7d2fe;
-    margin-bottom:1rem;
-}
-html.dark-mode .mk-quickfill { background:#1e1f3a; border-color:#3730a3; }
-.mk-quickfill.visible { display:flex; }
-.mk-quickfill-label { font-size:.8rem; font-weight:600; color:#4338ca; white-space:nowrap; }
-html.dark-mode .mk-quickfill-label { color:#a5b4fc; }
-.mk-quickfill input[type=number] {
-    width:90px; padding:.45rem .65rem; border-radius:8px;
-    border:1.5px solid #c7d2fe; font-size:.85rem; outline:none;
-    background:#fff; color:#111;
-}
-html.dark-mode .mk-quickfill input[type=number] { background:#1a1d2e; border-color:#3730a3; color:#e2e8f0; }
-
-/* Stats bar */
-.mk-stats-bar {
-    display:flex; gap:1rem; flex-wrap:wrap; padding:.85rem 1rem;
-    background:#fafbff; border-radius:12px; border:1px solid #e8ecf2;
-    margin-bottom:1rem;
-}
-html.dark-mode .mk-stats-bar { background:#252840; border-color:#2d3348; }
-.mk-stat-item { text-align:center; }
-.mk-stat-num  { font-size:1.1rem; font-weight:700; line-height:1; }
-.mk-stat-lbl  { font-size:.7rem; color:#94a3b8; white-space:nowrap; }
-
-/* Table */
-.marks-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid #e8ecf2; }
-html.dark-mode .marks-table-wrap { border-color:#2d3348; }
-.marks-table { width:100%; border-collapse:collapse; font-size:.85rem; }
-.marks-table thead th {
-    padding:.7rem 1rem; background:#f8fafc; color:#64748b;
-    font-size:.75rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
-    border-bottom:1.5px solid #e2e8f0; white-space:nowrap;
-}
-html.dark-mode .marks-table thead th { background:#252840; color:#94a3b8; border-color:#2d3348; }
-.marks-table tbody tr { border-bottom:1px solid #f1f5f9; transition:background .15s; }
-html.dark-mode .marks-table tbody tr { border-color:#2d3348; }
-.marks-table tbody tr:hover { background:#f8faff; }
-html.dark-mode .marks-table tbody tr:hover { background:#1e2545; }
-.marks-table tbody tr:last-child { border-bottom:none; }
-.marks-table td { padding:.65rem 1rem; vertical-align:middle; }
-
-/* Roll badge */
-.roll-badge {
-    display:inline-flex; align-items:center; justify-content:center;
-    min-width:34px; height:24px; padding:0 .5rem;
-    border-radius:6px; font-size:.74rem; font-weight:700;
-    background:#e0e7ff; color:#4338ca;
-}
-html.dark-mode .roll-badge { background:#1e1f3a; color:#a5b4fc; }
-
-/* Avatar */
-.mk-avatar {
-    width:34px; height:34px; border-radius:10px;
-    display:inline-flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:.78rem; flex-shrink:0;
-    background:linear-gradient(135deg,#6366f1,#818cf8); color:#fff;
+.gb-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0.5rem 1rem 5rem;
 }
 
-/* Mark input */
-.mark-input {
-    width:90px; padding:.42rem .65rem; border-radius:8px;
-    border:1.5px solid #d1d5db; font-size:.9rem; font-weight:600;
-    outline:none; text-align:center; transition:border-color .15s, box-shadow .15s;
-    background:#fff; color:#111;
+/* Hero Header */
+.gb-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
-html.dark-mode .mark-input { background:#1a1d2e; border-color:#3a3f5a; color:#e2e8f0; }
-.mark-input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.14); }
-.mark-input.is-good   { border-color:#10b981; background:#f0fdf4; }
-.mark-input.is-avg    { border-color:#f59e0b; background:#fffbeb; }
-.mark-input.is-poor   { border-color:#ef4444; background:#fef2f2; }
-html.dark-mode .mark-input.is-good { border-color:#10b981; background:#14532d30; }
-html.dark-mode .mark-input.is-avg  { border-color:#f59e0b; background:#78350f30; }
-html.dark-mode .mark-input.is-poor { border-color:#ef4444; background:#7f1d1d30; }
-
-/* Grade badge */
-.grade-badge {
-    display:inline-flex; align-items:center; justify-content:center;
-    min-width:36px; height:24px; padding:0 .5rem;
-    border-radius:6px; font-size:.74rem; font-weight:700;
-    background:#e0e7ff; color:#4338ca;
+.gb-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
-.grade-badge.A-plus  { background:#dcfce7; color:#15803d; }
-.grade-badge.A       { background:#d1fae5; color:#065f46; }
-.grade-badge.B-plus  { background:#dbeafe; color:#1e40af; }
-.grade-badge.B       { background:#eff6ff; color:#3730a3; }
-.grade-badge.C       { background:#fef9c3; color:#854d0e; }
-.grade-badge.D       { background:#ffedd5; color:#9a3412; }
-.grade-badge.F       { background:#fee2e2; color:#991b1b; }
-html.dark-mode .grade-badge { background:#1e1f3a; color:#a5b4fc; }
-
-/* Remark input */
-.remark-input {
-    width:100%; min-width:120px; padding:.4rem .65rem; border-radius:8px;
-    border:1.5px solid #d1d5db; font-size:.82rem;
-    outline:none; background:#fff; color:#111;
-    transition:border-color .15s;
+.gb-hero-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.35rem;
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.45);
+    flex-shrink: 0;
 }
-html.dark-mode .remark-input { background:#1a1d2e; border-color:#3a3f5a; color:#e2e8f0; }
-.remark-input:focus { border-color:#6366f1; }
-
-/* Status pill in row */
-.row-status { font-size:.74rem; font-weight:600; padding:.22rem .6rem; border-radius:20px; white-space:nowrap; }
-.row-status.graded  { background:#dcfce7; color:#15803d; }
-.row-status.pending { background:#f1f5f9; color:#64748b; }
-html.dark-mode .row-status.graded  { background:#14532d40; color:#4ade80; }
-html.dark-mode .row-status.pending { background:#1e2130; color:#94a3b8; }
-
-/* Empty state */
-.mk-empty {
-    text-align:center; padding:3rem 1rem;
-    color:#94a3b8;
+.gb-hero-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: #0f172a;
 }
-.mk-empty i { font-size:2.5rem; display:block; margin-bottom:.75rem; opacity:.5; }
-
-/* Loading spinner row */
-.mk-loading { text-align:center; padding:2.5rem 1rem; color:#94a3b8; }
-.mk-loading i { font-size:1.5rem; }
-
-/* Submit bar */
-.mk-submit-bar {
-    display:flex; align-items:center; justify-content:space-between; gap:1rem;
-    flex-wrap:wrap; padding:1rem 1.4rem;
-    border-top:1px solid #e8ecf2; background:#fafbff;
+html.dark-mode .gb-hero-title { color: #f8fafc; }
+.gb-hero-sub {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
 }
-html.dark-mode .mk-submit-bar { background:#252840; border-color:#2d3348; }
-.mk-avg-pill {
-    display:inline-flex; align-items:center; gap:.4rem;
-    padding:.35rem .85rem; border-radius:20px; font-size:.8rem; font-weight:600;
-    background:#e0e7ff; color:#4338ca;
+html.dark-mode .gb-hero-sub { color: #94a3b8; }
+
+/* Criteria Ribbon (Unified Modern Filter Bar) */
+.gb-criteria-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    transition: all 0.25s ease;
 }
-html.dark-mode .mk-avg-pill { background:#1e1f3a; color:#a5b4fc; }
+html.dark-mode .gb-criteria-bar {
+    background: #1e2235;
+    border-color: #2e354f;
+    box-shadow: 0 4px 25px -2px rgba(0, 0, 0, 0.35);
+}
+.gb-criteria-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+html.dark-mode .gb-criteria-header {
+    border-bottom-color: #293049;
+}
+.gb-criteria-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+html.dark-mode .gb-criteria-title { color: #94a3b8; }
 
-/* Hidden row for filtering */
-.mk-row-hidden { display:none !important; }
+.gb-sync-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.gb-sync-waiting { background: #f1f5f9; color: #64748b; }
+.gb-sync-loading { background: #e0e7ff; color: #4338ca; animation: pulse 1.5s infinite; }
+.gb-sync-ready   { background: #dcfce7; color: #15803d; }
+html.dark-mode .gb-sync-waiting { background: #262c40; color: #94a3b8; }
+html.dark-mode .gb-sync-loading { background: #312e81; color: #c7d2fe; }
+html.dark-mode .gb-sync-ready   { background: #064e3b40; color: #4ade80; }
 
-/* Responsive */
-@media (max-width:768px) {
-    .marks-table td:nth-child(5),
-    .marks-table th:nth-child(5) { display:none; } /* hide remark on mobile */
-    .mark-input { width:72px; }
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Criteria Grid Controls */
+.gb-criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+.gb-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.gb-field-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+}
+html.dark-mode .gb-field-label { color: #cbd5e1; }
+.gb-select-wrap {
+    position: relative;
+    width: 100%;
+}
+.gb-select, .gb-input {
+    width: 100%;
+    height: 44px;
+    padding: 0.55rem 1rem;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 0.88rem;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    appearance: none;
+    -webkit-appearance: none;
+}
+.gb-select {
+    padding-right: 2.2rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 1rem;
+}
+.gb-select:focus, .gb-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+html.dark-mode .gb-select, html.dark-mode .gb-input {
+    background-color: #171a29;
+    border-color: #333c56;
+    color: #f1f5f9;
+}
+html.dark-mode .gb-select:focus, html.dark-mode .gb-input:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2);
+}
+
+/* Empty Guided State */
+.gb-guided-state {
+    background: #ffffff;
+    border: 2px dashed #cbd5e1;
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+html.dark-mode .gb-guided-state {
+    background: #1a1e30;
+    border-color: #2f3752;
+}
+.gb-guided-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.15));
+    color: #6366f1;
+    font-size: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+.gb-guided-steps {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+.gb-step-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.2s ease;
+}
+.gb-step-pill.done {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #059669;
+}
+html.dark-mode .gb-step-pill {
+    background: #20263b;
+    border-color: #313955;
+    color: #94a3b8;
+}
+html.dark-mode .gb-step-pill.done {
+    background: #064e3b35;
+    border-color: #059669;
+    color: #34d399;
+}
+
+/* Analytics Dashboard Card */
+.gb-analytics-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    display: none;
+}
+html.dark-mode .gb-analytics-card {
+    background: #1e2235;
+    border-color: #2e354f;
+    box-shadow: 0 4px 25px -2px rgba(0, 0, 0, 0.35);
+}
+.gb-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.gb-stat-box {
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+html.dark-mode .gb-stat-box {
+    background: #171a2a;
+    border-color: #2a314b;
+}
+.gb-stat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+.gb-stat-value {
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #0f172a;
+}
+html.dark-mode .gb-stat-value { color: #f8fafc; }
+
+/* Progress Meter */
+.gb-progress-wrap {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1f5f9;
+}
+html.dark-mode .gb-progress-wrap { border-top-color: #293049; }
+.gb-progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.4rem;
+}
+.gb-progress-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+    overflow: hidden;
+}
+html.dark-mode .gb-progress-track { background: #2c334b; }
+.gb-progress-bar {
+    height: 100%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #6366f1, #10b981);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Toolbar & Filter Bar */
+.gb-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.gb-search-box {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+}
+.gb-search-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+.gb-search-input {
+    width: 100%;
+    height: 42px;
+    padding: 0.5rem 1rem 0.5rem 2.4rem;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.gb-search-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+html.dark-mode .gb-search-input {
+    background: #171a2a;
+    border-color: #2e3650;
+    color: #f1f5f9;
+}
+
+.gb-filter-pills {
+    display: flex;
+    gap: 0.35rem;
+}
+.gb-pill {
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: #f1f5f9;
+    border: 1.5px solid transparent;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.gb-pill:hover { background: #e2e8f0; color: #334155; }
+.gb-pill.active {
+    background: #6366f1;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+html.dark-mode .gb-pill { background: #22273d; color: #94a3b8; }
+html.dark-mode .gb-pill:hover { background: #2e3552; color: #f8fafc; }
+html.dark-mode .gb-pill.active { background: #6366f1; color: #fff; }
+
+.gb-tools-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.gb-tool-btn {
+    height: 42px;
+    padding: 0 0.9rem;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.18s ease;
+}
+.gb-tool-btn:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.05);
+}
+html.dark-mode .gb-tool-btn {
+    background: #171a2a;
+    border-color: #2e3650;
+    color: #94a3b8;
+}
+html.dark-mode .gb-tool-btn:hover {
+    border-color: #818cf8;
+    color: #818cf8;
+}
+
+/* Quick Fill Drawer */
+.gb-quickfill-drawer {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 0.85rem 1.25rem;
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    border: 1.5px solid #c7d2fe;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.2s ease;
+}
+html.dark-mode .gb-quickfill-drawer {
+    background: linear-gradient(135deg, #1e1f3a, #261f3d);
+    border-color: #4338ca;
+}
+.gb-quickfill-drawer.active { display: flex; }
+.gb-qf-label { font-size: 0.82rem; font-weight: 700; color: #4338ca; }
+html.dark-mode .gb-qf-label { color: #c7d2fe; }
+
+/* Student Table Sheet */
+.gb-sheet-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 4px 25px -4px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+html.dark-mode .gb-sheet-card {
+    background: #1e2235;
+    border-color: #2e354f;
+    box-shadow: 0 4px 30px -4px rgba(0, 0, 0, 0.4);
+}
+.gb-table-wrap {
+    overflow-x: auto;
+    width: 100%;
+}
+.gb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+.gb-table thead th {
+    padding: 0.85rem 1.25rem;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1.5px solid #e2e8f0;
+    white-space: nowrap;
+}
+html.dark-mode .gb-table thead th {
+    background: #171a2a;
+    color: #94a3b8;
+    border-bottom-color: #2a314b;
+}
+.gb-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s ease;
+}
+html.dark-mode .gb-table tbody tr { border-bottom-color: #272e45; }
+.gb-table tbody tr:hover { background: #f8faff; }
+html.dark-mode .gb-table tbody tr:hover { background: #232840; }
+.gb-table td {
+    padding: 0.85rem 1.25rem;
+    vertical-align: middle;
+}
+
+/* Roll Number Pill */
+.gb-roll-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 28px;
+    padding: 0 0.6rem;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1px solid #e2e8f0;
+}
+html.dark-mode .gb-roll-pill {
+    background: #242b42;
+    border-color: #333d5d;
+    color: #cbd5e1;
+}
+
+/* Student Profile Cell */
+.gb-student-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+.gb-student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+}
+.gb-student-name {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #0f172a;
+    line-height: 1.2;
+}
+html.dark-mode .gb-student-name { color: #f8fafc; }
+.gb-student-meta {
+    font-size: 0.74rem;
+    color: #64748b;
+}
+
+/* Interactive Score Input */
+.gb-score-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.gb-score-input {
+    width: 90px;
+    height: 42px;
+    padding: 0.4rem 0.6rem;
+    border-radius: 10px;
+    border: 2px solid #cbd5e1;
+    font-size: 1rem;
+    font-weight: 800;
+    text-align: center;
+    outline: none;
+    background: #ffffff;
+    color: #0f172a;
+    transition: all 0.18s ease;
+}
+.gb-score-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+html.dark-mode .gb-score-input {
+    background: #171a2a;
+    border-color: #313a54;
+    color: #f8fafc;
+}
+
+/* Grade badges */
+.gb-grade-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 28px;
+    padding: 0 0.55rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+.gb-grade-A-plus { background: #dcfce7; color: #15803d; border-color: #86efac; }
+.gb-grade-A      { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.gb-grade-B-plus { background: #e0e7ff; color: #4338ca; border-color: #a5b4fc; }
+.gb-grade-B      { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.gb-grade-C      { background: #fef9c3; color: #854d0e; border-color: #fde047; }
+.gb-grade-D      { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
+.gb-grade-F      { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+html.dark-mode .gb-grade-badge { border-color: transparent; }
+html.dark-mode .gb-grade-A-plus { background: #064e3b40; color: #4ade80; }
+html.dark-mode .gb-grade-A      { background: #064e3b30; color: #34d399; }
+html.dark-mode .gb-grade-B-plus { background: #312e8140; color: #a5b4fc; }
+html.dark-mode .gb-grade-B      { background: #1e3a8a40; color: #93c5fd; }
+html.dark-mode .gb-grade-C      { background: #713f1240; color: #fde047; }
+html.dark-mode .gb-grade-D      { background: #7c2d1240; color: #fb923c; }
+html.dark-mode .gb-grade-F      { background: #7f1d1d40; color: #f87171; }
+
+/* Remark and Preset Tags */
+.gb-remark-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 170px;
+}
+.gb-remark-input {
+    width: 100%;
+    height: 36px;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    border: 1.5px solid #cbd5e1;
+    font-size: 0.8rem;
+    outline: none;
+    background: #ffffff;
+    color: #0f172a;
+    transition: border-color 0.15s ease;
+}
+.gb-remark-input:focus { border-color: #6366f1; }
+html.dark-mode .gb-remark-input {
+    background: #171a2a;
+    border-color: #313a54;
+    color: #f1f5f9;
+}
+.gb-tags-wrap {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+.gb-tag {
+    font-size: 0.68rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+.gb-tag:hover { background: #e0e7ff; color: #4338ca; border-color: #c7d2fe; }
+html.dark-mode .gb-tag {
+    background: #23293f;
+    border-color: #313a57;
+    color: #94a3b8;
+}
+
+/* Floating Modern Save Dock */
+.gb-save-dock {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    padding: 0.65rem 1.25rem 0.65rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    color: #ffffff;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gb-save-dock.show {
+    transform: translateX(-50%) translateY(0);
+}
+.gb-dock-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.gb-dock-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 10px #f59e0b;
+}
+.gb-dock-btn {
+    height: 40px;
+    padding: 0 1.35rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.gb-dock-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+}
+.gb-dock-kbd {
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 0.7rem;
+    font-family: inherit;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
 @endpush
 
 @section('content')
 <div class="content-header pb-0">
-    <div class="marks-wrap">
-        {{-- Page Heading --}}
-        <div class="marks-heading mt-2">
-            <div class="marks-heading-icon"><i class="fas fa-marker"></i></div>
-            <div>
-                <h1>{{ __('Manage Exam Marks') }}</h1>
-                <p>{{ __('Assign marks per exam · class · subject') }}</p>
+    <div class="gb-wrapper">
+
+        {{-- ── Hero Section ───────────────────────────────────────────── --}}
+        <div class="gb-hero">
+            <div class="gb-hero-left">
+                <div class="gb-hero-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <div>
+                    <h1 class="gb-hero-title">{{ __('Gradebook & Marks') }}</h1>
+                    <p class="gb-hero-sub">{{ __('Seamless mark entry workspace • auto-syncs as you select criteria') }}</p>
+                </div>
             </div>
-            <ol class="breadcrumb bg-transparent p-0 mb-0 ml-auto" style="font-size:.78rem;">
-                <li class="breadcrumb-item"><a href="/dashboard"><i class="fas fa-home"></i></a></li>
-                <li class="breadcrumb-item active">{{ __('Marks') }}</li>
+            <ol class="breadcrumb bg-transparent p-0 mb-0" style="font-size: 0.8rem;">
+                <li class="breadcrumb-item"><a href="/dashboard"><i class="fas fa-home mr-1"></i>{{ __('Home') }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('exams_list.index') }}">{{ __('Exams') }}</a></li>
+                <li class="breadcrumb-item active">{{ __('Manage Marks') }}</li>
             </ol>
         </div>
 
-        {{-- Flash messages --}}
+        {{-- Flash notifications --}}
         @if(session('success'))
-        <div class="mk-alert mk-alert-success">
-            <i class="fas fa-check-circle mt-1"></i>
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.remove()" class="ml-auto mk-btn mk-btn-sm" style="background:transparent;color:inherit;border:none;padding:0 .25rem;cursor:pointer;font-size:1rem;">×</button>
-        </div>
+            <div class="alert alert-success alert-dismissible fade show rounded-xl mb-4" role="alert" style="border-radius:14px;">
+                <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
         @endif
         @if($errors->any())
-        <div class="mk-alert mk-alert-danger">
-            <i class="fas fa-exclamation-circle mt-1"></i>
-            <span>{{ $errors->first() }}</span>
-            <button onclick="this.parentElement.remove()" class="ml-auto mk-btn mk-btn-sm" style="background:transparent;color:inherit;border:none;padding:0 .25rem;cursor:pointer;font-size:1rem;">×</button>
-        </div>
+            <div class="alert alert-danger alert-dismissible fade show rounded-xl mb-4" role="alert" style="border-radius:14px;">
+                <i class="fas fa-exclamation-circle mr-2"></i> {{ $errors->first() }}
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
         @endif
 
-        {{-- ── STEP 1: Select Criteria ──────────────────────────── --}}
-        <div class="mk-card" id="step1-card">
-            <div class="mk-card-header">
-                <div class="mk-card-header-left">
-                    <div class="mk-step-num">1</div>
-                    <div>
-                        <div class="mk-card-title">{{ __('Select Criteria') }}</div>
-                        <div class="mk-card-sub">{{ __('Pick exam, class & subject then load students') }}</div>
-                    </div>
+        {{-- ── Criteria Selection Bar (NO BUTTON NEEDED!) ───────────── --}}
+        <div class="gb-criteria-bar">
+            <div class="gb-criteria-header">
+                <div class="gb-criteria-title">
+                    <i class="fas fa-sliders-h" style="color:#6366f1;"></i>
+                    {{ __('Grading Criteria') }}
                 </div>
-                <span class="mk-status-badge mk-status-idle" id="step1-badge">
-                    <i class="fas fa-circle" style="font-size:.45rem;"></i> {{ __('Not loaded') }}
-                </span>
+                <div id="gb-sync-status" class="gb-sync-status gb-sync-waiting">
+                    <i class="fas fa-clock"></i>
+                    <span id="gb-sync-text">{{ __('Waiting for selection') }}</span>
+                </div>
             </div>
-            <div class="mk-card-body">
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 mb-3">
-                        <label class="mk-label" for="sel-exam">
-                            <i class="fas fa-scroll mr-1" style="color:#6366f1;"></i>{{ __('Exam') }} <span class="text-danger">*</span>
-                        </label>
-                        <select id="sel-exam" class="mk-control select2bs4">
-                            <option value="">{{ __('-- Select --') }}</option>
+
+            <div class="gb-criteria-grid">
+                {{-- 1. Examination --}}
+                <div class="gb-field-group">
+                    <label class="gb-field-label" for="gb-exam">
+                        <i class="fas fa-calendar-check" style="color:#6366f1;"></i>
+                        {{ __('1. Examination') }} <span class="text-danger">*</span>
+                    </label>
+                    <div class="gb-select-wrap">
+                        <select id="gb-exam" class="gb-select">
+                            <option value="">{{ __('-- Select Exam --') }}</option>
                             @foreach($exams as $exam)
-                            <option value="{{ $exam->exam_id }}">
-                                {{ $exam->name }}@if(!empty($exam->date)) · {{ date('d/m/Y', strtotime($exam->date)) }}@endif
-                            </option>
+                                <option value="{{ $exam->exam_id }}">
+                                    {{ $exam->name }} @if(!empty($exam->date)) · {{ date('M d, Y', strtotime($exam->date)) }} @endif
+                                </option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="col-sm-6 col-md-3 mb-3">
-                        <label class="mk-label" for="sel-class">
-                            <i class="fas fa-university mr-1" style="color:#0ea5e9;"></i>{{ __('Class') }} <span class="text-danger">*</span>
-                        </label>
-                        <select id="sel-class" class="mk-control select2bs4">
-                            <option value="">{{ __('-- Select --') }}</option>
-                            @foreach($classes as $class)
-                            <option value="{{ $class->class_id }}">{{ $class->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-sm-6 col-md-3 mb-3">
-                        <label class="mk-label" for="sel-subject">
-                            <i class="fas fa-book-open mr-1" style="color:#10b981;"></i>{{ __('Subject') }} <span class="text-danger">*</span>
-                        </label>
-                        <select id="sel-subject" class="mk-control select2bs4">
-                            <option value="">{{ __('-- Select --') }}</option>
-                            @foreach($subjects as $subject)
-                            <option value="{{ $subject->subject_id }}">{{ $subject->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-sm-6 col-md-3 mb-3">
-                        <label class="mk-label" for="inp-max">
-                            <i class="fas fa-tachometer-alt mr-1" style="color:#f59e0b;"></i>{{ __('Max Marks') }}
-                        </label>
-                        <input type="number" id="inp-max" class="mk-control" value="100" min="1" max="9999">
                     </div>
                 </div>
-                <div class="d-flex gap-2 mt-1" style="gap:.6rem;">
-                    <button type="button" class="mk-btn mk-btn-primary" id="btn-load">
-                        <i class="fas fa-users-cog"></i> <span id="btn-load-txt">{{ __('Load Students') }}</span>
-                    </button>
-                    <button type="button" class="mk-btn mk-btn-ghost" id="btn-reset" style="display:none;">
-                        <i class="fas fa-undo"></i> {{ __('Reset') }}
-                    </button>
+
+                {{-- 2. Class / Grade --}}
+                <div class="gb-field-group">
+                    <label class="gb-field-label" for="gb-class">
+                        <i class="fas fa-graduation-cap" style="color:#0ea5e9;"></i>
+                        {{ __('2. Class / Grade') }} <span class="text-danger">*</span>
+                    </label>
+                    <div class="gb-select-wrap">
+                        <select id="gb-class" class="gb-select">
+                            <option value="">{{ __('-- Select Class --') }}</option>
+                            @foreach($classes as $class)
+                                <option value="{{ $class->class_id }}">{{ $class->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- 3. Subject --}}
+                <div class="gb-field-group">
+                    <label class="gb-field-label" for="gb-subject">
+                        <i class="fas fa-book" style="color:#10b981;"></i>
+                        {{ __('3. Subject') }} <span class="text-danger">*</span>
+                    </label>
+                    <div class="gb-select-wrap">
+                        <select id="gb-subject" class="gb-select">
+                            <option value="">{{ __('-- Select Subject --') }}</option>
+                            @foreach($subjects as $subject)
+                                <option value="{{ $subject->subject_id }}">{{ $subject->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- 4. Maximum Marks --}}
+                <div class="gb-field-group">
+                    <label class="gb-field-label" for="gb-max-marks">
+                        <i class="fas fa-bullseye" style="color:#f59e0b;"></i>
+                        {{ __('Max Score') }}
+                    </label>
+                    <input type="number" id="gb-max-marks" class="gb-input" value="100" min="1" max="1000">
                 </div>
             </div>
         </div>
 
-        {{-- ── STEP 2: Mark Entry Sheet ─────────────────────────── --}}
-        <div class="mk-card" id="step2-card" style="display:none;">
-            <div class="mk-card-header">
-                <div class="mk-card-header-left">
-                    <div class="mk-step-num" style="background:linear-gradient(135deg,#10b981,#059669);">2</div>
-                    <div>
-                        <div class="mk-card-title">{{ __('Mark Entry') }}</div>
-                        <div class="mk-card-sub" id="sheet-sub">—</div>
-                    </div>
+        {{-- ── Guided Step Empty State (Before Criteria Completed) ───── --}}
+        <div class="gb-guided-state" id="gb-empty-guide">
+            <div class="gb-guided-icon">
+                <i class="fas fa-magic"></i>
+            </div>
+            <h3 style="font-weight:800; font-size:1.35rem; margin-bottom:0.4rem;">
+                {{ __('Select Exam, Class & Subject above') }}
+            </h3>
+            <p style="color:#64748b; max-width:480px; margin:0 auto; font-size:0.9rem;">
+                {{ __('No extra buttons to click! Once you choose your criteria, your class roster and existing marks load instantly.') }}
+            </p>
+            <div class="gb-guided-steps">
+                <div class="gb-step-pill" id="step-pill-1">
+                    <i class="fas fa-circle" style="font-size:0.6rem;"></i>
+                    <span>{{ __('1. Exam') }}</span>
                 </div>
-                <div class="d-flex align-items-center" style="gap:.5rem;">
-                    <span class="mk-status-badge mk-status-ready" id="student-count-badge">0 {{ __('students') }}</span>
-                    <button type="button" class="mk-btn mk-btn-ghost mk-btn-sm" id="btn-toggle-qf" title="{{ __('Quick Fill') }}">
-                        <i class="fas fa-magic"></i>
-                    </button>
+                <div class="gb-step-pill" id="step-pill-2">
+                    <i class="fas fa-circle" style="font-size:0.6rem;"></i>
+                    <span>{{ __('2. Class') }}</span>
+                </div>
+                <div class="gb-step-pill" id="step-pill-3">
+                    <i class="fas fa-circle" style="font-size:0.6rem;"></i>
+                    <span>{{ __('3. Subject') }}</span>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── Real-Time Analytics & Grade Progress ─────────────────── --}}
+        <div class="gb-analytics-card" id="gb-analytics">
+            <div class="gb-stats-grid">
+                <div class="gb-stat-box">
+                    <span class="gb-stat-label">{{ __('Students') }}</span>
+                    <span class="gb-stat-value" id="stat-total" style="color:#6366f1;">0</span>
+                </div>
+                <div class="gb-stat-box">
+                    <span class="gb-stat-label">{{ __('Graded') }}</span>
+                    <span class="gb-stat-value" id="stat-graded" style="color:#10b981;">0</span>
+                </div>
+                <div class="gb-stat-box">
+                    <span class="gb-stat-label">{{ __('Pending') }}</span>
+                    <span class="gb-stat-value" id="stat-pending" style="color:#f59e0b;">0</span>
+                </div>
+                <div class="gb-stat-box">
+                    <span class="gb-stat-label">{{ __('Class Average') }}</span>
+                    <span class="gb-stat-value" id="stat-avg" style="color:#0ea5e9;">—</span>
+                </div>
+                <div class="gb-stat-box">
+                    <span class="gb-stat-label">{{ __('Highest Score') }}</span>
+                    <span class="gb-stat-value" id="stat-high" style="color:#8b5cf6;">—</span>
+                </div>
+                <div class="gb-stat-box">
+                    <span class="gb-stat-label">{{ __('Passing Rate') }}</span>
+                    <span class="gb-stat-value" id="stat-pass" style="color:#14b8a6;">—</span>
                 </div>
             </div>
 
-            {{-- Stats bar --}}
-            <div class="mk-card-body" style="padding-bottom:.5rem;">
-                <div class="mk-stats-bar">
-                    <div class="mk-stat-item">
-                        <div class="mk-stat-num" style="color:#6366f1;" id="st-total">0</div>
-                        <div class="mk-stat-lbl">{{ __('Total') }}</div>
-                    </div>
-                    <div class="mk-stat-item">
-                        <div class="mk-stat-num" style="color:#10b981;" id="st-graded">0</div>
-                        <div class="mk-stat-lbl">{{ __('Graded') }}</div>
-                    </div>
-                    <div class="mk-stat-item">
-                        <div class="mk-stat-num" style="color:#ef4444;" id="st-pending">0</div>
-                        <div class="mk-stat-lbl">{{ __('Pending') }}</div>
-                    </div>
-                    <div class="mk-stat-item">
-                        <div class="mk-stat-num" style="color:#f59e0b;" id="st-avg">—</div>
-                        <div class="mk-stat-lbl">{{ __('Average') }}</div>
-                    </div>
+            <div class="gb-progress-wrap">
+                <div class="gb-progress-info">
+                    <span>{{ __('Grading Completion') }}</span>
+                    <span id="gb-progress-pct">0%</span>
                 </div>
-
-                {{-- Quick-fill bar --}}
-                <div class="mk-quickfill" id="qf-bar">
-                    <span class="mk-quickfill-label"><i class="fas fa-magic mr-1"></i>{{ __('Quick Fill') }}</span>
-                    <input type="number" id="qf-value" placeholder="{{ __('Mark') }}" min="0">
-                    <button type="button" class="mk-btn mk-btn-primary mk-btn-sm" id="qf-empty">{{ __('Fill empty') }}</button>
-                    <button type="button" class="mk-btn mk-btn-ghost mk-btn-sm" id="qf-all">{{ __('Fill all') }}</button>
-                    <button type="button" class="mk-btn mk-btn-sm" style="border:1.5px solid #ef4444;color:#ef4444;background:transparent;" id="qf-clear">{{ __('Clear all') }}</button>
-                </div>
-
-                {{-- Search + filter chips --}}
-                <div class="marks-toolbar">
-                    <div class="mk-search-wrap">
-                        <i class="fas fa-search"></i>
-                        <input type="text" class="mk-search" id="mk-search" placeholder="{{ __('Search student name or roll…') }}">
-                    </div>
-                    <div class="mk-chips">
-                        <span class="mk-chip active" data-filter="all">{{ __('All') }}</span>
-                        <span class="mk-chip" data-filter="graded">{{ __('Graded') }}</span>
-                        <span class="mk-chip" data-filter="pending">{{ __('Pending') }}</span>
-                    </div>
+                <div class="gb-progress-track">
+                    <div class="gb-progress-bar" id="gb-progress-bar"></div>
                 </div>
             </div>
+        </div>
 
-            {{-- Table --}}
-            <form method="POST" action="{{ route('marks.assign') }}" id="marks-form">
-                @csrf
-                <input type="hidden" name="exam_id"    id="h-exam">
-                <input type="hidden" name="subject_id" id="h-subject">
-                <input type="hidden" name="mark_total" id="h-max">
+        {{-- ── Toolbar (Search, Filter Tabs, Quick Fill Toggle) ────── --}}
+        <div class="gb-toolbar" id="gb-toolbar" style="display:none;">
+            <div class="gb-search-box">
+                <i class="fas fa-search gb-search-icon"></i>
+                <input type="text" id="gb-search" class="gb-search-input" placeholder="{{ __('Filter students by name or roll number…') }}">
+            </div>
 
-                <div class="marks-table-wrap mx-3 mb-0">
-                    <table class="marks-table">
+            <div class="gb-filter-pills">
+                <button type="button" class="gb-pill active" data-filter="all">{{ __('All') }} <span id="count-all">(0)</span></button>
+                <button type="button" class="gb-pill" data-filter="graded">{{ __('Graded') }} <span id="count-graded">(0)</span></button>
+                <button type="button" class="gb-pill" data-filter="pending">{{ __('Pending') }} <span id="count-pending">(0)</span></button>
+            </div>
+
+            <div class="gb-tools-right">
+                <button type="button" class="gb-tool-btn" id="btn-toggle-qf" title="{{ __('Quick fill presets') }}">
+                    <i class="fas fa-magic"></i>
+                    <span>{{ __('Quick Fill') }}</span>
+                </button>
+                <button type="button" class="gb-tool-btn" onclick="window.print()" title="{{ __('Print current grade sheet') }}">
+                    <i class="fas fa-print"></i>
+                    <span>{{ __('Print') }}</span>
+                </button>
+            </div>
+        </div>
+
+        {{-- Quick Fill Drawer --}}
+        <div class="gb-quickfill-drawer" id="gb-qf-drawer">
+            <span class="gb-qf-label"><i class="fas fa-bolt mr-1"></i>{{ __('Quick Fill:') }}</span>
+            <input type="number" id="gb-qf-input" class="gb-input" style="width:110px; height:38px;" placeholder="{{ __('Score') }}" min="0">
+            <button type="button" class="gb-tool-btn" id="btn-qf-empty">{{ __('Fill Empty Only') }}</button>
+            <button type="button" class="gb-tool-btn" id="btn-qf-all">{{ __('Fill All Students') }}</button>
+            <button type="button" class="gb-tool-btn text-danger" id="btn-qf-clear">{{ __('Clear All Marks') }}</button>
+        </div>
+
+        {{-- ── Mark Entry Sheet Form ────────────────────────────────── --}}
+        <form method="POST" action="{{ route('marks.assign') }}" id="gb-form">
+            @csrf
+            <input type="hidden" name="exam_id"    id="form-exam-id">
+            <input type="hidden" name="subject_id" id="form-subject-id">
+            <input type="hidden" name="mark_total" id="form-mark-total">
+
+            <div class="gb-sheet-card" id="gb-sheet">
+                <div class="gb-table-wrap">
+                    <table class="gb-table">
                         <thead>
                             <tr>
-                                <th>{{ __('Roll') }}</th>
-                                <th>{{ __('Student') }}</th>
-                                <th>{{ __('Mark') }} / <span id="th-max">100</span></th>
-                                <th>{{ __('Grade') }}</th>
-                                <th>{{ __('Remark') }}</th>
-                                <th>{{ __('Status') }}</th>
+                                <th style="width: 80px;">{{ __('Roll #') }}</th>
+                                <th>{{ __('Student Name') }}</th>
+                                <th style="width: 170px;">{{ __('Mark') }} / <span id="th-max-mark">100</span></th>
+                                <th style="width: 100px;">{{ __('Grade') }}</th>
+                                <th>{{ __('Remarks & Feedback') }}</th>
+                                <th style="width: 110px; text-align:right;">{{ __('Status') }}</th>
                             </tr>
                         </thead>
-                        <tbody id="marks-tbody">
-                            <tr>
-                                <td colspan="6" class="mk-loading">
-                                    <i class="fas fa-circle-notch fa-spin"></i>
-                                </td>
-                            </tr>
+                        <tbody id="gb-tbody">
+                            {{-- Dynamically populated via AJAX --}}
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                {{-- Submit bar --}}
-                <div class="mk-submit-bar">
-                    <span class="mk-avg-pill" id="avg-pill" style="display:none;">
-                        <i class="fas fa-chart-line"></i>
-                        {{ __('Avg') }}: <strong id="avg-val">0</strong> / <span id="avg-max">100</span>
-                    </span>
-                    <div class="ml-auto d-flex" style="gap:.6rem;">
-                        <button type="button" class="mk-btn mk-btn-ghost" onclick="document.getElementById('btn-reset').click()">
-                            <i class="fas fa-arrow-left"></i> {{ __('Back') }}
-                        </button>
-                        <button type="submit" class="mk-btn mk-btn-success" id="btn-submit">
-                            <i class="fas fa-save"></i> {{ __('Save Marks') }}
-                        </button>
-                    </div>
+            {{-- Floating Save Dock --}}
+            <div class="gb-save-dock" id="gb-dock">
+                <div class="gb-dock-status">
+                    <span class="gb-dock-dot"></span>
+                    <span id="dock-changes-text">{{ __('Ready to save') }}</span>
                 </div>
-            </form>
-        </div>
+                <div style="font-size:0.8rem; opacity:0.85; border-left:1px solid rgba(255,255,255,0.2); padding-left:0.75rem;">
+                    {{ __('Avg:') }} <strong id="dock-avg-val">0</strong>
+                </div>
+                <button type="submit" class="gb-dock-btn" id="gb-save-btn">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>{{ __('Save Marks') }}</span>
+                    <kbd class="gb-dock-kbd">Ctrl+S</kbd>
+                </button>
+            </div>
+        </form>
 
-    </div>{{-- /marks-wrap --}}
+    </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    /* ─── Helpers ───────────────────────────────────────────────────── */
-    const $ = id => document.getElementById(id);
-    const gradeScale = [
-        { min:90, label:'A+', cls:'A-plus' },
-        { min:80, label:'A',  cls:'A'      },
-        { min:70, label:'B+', cls:'B-plus' },
-        { min:60, label:'B',  cls:'B'      },
-        { min:50, label:'C',  cls:'C'      },
-        { min:40, label:'D',  cls:'D'      },
-        { min:0,  label:'F',  cls:'F'      },
+    /* ─── State ──────────────────────────────────────────────────────── */
+    let currentStudents = [];
+    let currentMarks    = {};
+    let activeFilter    = 'all';
+    let searchQuery     = '';
+    let unsavedChanges  = false;
+
+    /* ─── DOM Elements ───────────────────────────────────────────────── */
+    const selExam      = document.getElementById('gb-exam');
+    const selClass     = document.getElementById('gb-class');
+    const selSubject   = document.getElementById('gb-subject');
+    const inpMaxMarks  = document.getElementById('gb-max-marks');
+    const syncStatus   = document.getElementById('gb-sync-status');
+    const syncText     = document.getElementById('gb-sync-text');
+    const emptyGuide   = document.getElementById('gb-empty-guide');
+    const analyticsBox = document.getElementById('gb-analytics');
+    const toolbarBox   = document.getElementById('gb-toolbar');
+    const sheetBox     = document.getElementById('gb-sheet');
+    const tbody        = document.getElementById('gb-tbody');
+    const formExamId   = document.getElementById('form-exam-id');
+    const formSubjId   = document.getElementById('form-subject-id');
+    const formMaxMarks = document.getElementById('form-mark-total');
+    const thMaxMark    = document.getElementById('th-max-mark');
+    const searchInput  = document.getElementById('gb-search');
+    const qfDrawer     = document.getElementById('gb-qf-drawer');
+    const saveDock     = document.getElementById('gb-dock');
+    const saveBtn      = document.getElementById('gb-save-btn');
+    const dockChanges  = document.getElementById('dock-changes-text');
+    const dockAvgVal   = document.getElementById('dock-avg-val');
+
+    /* ─── Grading Scale ──────────────────────────────────────────────── */
+    const gradeScales = [
+        { min: 90, label: 'A+', cls: 'gb-grade-A-plus' },
+        { min: 80, label: 'A',  cls: 'gb-grade-A'      },
+        { min: 70, label: 'B+', cls: 'gb-grade-B-plus' },
+        { min: 60, label: 'B',  cls: 'gb-grade-B'      },
+        { min: 50, label: 'C',  cls: 'gb-grade-C'      },
+        { min: 40, label: 'D',  cls: 'gb-grade-D'      },
+        { min: 0,  label: 'F',  cls: 'gb-grade-F'      },
     ];
 
-    function getGrade(mark, max) {
-        if (mark === '' || mark === null || isNaN(mark)) return { label:'—', cls:'' };
-        const pct = (parseFloat(mark) / parseFloat(max)) * 100;
-        for (const g of gradeScale) {
+    function calculateGrade(score, max) {
+        if (score === '' || score === null || isNaN(score)) return { label: '—', cls: '' };
+        const pct = (parseFloat(score) / parseFloat(max)) * 100;
+        for (const g of gradeScales) {
             if (pct >= g.min) return g;
         }
-        return { label:'F', cls:'F' };
+        return { label: 'F', cls: 'gb-grade-F' };
     }
 
-    function initials(name) {
-        return name.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    function getInitials(name) {
+        return (name || '').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || 'ST';
     }
 
-    /* ─── State ─────────────────────────────────────────────────────── */
-    let activeFilter = 'all';
-    let searchText   = '';
-    let students     = [];
+    function getAvatarColor(name) {
+        const palettes = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#0ea5e9', '#06b6d4'];
+        let hash = 0;
+        for (let i = 0; i < (name || '').length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        return palettes[Math.abs(hash) % palettes.length];
+    }
 
-    /* ─── DOM refs ──────────────────────────────────────────────────── */
-    const selExam    = $('sel-exam');
-    const selClass   = $('sel-class');
-    const selSubject = $('sel-subject');
-    const inpMax     = $('inp-max');
-    const btnLoad    = $('btn-load');
-    const btnReset   = $('btn-reset');
-    const step2Card  = $('step2-card');
-    const tbody      = $('marks-tbody');
-    const hExam      = $('h-exam');
-    const hSubject   = $('h-subject');
-    const hMax       = $('h-max');
-    const thMax      = $('th-max');
-    const sheetSub   = $('sheet-sub');
-    const badgeCount = $('student-count-badge');
-    const step1Badge = $('step1-badge');
-    const avgPill    = $('avg-pill');
-    const avgVal     = $('avg-val');
-    const avgMax     = $('avg-max');
-    const qfBar      = $('qf-bar');
+    /* ─── Auto-Trigger on Criteria Change ────────────────────────────── */
+    function checkAndAutoLoad() {
+        const examId  = selExam.value;
+        const classId = selClass.value;
+        const subjId  = selSubject.value;
 
-    /* ─── Load students ─────────────────────────────────────────────── */
-    btnLoad.addEventListener('click', async () => {
-        const examId   = selExam.value;
-        const classId  = selClass.value;
-        const subjId   = selSubject.value;
-        const maxMark  = parseInt(inpMax.value) || 100;
+        // Update step pills visually
+        document.getElementById('step-pill-1').classList.toggle('done', !!examId);
+        document.getElementById('step-pill-2').classList.toggle('done', !!classId);
+        document.getElementById('step-pill-3').classList.toggle('done', !!subjId);
 
         if (!examId || !classId || !subjId) {
-            alert('{{ __("Please select Exam, Class and Subject first.") }}');
+            // Not all ready
+            syncStatus.className = 'gb-sync-status gb-sync-waiting';
+            syncStatus.innerHTML = '<i class="fas fa-clock"></i> <span>{{ __("Waiting for selection") }}</span>';
+            emptyGuide.style.display   = '';
+            analyticsBox.style.display = 'none';
+            toolbarBox.style.display   = 'none';
+            sheetBox.style.display     = 'none';
+            saveDock.classList.remove('show');
             return;
         }
 
-        // Update button state
-        const origHTML = btnLoad.innerHTML;
-        btnLoad.disabled = true;
-        btnLoad.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __("Loading…") }}';
+        // All 3 selected -> Auto load immediately!
+        fetchStudentsAutomatically(examId, classId, subjId);
+    }
+
+    selExam.addEventListener('change', checkAndAutoLoad);
+    selClass.addEventListener('change', checkAndAutoLoad);
+    selSubject.addEventListener('change', checkAndAutoLoad);
+    inpMaxMarks.addEventListener('input', function () {
+        const max = parseInt(this.value) || 100;
+        thMaxMark.textContent = max;
+        formMaxMarks.value = max;
+        recalculateAllRows();
+    });
+
+    /* ─── Fetch Students AJAX ────────────────────────────────────────── */
+    async function fetchStudentsAutomatically(examId, classId, subjId) {
+        syncStatus.className = 'gb-sync-status gb-sync-loading';
+        syncStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>{{ __("Syncing students…") }}</span>';
+
+        const maxScore = parseInt(inpMaxMarks.value) || 100;
+        formExamId.value   = examId;
+        formSubjId.value   = subjId;
+        formMaxMarks.value = maxScore;
+        thMaxMark.textContent = maxScore;
 
         try {
             const url = `/get-students-for-exam?exam_id=${examId}&class_id=${classId}&subject_id=${subjId}`;
-            const res  = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
             const data = await res.json();
 
             if (data.error) throw new Error(data.error);
 
-            students = data.students || [];
+            currentStudents = data.students || [];
+            currentMarks    = data.marks || {};
 
-            // Set hidden fields
-            hExam.value    = examId;
-            hSubject.value = subjId;
-            hMax.value     = maxMark;
-            thMax.textContent = maxMark;
-            avgMax.textContent = maxMark;
+            renderGradeSheet(currentStudents, currentMarks, maxScore);
 
-            // Sheet subtitle
-            const examTxt = selExam.options[selExam.selectedIndex].text;
-            const classTxt  = selClass.options[selClass.selectedIndex].text;
-            const subjTxt   = selSubject.options[selSubject.selectedIndex].text;
-            sheetSub.textContent = `${examTxt} · ${classTxt} · ${subjTxt}`;
+            // Update UI state
+            syncStatus.className = 'gb-sync-status gb-sync-ready';
+            syncStatus.innerHTML = `<i class="fas fa-check-circle"></i> <span>{{ __("Synced") }}: ${currentStudents.length} {{ __("students") }}</span>`;
 
-            // Build rows
-            buildTable(students, data.marks || {}, maxMark);
+            emptyGuide.style.display   = 'none';
+            analyticsBox.style.display = '';
+            toolbarBox.style.display   = 'flex';
+            sheetBox.style.display     = 'block';
 
-            // Show step 2
-            step2Card.style.display = '';
-            step2Card.scrollIntoView({ behavior:'smooth', block:'start' });
-            btnReset.style.display = '';
-            step1Badge.className = 'mk-status-badge mk-status-ready';
-            step1Badge.innerHTML = '<i class="fas fa-check-circle" style="font-size:.8rem;"></i> {{ __("Loaded") }}';
+            updateAnalytics();
+            saveDock.classList.add('show');
+            unsavedChanges = false;
+            dockChanges.textContent = '{{ __("Ready to grade") }}';
 
-            updateStats();
-
-        } catch(err) {
-            alert('Error: ' + err.message);
-        } finally {
-            btnLoad.disabled = false;
-            btnLoad.innerHTML = origHTML;
+        } catch (err) {
+            syncStatus.className = 'gb-sync-status gb-sync-waiting';
+            syncStatus.innerHTML = `<i class="fas fa-exclamation-triangle text-danger"></i> <span>${err.message}</span>`;
         }
-    });
+    }
 
-    /* ─── Build table rows ──────────────────────────────────────────── */
-    function buildTable(studs, marks, maxMark) {
-        if (!studs.length) {
-            tbody.innerHTML = `<tr><td colspan="6" class="mk-empty">
-                <i class="fas fa-user-slash"></i>
-                {{ __('No students found in this class.') }}
-            </td></tr>`;
+    /* ─── Render Student Rows ────────────────────────────────────────── */
+    function renderGradeSheet(students, marks, maxScore) {
+        if (!students.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align:center; padding:3.5rem 1rem; color:#94a3b8;">
+                        <i class="fas fa-user-slash" style="font-size:2.5rem; margin-bottom:0.75rem; display:block; opacity:0.5;"></i>
+                        <h4 style="font-weight:700; margin:0;">{{ __('No students enrolled in this class') }}</h4>
+                    </td>
+                </tr>
+            `;
             return;
         }
 
-        tbody.innerHTML = studs.map((s, idx) => {
-            const existing   = marks[s.student_class_id];
-            const markVal    = existing ? existing.mark_obtained : '';
-            const remarkVal  = existing ? (existing.comment || '') : '';
-            const isGraded   = existing && markVal !== '' && markVal !== null;
-            const grade      = getGrade(markVal, maxMark);
-            const colorCls   = markVal === '' ? '' : gradeColorCls(markVal, maxMark);
-            const avColor    = ['A+','A','B+','B'].includes(grade.label) ? '#6366f1' : (grade.label === 'F' ? '#ef4444' : '#f59e0b');
+        tbody.innerHTML = students.map((s, idx) => {
+            const existing  = marks[s.student_class_id];
+            const scoreVal  = existing ? existing.mark_obtained : '';
+            const remarkVal = existing ? (existing.comment || '') : '';
+            const isGraded  = scoreVal !== '' && scoreVal !== null;
+            const gradeInfo = calculateGrade(scoreVal, maxScore);
 
-            return `<tr data-idx="${idx}" data-graded="${isGraded ? '1':'0'}">
-                <td><span class="roll-badge">${s.roll || '—'}</span></td>
-                <td>
-                    <div class="d-flex align-items-center" style="gap:.6rem;">
-                        <div class="mk-avatar" style="background:${avatarColor(s.name)};">${initials(s.name)}</div>
-                        <span style="font-weight:600;font-size:.87rem;">${escHtml(s.name)}</span>
-                    </div>
-                </td>
-                <td>
-                    <input type="number" name="marks[${s.student_class_id}][mark_obtained]"
-                           class="mark-input ${colorCls}"
-                           value="${markVal}" min="0" max="${maxMark}"
-                           data-scid="${s.student_class_id}"
-                           placeholder="0–${maxMark}"
-                           tabindex="${idx+1}"
-                           autocomplete="off">
-                </td>
-                <td><span class="grade-badge ${grade.cls}" id="grade-${s.student_class_id}">${grade.label}</span></td>
-                <td>
-                    <input type="text" name="marks[${s.student_class_id}][comment]"
-                           class="remark-input" value="${escHtml(remarkVal)}"
-                           placeholder="{{ __('Optional remark') }}">
-                </td>
-                <td><span class="row-status ${isGraded ? 'graded':'pending'}" id="status-${s.student_class_id}">${isGraded ? '{{ __("Graded") }}' : '{{ __("Pending") }}'}</span></td>
-            </tr>`;
+            const avatarImg = s.photo
+                ? `<img src="/student_images/${s.photo}" class="gb-student-avatar" alt="${s.name}" onerror="this.outerHTML='<div class=\\'gb-student-avatar\\' style=\\'background:${getAvatarColor(s.name)}\\'>${getInitials(s.name)}</div>'">`
+                : `<div class="gb-student-avatar" style="background:${getAvatarColor(s.name)}">${getInitials(s.name)}</div>`;
+
+            return `
+                <tr data-student-id="${s.student_class_id}" data-graded="${isGraded ? '1' : '0'}" data-name="${s.name.toLowerCase()}" data-roll="${(s.roll || '').toLowerCase()}">
+                    <td>
+                        <span class="gb-roll-pill">${s.roll || '—'}</span>
+                    </td>
+                    <td>
+                        <div class="gb-student-cell">
+                            ${avatarImg}
+                            <div>
+                                <div class="gb-student-name">${escapeHtml(s.name)}</div>
+                                <div class="gb-student-meta">{{ __('Roll') }} #${s.roll || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="gb-score-box">
+                            <input type="number"
+                                   name="marks[${s.student_class_id}][mark_obtained]"
+                                   class="gb-score-input"
+                                   value="${scoreVal}"
+                                   min="0"
+                                   max="${maxScore}"
+                                   data-scid="${s.student_class_id}"
+                                   placeholder="0"
+                                   tabindex="${idx + 1}"
+                                   autocomplete="off">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="gb-grade-badge ${gradeInfo.cls}" id="grade-badge-${s.student_class_id}">
+                            ${gradeInfo.label}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="gb-remark-wrap">
+                            <input type="text"
+                                   name="marks[${s.student_class_id}][comment]"
+                                   class="gb-remark-input"
+                                   id="remark-${s.student_class_id}"
+                                   value="${escapeHtml(remarkVal)}"
+                                   placeholder="{{ __('Optional remark…') }}">
+                            <div class="gb-tags-wrap">
+                                <span class="gb-tag" onclick="applyRemark('${s.student_class_id}', 'Excellent')">Excellent</span>
+                                <span class="gb-tag" onclick="applyRemark('${s.student_class_id}', 'Good job')">Good job</span>
+                                <span class="gb-tag" onclick="applyRemark('${s.student_class_id}', 'Needs work')">Needs work</span>
+                                <span class="gb-tag" onclick="applyRemark('${s.student_class_id}', 'Absent')">Absent</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align:right;">
+                        <span class="gb-sync-status ${isGraded ? 'gb-sync-ready' : 'gb-sync-waiting'}" id="status-pill-${s.student_class_id}">
+                            ${isGraded ? '● {{ __("Graded") }}' : '○ {{ __("Pending") }}'}
+                        </span>
+                    </td>
+                </tr>
+            `;
         }).join('');
 
-        // Live update on mark input
-        tbody.querySelectorAll('.mark-input').forEach(input => {
-            input.addEventListener('input', () => onMarkInput(input));
-            input.addEventListener('keydown', onMarkKeydown);
+        // Attach live input events
+        tbody.querySelectorAll('.gb-score-input').forEach(input => {
+            input.addEventListener('input', () => onScoreChange(input));
+            input.addEventListener('keydown', onArrowNavigation);
         });
 
-        badgeCount.innerHTML = `<i class="fas fa-check-circle" style="font-size:.8rem;"></i> ${studs.length} {{ __('students') }}`;
-        updateStats();
-        applyFilter();
+        applyFilterAndSearch();
     }
 
-    function gradeColorCls(mark, max) {
-        const pct = (parseFloat(mark) / parseFloat(max)) * 100;
-        if (pct >= 60) return 'is-good';
-        if (pct >= 40) return 'is-avg';
-        return 'is-poor';
-    }
+    window.applyRemark = function (scid, text) {
+        const inp = document.getElementById(`remark-${scid}`);
+        if (inp) {
+            inp.value = text;
+            markAsUnsaved();
+        }
+    };
 
-    function avatarColor(name) {
-        const colors = ['#6366f1','#8b5cf6','#ec4899','#f59e0b','#10b981','#0ea5e9','#ef4444'];
-        let h = 0;
-        for (let i=0; i<name.length; i++) h = name.charCodeAt(i) + ((h<<5)-h);
-        return colors[Math.abs(h) % colors.length];
-    }
+    /* ─── Live Score Changes & Real-Time Calculation ─────────────────── */
+    function onScoreChange(input) {
+        const scid    = input.dataset.scid;
+        const max     = parseInt(inpMaxMarks.value) || 100;
+        let   val     = input.value;
 
-    function escHtml(s) {
-        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+        // Auto clamp max/min
+        if (val !== '' && parseFloat(val) > max) { input.value = max; val = max; }
+        if (val !== '' && parseFloat(val) < 0)   { input.value = 0;   val = 0;   }
 
-    /* ─── Live mark input ───────────────────────────────────────────── */
-    function onMarkInput(input) {
-        const scid   = input.dataset.scid;
-        const maxMk  = parseInt(hMax.value) || 100;
-        let   val    = input.value;
-
-        // Clamp
-        if (val !== '' && parseFloat(val) > maxMk) { input.value = maxMk; val = maxMk; }
-        if (val !== '' && parseFloat(val) < 0)      { input.value = 0;    val = 0; }
-
-        // Color class
-        input.classList.remove('is-good','is-avg','is-poor');
-        if (val !== '') input.classList.add(gradeColorCls(val, maxMk));
-
-        // Grade badge
-        const grade = getGrade(val, maxMk);
-        const gb = $(`grade-${scid}`);
-        if (gb) { gb.textContent = grade.label; gb.className = `grade-badge ${grade.cls}`; }
-
-        // Status pill
-        const sp = $(`status-${scid}`);
+        const gradeInfo = calculateGrade(val, max);
+        const gradeBadge = document.getElementById(`grade-badge-${scid}`);
+        const statusPill = document.getElementById(`status-pill-${scid}`);
         const tr = input.closest('tr');
-        if (val !== '') {
-            if (sp) { sp.textContent = '{{ __("Graded") }}'; sp.className = 'row-status graded'; }
-            if (tr)   tr.dataset.graded = '1';
-        } else {
-            if (sp) { sp.textContent = '{{ __("Pending") }}'; sp.className = 'row-status pending'; }
-            if (tr)   tr.dataset.graded = '0';
+
+        if (gradeBadge) {
+            gradeBadge.textContent = gradeInfo.label;
+            gradeBadge.className = `gb-grade-badge ${gradeInfo.cls}`;
         }
 
-        updateStats();
-        applyFilter();
+        if (val !== '') {
+            tr.dataset.graded = '1';
+            if (statusPill) {
+                statusPill.className = 'gb-sync-status gb-sync-ready';
+                statusPill.textContent = '● {{ __("Graded") }}';
+            }
+        } else {
+            tr.dataset.graded = '0';
+            if (statusPill) {
+                statusPill.className = 'gb-sync-status gb-sync-waiting';
+                statusPill.textContent = '○ {{ __("Pending") }}';
+            }
+        }
+
+        markAsUnsaved();
+        updateAnalytics();
     }
 
-    function onMarkKeydown(e) {
-        const inputs = [...tbody.querySelectorAll('.mark-input')];
-        const idx    = inputs.indexOf(e.target);
+    function recalculateAllRows() {
+        tbody.querySelectorAll('.gb-score-input').forEach(input => onScoreChange(input));
+    }
+
+    function onArrowNavigation(e) {
+        const inputs = Array.from(tbody.querySelectorAll('.gb-score-input'));
+        const idx = inputs.indexOf(e.target);
         if (e.key === 'Enter' || e.key === 'ArrowDown') {
             e.preventDefault();
-            if (inputs[idx+1]) inputs[idx+1].focus();
+            if (inputs[idx + 1]) inputs[idx + 1].focus();
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
-            if (inputs[idx-1]) inputs[idx-1].focus();
+            if (inputs[idx - 1]) inputs[idx - 1].focus();
         }
     }
 
-    /* ─── Stats ─────────────────────────────────────────────────────── */
-    function updateStats() {
-        const inputs  = [...tbody.querySelectorAll('.mark-input')];
-        const total   = inputs.length;
-        const graded  = inputs.filter(i => i.value !== '').length;
+    function markAsUnsaved() {
+        unsavedChanges = true;
+        saveDock.classList.add('show');
+        dockChanges.innerHTML = '<span class="text-warning"><i class="fas fa-edit mr-1"></i>{{ __("Unsaved changes") }}</span>';
+    }
+
+    /* ─── Real-Time Analytics Calculations ───────────────────────────── */
+    function updateAnalytics() {
+        const rows   = Array.from(tbody.querySelectorAll('tr[data-student-id]'));
+        const total  = rows.length;
+        const inputs = Array.from(tbody.querySelectorAll('.gb-score-input'));
+        const scores = inputs.map(i => i.value).filter(v => v !== '').map(v => parseFloat(v));
+        const graded = scores.length;
         const pending = total - graded;
-        const vals    = inputs.filter(i => i.value !== '').map(i => parseFloat(i.value));
-        const avg     = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : null;
 
-        $('st-total').textContent   = total;
-        $('st-graded').textContent  = graded;
-        $('st-pending').textContent = pending;
-        $('st-avg').textContent     = avg ?? '—';
+        document.getElementById('stat-total').textContent   = total;
+        document.getElementById('stat-graded').textContent  = graded;
+        document.getElementById('stat-pending').textContent = pending;
 
-        // Header stats
-        $('stat-students') && ($('stat-students').textContent = total);
-        $('stat-graded')   && ($('stat-graded').textContent   = graded);
-        $('stat-pending')  && ($('stat-pending').textContent  = pending);
+        document.getElementById('count-all').textContent     = `(${total})`;
+        document.getElementById('count-graded').textContent  = `(${graded})`;
+        document.getElementById('count-pending').textContent = `(${pending})`;
 
-        // Avg pill
-        if (avg !== null) {
-            avgPill.style.display = '';
-            avgVal.textContent    = avg;
-        } else {
-            avgPill.style.display = 'none';
-        }
+        // Average score
+        const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—';
+        document.getElementById('stat-avg').textContent = avg;
+        dockAvgVal.textContent = avg;
+
+        // Highest score
+        const high = scores.length ? Math.max(...scores) : '—';
+        document.getElementById('stat-high').textContent = high;
+
+        // Passing Rate (>= 40%)
+        const maxScore = parseInt(inpMaxMarks.value) || 100;
+        const passingCount = scores.filter(s => (s / maxScore) >= 0.4).length;
+        const passRate = scores.length ? Math.round((passingCount / scores.length) * 100) + '%' : '—';
+        document.getElementById('stat-pass').textContent = passRate;
+
+        // Progress bar
+        const pct = total > 0 ? Math.round((graded / total) * 100) : 0;
+        document.getElementById('gb-progress-pct').textContent = `${pct}%`;
+        document.getElementById('gb-progress-bar').style.width = `${pct}%`;
     }
 
-    /* ─── Filter + search ───────────────────────────────────────────── */
-    function applyFilter() {
-        const rows = [...tbody.querySelectorAll('tr[data-idx]')];
+    /* ─── Search & Tab Filters ───────────────────────────────────────── */
+    function applyFilterAndSearch() {
+        const rows = tbody.querySelectorAll('tr[data-student-id]');
         rows.forEach(tr => {
-            const isGraded  = tr.dataset.graded === '1';
-            const name      = tr.querySelector('span[style]')?.textContent?.toLowerCase() || '';
-            const rollEl    = tr.querySelector('.roll-badge');
-            const roll      = rollEl?.textContent?.toLowerCase() || '';
+            const isGraded = tr.dataset.graded === '1';
+            const name = tr.dataset.name || '';
+            const roll = tr.dataset.roll || '';
 
-            const passFilter =
+            const matchesFilter =
                 activeFilter === 'all' ||
                 (activeFilter === 'graded'  &&  isGraded) ||
                 (activeFilter === 'pending' && !isGraded);
 
-            const passSearch = !searchText || name.includes(searchText) || roll.includes(searchText);
+            const matchesSearch = !searchQuery || name.includes(searchQuery) || roll.includes(searchQuery);
 
-            tr.classList.toggle('mk-row-hidden', !(passFilter && passSearch));
+            tr.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
         });
     }
 
-    document.querySelectorAll('.mk-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            document.querySelectorAll('.mk-chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            activeFilter = chip.dataset.filter;
-            applyFilter();
+    searchInput.addEventListener('input', e => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        applyFilterAndSearch();
+    });
+
+    document.querySelectorAll('.gb-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.gb-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            activeFilter = pill.dataset.filter;
+            applyFilterAndSearch();
         });
     });
 
-    $('mk-search').addEventListener('input', e => {
-        searchText = e.target.value.trim().toLowerCase();
-        applyFilter();
+    /* ─── Quick Fill Drawer ──────────────────────────────────────────── */
+    document.getElementById('btn-toggle-qf').addEventListener('click', () => {
+        qfDrawer.classList.toggle('active');
     });
 
-    /* ─── Quick fill ─────────────────────────────────────────────────── */
-    $('btn-toggle-qf').addEventListener('click', () => {
-        qfBar.classList.toggle('visible');
-    });
-
-    $('qf-empty').addEventListener('click', () => {
-        const val   = $('qf-value').value;
-        const maxMk = parseInt(hMax.value) || 100;
+    document.getElementById('btn-qf-empty').addEventListener('click', () => {
+        const val = document.getElementById('gb-qf-input').value;
         if (val === '') return;
-        tbody.querySelectorAll('.mark-input').forEach(input => {
-            if (input.value === '') { input.value = val; onMarkInput(input); }
+        tbody.querySelectorAll('.gb-score-input').forEach(input => {
+            if (input.value === '') { input.value = val; onScoreChange(input); }
         });
     });
 
-    $('qf-all').addEventListener('click', () => {
-        const val   = $('qf-value').value;
-        const maxMk = parseInt(hMax.value) || 100;
+    document.getElementById('btn-qf-all').addEventListener('click', () => {
+        const val = document.getElementById('gb-qf-input').value;
         if (val === '') return;
-        tbody.querySelectorAll('.mark-input').forEach(input => {
-            input.value = val; onMarkInput(input);
+        tbody.querySelectorAll('.gb-score-input').forEach(input => {
+            input.value = val; onScoreChange(input);
         });
     });
 
-    $('qf-clear').addEventListener('click', () => {
-        if (!confirm('{{ __("Clear all marks?") }}')) return;
-        tbody.querySelectorAll('.mark-input').forEach(input => {
-            input.value = ''; onMarkInput(input);
+    document.getElementById('btn-qf-clear').addEventListener('click', () => {
+        if (!confirm('{{ __("Clear all marks on this sheet?") }}')) return;
+        tbody.querySelectorAll('.gb-score-input').forEach(input => {
+            input.value = ''; onScoreChange(input);
         });
     });
 
-    /* ─── Reset ─────────────────────────────────────────────────────── */
-    btnReset.addEventListener('click', () => {
-        step2Card.style.display = 'none';
-        btnReset.style.display  = 'none';
-        qfBar.classList.remove('visible');
-        step1Badge.className = 'mk-status-badge mk-status-idle';
-        step1Badge.innerHTML = '<i class="fas fa-circle" style="font-size:.45rem;"></i> {{ __("Not loaded") }}';
-        // Reset select2 / selects
-        selExam.value = ''; selClass.value = ''; selSubject.value = '';
-        if (window.jQuery && jQuery.fn.select2) {
-            jQuery('#sel-exam, #sel-class, #sel-subject').val(null).trigger('change');
+    /* ─── Keyboard Shortcut: Ctrl + S / Cmd + S to Save ─────────────── */
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            document.getElementById('gb-form').requestSubmit();
         }
-        window.scrollTo({ top:0, behavior:'smooth' });
     });
 
-    /* ─── Form submit validation ─────────────────────────────────────── */
-    $('marks-form').addEventListener('submit', e => {
-        const inputs = [...tbody.querySelectorAll('.mark-input')];
+    document.getElementById('gb-form').addEventListener('submit', function (e) {
+        const inputs = Array.from(tbody.querySelectorAll('.gb-score-input'));
         const filled = inputs.filter(i => i.value !== '').length;
         if (filled === 0) {
             e.preventDefault();
             alert('{{ __("Please enter at least one mark before saving.") }}');
             return;
         }
-        const btn = $('btn-submit');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __("Saving…") }}';
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __("Saving…") }}';
     });
 
-    /* ─── Init Select2 ───────────────────────────────────────────────── */
-    if (window.jQuery && jQuery.fn.select2) {
-        jQuery('#sel-exam, #sel-class, #sel-subject').select2({
-            theme: 'bootstrap4',
-            width: '100%',
-        });
+    function escapeHtml(s) {
+        return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
-
-})();
+});
 </script>
 @endpush
-@endsection

@@ -217,7 +217,6 @@
           <div class="smart-search-empty-hint">{{ __('Press Esc to reset') }}</div>
         </div>
       </div>
-      @stack('scripts')
 
       <!-- Sidebar Menu -->
       @includeWhen(Auth::check() && Auth::user()->role === 0, 'components.sidebar.admin')
