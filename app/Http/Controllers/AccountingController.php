@@ -700,6 +700,9 @@ class AccountingController extends Controller
             ->where('fee_receipt_id', $id)
             ->get();
 
+        $customizes = DB::table('customize')->first();
+        $schoolName = $customizes->brand_title ?? 'School System';
+
         $qrCode = QrCode::format('png')
             ->size(100)
             ->generate("
@@ -712,7 +715,7 @@ class AccountingController extends Controller
         Previous Balance: \${$fees->remaining_balance}
         Remaining Balance: \${$fees->previous_balance}
         Paid On: {$fees->receipt_date}
-        School: Mawarid Tech Academy
+        School: {$schoolName}
     ");
 
         $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCode);

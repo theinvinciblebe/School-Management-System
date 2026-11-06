@@ -121,6 +121,7 @@ Route::middleware(['auth', 'role:0', 'log.activity'])->group(function () {
     Route::post('/customize/update-icon', [CustomizeController::class, 'updateIcon'])->name('customize.updateIcon');
     Route::post('/customize/update-brand-title', [CustomizeController::class, 'updateBrandTitle'])->name('customize.updateBrandTitle');
     Route::post('/customize/update-url-title', [CustomizeController::class, 'updateURLTitle'])->name('customize.updateURLTitle');
+    Route::post('/customize/update-contact', [CustomizeController::class, 'updateContactInfo'])->name('customize.updateContact');
     Route::get('/customize/get-theme', [CustomizeController::class, 'getTheme'])->name('customize.getTheme');
     Route::post('/customize/update-theme', [CustomizeController::class, 'updateTheme'])->name('customize.updateTheme');
 

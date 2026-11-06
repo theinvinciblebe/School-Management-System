@@ -2,768 +2,526 @@
 
 @section('content')
 
-    <style>
-        @media print {
-            html, body {
-                overflow: hidden !important;
-                width: 100% !important;
-                background-color: #ffffff;
-                margin: 0!important;
-                padding: 0!important;
-                font-size: 12px;
-                -webkit-print-color-adjust: exact !important; /* Ensures colors print */
-                print-color-adjust: exact !important;
+@php
+    $brandLogo = $customizes->brand_logo ?? null;
+    $logoUrl = (!empty($brandLogo) && file_exists(public_path('customize_images/' . $brandLogo)))
+        ? asset('customize_images/' . $brandLogo)
+        : (file_exists(public_path('logo-final.png'))
+            ? asset('logo-final.png')
+            : (file_exists(public_path('customize_images/noimg.jpg'))
+                ? asset('customize_images/noimg.jpg')
+                : asset('assets/dist/img/mawaridLogo.jpg')));
 
-            }
+    $schoolName    = $customizes->brand_title ?? 'School System';
+    $schoolAddress = $customizes->school_address ?? 'No.32, Street 606, Tuol Kork, Phnom Penh, Cambodia';
+    $schoolPhone   = $customizes->school_phone ?? '+855 12 801 470 / +855 71 220 6315';
+    $schoolEmail   = $customizes->school_email ?? 'info@schoolsystem.edu.kh';
+@endphp
 
-            /*.container {*/
-            /*    width: 100%;*/
-            /*    max-width: 100%;*/
-            /*    padding: 20px;*/
-            /*}*/
-            /*p{*/
-            /*    font-size: 20px;*/
-            /*}*/
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   FEE RECEIPT – Modern Screen & Print Layout
+══════════════════════════════════════════════════════════════════ */
 
-            /*table {*/
-            /*    width: 100%;*/
-            /*    border-collapse: collapse;*/
-            /*    border: 3px solid black !important; !* Increase outer border thickness *!*/
-            /*}*/
+.rc-screen-wrap {
+    max-width: 960px;
+    margin: 1rem auto 3rem;
+    padding: 0 1rem;
+}
 
-            /*th, td {*/
-            /*    border: 2px solid black !important; !* Make inner borders thinner *!*/
-            /*    font-size: 15px;*/
-            /*    text-align: center;*/
-            /*}*/
-            .text-right {
-                text-align: right !important;
-            }
+/* Action Toolbar (Screen Only) */
+.rc-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+html.dark-mode .rc-action-bar {
+    background: #1e2235;
+    border-color: #2e354f;
+    box-shadow: 0 4px 25px -2px rgba(0, 0, 0, 0.35);
+}
 
-            .btn, .print-btn, .d-flex {
-                display: none !important; /* Hide Buttons */
-            }
+.rc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    border: none;
+}
+.rc-btn-primary {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+.rc-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+.rc-btn-secondary {
+    background: #f1f5f9;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1;
+}
+.rc-btn-secondary:hover {
+    background: #e2e8f0;
+}
+html.dark-mode .rc-btn-secondary {
+    background: #252c42;
+    border-color: #333d5d;
+    color: #cbd5e1 !important;
+}
 
-            .p_head p {
-                font-size: 15px;
-                margin: 2px 0;
-                padding: 0; /* Removes any extra padding */
-            }
+/* Receipt Card (Voucher look) */
+.rc-voucher {
+    background: #ffffff;
+    border: 2px solid #312e81;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+    position: relative;
+    color: #0f172a;
+    page-break-inside: avoid;
+}
 
-            @page {
-                size: A4 portrait;  /* Defines A5 size in portrait orientation */
-                margin: 0;
-                overflow: hidden;
-                /*bleed: 3mm; !* (Optional) Adds a bleed for printing *!*/
-                /*marks: crop; !* (Optional) Adds crop marks for printing *!*/
-            }
-            .print-container {
-                overflow: hidden !important;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: start;
-                height: 100vh; /* Ensure full height of A4 */
-                width: 100% !important;
-            }
+.rc-voucher-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #312e81;
+    gap: 1rem;
+}
+.rc-brand-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.rc-logo {
+    width: 68px;
+    height: 68px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+.rc-school-info h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin: 0;
+    color: #1e1b4b;
+    line-height: 1.2;
+}
+.rc-school-info p {
+    font-size: 0.8rem;
+    color: #475569;
+    margin: 0.15rem 0 0;
+    line-height: 1.35;
+}
 
-            .receipt {
-                display: block !important;
-                box-shadow: none;
-                width: 100% !important;
-                height: 50vh; /* Half of A4 page */
-                margin: 0 !important; /* Removes extra space between receipts */
-                padding: 1px 0 !important; /* Reduces spacing inside receipt */
-                box-sizing: border-box;
-                /*border-bottom: 2px dashed black; !* Optional: Separate receipts visually *!*/
-                overflow: hidden !important;
-            }
-            ::-webkit-scrollbar {
-                display: none !important; /* Hides the scrollbar */
-            }
-        }
-    </style>
+.rc-voucher-badge-wrap {
+    text-align: right;
+}
+.rc-voucher-badge {
+    display: inline-block;
+    background: #312e81;
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.rc-copy-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
 
-{{--    <style>--}}
-{{--        * {--}}
-{{--            box-sizing: border-box;--}}
-{{--        }--}}
+/* Info Grid Table */
+.rc-info-grid {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+.rc-info-grid td {
+    padding: 0.45rem 0.65rem;
+    border: 1px solid #cbd5e1;
+    vertical-align: middle;
+}
+.rc-info-grid .rc-label {
+    background: #f8fafc;
+    font-weight: 700;
+    color: #334155;
+    width: 18%;
+}
+.rc-info-grid .rc-val {
+    font-weight: 600;
+    color: #0f172a;
+    width: 32%;
+}
 
-{{--        .p_head p {--}}
-{{--            margin: 2px 0;--}}
-{{--            padding: 0; /* Removes any extra padding */--}}
-{{--        }--}}
-{{--    </style>--}}
+/* Items Table */
+.rc-items-table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.rc-items-table th {
+    background: #312e81;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border: 1px solid #312e81;
+}
+.rc-items-table td {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #cbd5e1;
+}
 
-    <style>
-        body {
-            color: black !important;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #FFFFFFFF;
-        }
+/* Footer Section */
+.rc-footer-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 1.25rem;
+    gap: 1.5rem;
+}
+.rc-qr-box {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+.rc-terms-box {
+    font-size: 0.72rem;
+    color: #64748b;
+    line-height: 1.4;
+    max-width: 360px;
+}
+.rc-signatures {
+    display: flex;
+    gap: 2rem;
+    text-align: center;
+}
+.rc-sig-block {
+    width: 140px;
+    border-top: 1.5px dashed #475569;
+    padding-top: 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #334155;
+}
 
-        .receipt-container {
-            max-width: 90%;
-            margin: auto;
-            background: #FFFFFFFF;
-            padding: 20px;
-            border: 2px solid maroon;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-        }
+/* ══════════════════════════════════════════════════════════════════
+   PRINT MEDIA STYLES (Clean A4 Page split into 2 half receipts)
+══════════════════════════════════════════════════════════════════ */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 8mm;
+    }
+    html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .main-header, .main-sidebar, .main-footer, .rc-action-bar, .content-header {
+        display: none !important;
+    }
+    .content-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+    }
+    .rc-screen-wrap {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .rc-voucher {
+        border: 1.5px solid #000000 !important;
+        box-shadow: none !important;
+        padding: 10px 14px !important;
+        margin-bottom: 12px !important;
+        border-radius: 8px !important;
+        page-break-inside: avoid !important;
+    }
+    .rc-voucher-header {
+        border-bottom: 1.5px solid #000000 !important;
+        padding-bottom: 8px !important;
+    }
+    .rc-voucher-badge {
+        background: #000000 !important;
+        color: #ffffff !important;
+    }
+    .rc-items-table th {
+        background: #000000 !important;
+        color: #ffffff !important;
+        border-color: #000000 !important;
+    }
+}
+</style>
 
-        .header {
-            text-align: center;
-            border-bottom: 2px solid maroon;
-            padding-bottom: 10px;
-        }
+<div class="content-header pb-0">
+    <div class="rc-screen-wrap">
 
-        .header img {
-            width: 80px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .header h1 {
-            color: maroon;
-            margin: 5px 0;
-        }
-
-        .header p {
-            color: black;
-            font-size: 14px;
-            margin: 3px 0;
-        }
-        .col-2 {
-            vertical-align: top; /* Align logo to the top */
-            width: 20%; /* Adjust width as needed */
-        }
-
-        .col-10 {
-            width: 80%; /* Adjust width as needed */
-            text-align: center; /* Center the text */
-        }
-        .center-text {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%; /* Ensure the text is centered vertically */
-        }
-
-        .receipt-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-            text-transform: uppercase;
-            color: maroon;
-        }
-
-        .info-table {
-            width: 100%;
-            margin: 10px 0;
-            border-collapse: collapse;
-        }
-
-        .info-table th, .info-table td {
-            padding: 8px;
-            border: 1px solid maroon;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        .info-table th {
-            background-color: maroon;
-            color: #FFFFFFFF;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #333;
-        }
-
-        .qr-terms-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        /*.qr-code {*/
-        /*    text-align: center;*/
-        /*    width: 45%;*/
-        /*}*/
-
-        .terms {
-            width: 45%;
-            font-size: 12px;
-            text-align: left;
-            color: #444;
-        }
-
-        .terms p {
-            margin-bottom: 5px;
-        }
-
-        .print-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: maroon;
-            color: #FFFFFFFF;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .print-btn:hover{
-            background-color: darkred;
-        }
-
-    </style>
-
-
-{{--    <div class="print-container">--}}
-{{--        <div class="receipt">--}}
-{{--            <!-- First Receipt -->--}}
-{{--            <div class="container">--}}
-{{--                <div class="card">--}}
-{{--                    <div class="card-header text-center">--}}
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-3 float-right">--}}
-{{--                                <img src="{{ asset('logo-txt.png') }}" alt="MAWARID LOGO" style="width: 250px; height: auto;">--}}
-{{--                            </div>--}}
-{{--                            <div class="col-md-3"></div>--}}
-{{--                            <div class="col-md-6 float-left" style="margin-top: 10px">--}}
-{{--                                <b>No.32, Street 606, Khan Toul Kork, Phnom Penh, Cambodia</b><br>--}}
-{{--                                <b>Phone: 012 801 470 / 071 220 6315</b>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="card-body">--}}
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-12">--}}
-{{--                                <h3 align="center"><b>FEE RECEIPT</b></h3>--}}
-{{--                                <hr>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div class="row p_head">--}}
-{{--                            <div class="col-md-4">--}}
-{{--                                <p><strong>Student Name: </strong> <b>{{ $fees->student_name }}</b></p>--}}
-{{--                                <p><strong>Gender: </strong>--}}
-{{--                                    @if($fees->sex)--}}
-{{--                                        Male--}}
-{{--                                    @else--}}
-{{--                                        Female--}}
-{{--                                    @endif</p>--}}
-{{--                                <p><strong>Student Roll: </strong> {{ $fees->roll }}</p>--}}
-{{--                                <p><strong>Course: </strong> {{ $fees->class_name }}</p>--}}
-{{--                                <p><strong>Course Duration: </strong> {{ $fees->section_duration_months }} Months</p>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-md-3"></div>--}}
-{{--                            <div class="col-md-4 float-right">--}}
-{{--                                <p><strong>Receipt No: </strong> {{ $fees->receipt_no }}</p>--}}
-{{--                                <p><strong>Date: </strong> {{ date_format(date_create($fees->receipt_date), 'F d, Y') }}</p>--}}
-{{--                                <p><strong>Term: </strong></p>--}}
-{{--                                <p><strong>Shift: </strong>{{ $fees->section_name }}</p>--}}
-{{--                                <p><strong>Start Date: </strong>{{ date_format(date_create($fees->start_date), 'F d, Y') }}</p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
-{{--                        <table class="table dtr-inline mt-3" style="border: 3px solid black;">--}}
-{{--                            <thead class="thead-light">--}}
-{{--                            <tr align="center">--}}
-{{--                                <th>No.</th>--}}
-{{--                                <th>Description</th>--}}
-{{--                                <th>Qty</th>--}}
-{{--                                <th>Price</th>--}}
-{{--                                <th>Discount(%)</th>--}}
-{{--                                <th>Months</th>--}}
-{{--                                <th>Total</th>--}}
-{{--                            </tr>--}}
-{{--                            </thead>--}}
-{{--                            <tbody>--}}
-{{--                            @php $grandTotal = 0; @endphp--}}
-{{--                            @foreach ($items as $index => $item)--}}
-{{--                                <tr>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $index + 1}}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->description }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->qty }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->price }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->discount }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->duration }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">${{ number_format($item->total, 2) }}</td>--}}
-{{--                                </tr>--}}
-{{--                                @php $grandTotal += $item->total; @endphp--}}
-{{--                            @endforeach--}}
-{{--                            </tbody>--}}
-{{--                            <tfoot>--}}
-{{--                                <tr>--}}
-{{--                                    <td colspan="6" class="text-right"><strong>Total Amount:</strong></td>--}}
-{{--                                    <td align="center"><strong>${{ number_format($grandTotal, 2) }}</strong></td>--}}
-{{--                                </tr>--}}
-{{--                                @if($fees->remaining_balance != 0)--}}
-{{--                                    <tr id="prev_balance">--}}
-{{--                                        <td colspan="6" class="text-right"><strong>Previous Balance:</strong></td>--}}
-{{--                                        <td align="center"><strong>${{ number_format($fees->remaining_balance, 2)}}</strong></td>--}}
-{{--                                    </tr>--}}
-{{--                                @endif--}}
-
-{{--                                <tr>--}}
-{{--                                    <td colspan="6" class="text-right"><strong>Total Paid:</strong></td>--}}
-{{--                                    <td align="center"><strong>${{ number_format($fees->paid, 2) }}</strong></td>--}}
-{{--                                </tr>--}}
-{{--                                <tr>--}}
-{{--                                                            @php--}}
-{{--                                                                $balance = ($fees->previous_balance + $grandTotal) - $fees->paid;--}}
-{{--                                                            @endphp--}}
-{{--                                    <td colspan="6" class="text-right"><strong>Remaining Balance: </strong></td>--}}
-{{--                                    <td align="center"><strong>${{ number_format($fees->previous_balance, 2) }}</strong></td>--}}
-{{--                                </tr>--}}
-{{--                            </tfoot>--}}
-{{--                        </table>--}}
-{{--                        <div class="row mt-4"></div>--}}
-{{--                        <div class="col-md-6">--}}
-{{--                            <p><strong>Payment Method: </strong>{{ $fees->paid_via ?? 'N/A' }}</p>--}}
-{{--                        </div>--}}
-{{--                        <div class="row mt-4"></div>--}}
-
-{{--                        <div class="row mt-4">--}}
-{{--                            <div class="col-md-6">--}}
-{{--                                <p><strong>Accountant Signature:</strong> ______________________</p>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-md-6 text-end"> <!-- Bootstrap 5 -->--}}
-{{--                                <p><strong>Authorized Signature:</strong> ______________________</p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
-{{--                        <div class="row mt-4"></div>--}}
-{{--                        <p class="text-muted">--}}
-{{--                            *Note: Payment made is <strong>non-refundable and non-transferable</strong>.--}}
-{{--                        </p>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="receipt">--}}
-{{--            <!-- Second Receipt (Duplicate) -->--}}
-{{--            <div class="container">--}}
-{{--                <div class="card">--}}
-{{--                    <div class="card-header text-center">--}}
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-3 float-right">--}}
-{{--                                <img src="{{ asset('logo-txt.png') }}" alt="MAWARID LOGO" style="width: 250px; height: auto;">--}}
-{{--                            </div>--}}
-{{--                            <div class="col-md-3"></div>--}}
-{{--                            <div class="col-md-6 float-left" style="margin-top: 10px">--}}
-{{--                                <b>No.32, Street 606, Khan Toul Kork, Phnom Penh, Cambodia</b><br>--}}
-{{--                                <b>Phone: 012 801 470 / 071 220 6315</b>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="card-body">--}}
-{{--                        <div class="row">--}}
-{{--                            <div class="col-md-12">--}}
-{{--                                <h3 align="center"><b>FEE RECEIPT</b></h3>--}}
-{{--                                <hr>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div class="row p_head">--}}
-{{--                            <div class="col-md-4">--}}
-{{--                                <p><strong>Student Name: </strong> <b>{{ $fees->student_name }}</b></p>--}}
-{{--                                <p><strong>Gender: </strong>--}}
-{{--                                    @if($fees->sex)--}}
-{{--                                        Male--}}
-{{--                                    @else--}}
-{{--                                        Female--}}
-{{--                                    @endif</p>--}}
-{{--                                <p><strong>Student Roll: </strong> {{ $fees->roll }}</p>--}}
-{{--                                <p><strong>Course: </strong> {{ $fees->class_name }}</p>--}}
-{{--                                <p><strong>Course Duration: </strong> {{ $fees->section_duration_months }} Months</p>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-md-3"></div>--}}
-{{--                            <div class="col-md-4 float-right">--}}
-{{--                                <p><strong>Receipt No: </strong> {{ $fees->receipt_no }}</p>--}}
-{{--                                <p><strong>Date: </strong> {{ date_format(date_create($fees->receipt_date), 'F d, Y') }}</p>--}}
-{{--                                <p><strong>Term: </strong></p>--}}
-{{--                                <p><strong>Shift: </strong>{{ $fees->section_name }}</p>--}}
-{{--                                <p><strong>Start Date: </strong>{{ date_format(date_create($fees->start_date), 'F d, Y') }}</p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
-{{--                        <table class="table dtr-inline mt-3" style="border: 3px solid black;">--}}
-{{--                            <thead class="thead-light">--}}
-{{--                            <tr align="center">--}}
-{{--                                <th>No.</th>--}}
-{{--                                <th>Description</th>--}}
-{{--                                <th>Qty</th>--}}
-{{--                                <th>Price</th>--}}
-{{--                                <th>Discount(%)</th>--}}
-{{--                                <th>Months</th>--}}
-{{--                                <th>Total</th>--}}
-{{--                            </tr>--}}
-{{--                            </thead>--}}
-{{--                            <tbody>--}}
-{{--                            @php $grandTotal = 0; @endphp--}}
-{{--                            @foreach ($items as $index => $item)--}}
-{{--                                <tr>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $index + 1}}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->description }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->qty }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->price }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->discount }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">{{ $item->duration }}</td>--}}
-{{--                                    <td style="border: 3px solid black;">${{ number_format($item->total, 2) }}</td>--}}
-{{--                                </tr>--}}
-{{--                                @php $grandTotal += $item->total; @endphp--}}
-{{--                            @endforeach--}}
-{{--                            </tbody>--}}
-{{--                            <tfoot>--}}
-{{--                                <tr>--}}
-{{--                                    <td colspan="6" class="text-right"><strong>Total Amount:</strong></td>--}}
-{{--                                    <td align="center"><strong>${{ number_format($grandTotal, 2) }}</strong></td>--}}
-{{--                                </tr>--}}
-{{--                                @if($fees->remaining_balance != 0)--}}
-{{--                                    <tr id="prev_balance">--}}
-{{--                                        <td colspan="6" class="text-right"><strong>Previous Balance:</strong></td>--}}
-{{--                                        <td align="center"><strong>${{ number_format($fees->remaining_balance, 2)}}</strong></td>--}}
-{{--                                    </tr>--}}
-{{--                                @endif--}}
-
-{{--                                <tr>--}}
-{{--                                    <td colspan="6" class="text-right"><strong>Total Paid:</strong></td>--}}
-{{--                                    <td align="center"><strong>${{ number_format($fees->paid, 2) }}</strong></td>--}}
-{{--                                </tr>--}}
-{{--                                <tr>--}}
-{{--                                                            @php--}}
-{{--                                                                $balance = ($fees->previous_balance + $grandTotal) - $fees->paid;--}}
-{{--                                                            @endphp--}}
-{{--                                    <td colspan="6" class="text-right"><strong>Remaining Balance: </strong></td>--}}
-{{--                                    <td align="center"><strong>${{ number_format($fees->previous_balance, 2) }}</strong></td>--}}
-{{--                                </tr>--}}
-{{--                            </tfoot>--}}
-{{--                        </table>--}}
-{{--                        <div class="row mt-4"></div>--}}
-{{--                        <div class="col-md-6">--}}
-{{--                            <p><strong>Payment Method: </strong>{{ $fees->paid_via ?? 'N/A' }}</p>--}}
-{{--                        </div>--}}
-{{--                        <div class="row mt-4"></div>--}}
-
-{{--                        <div class="row mt-4">--}}
-{{--                            <div class="col-md-6">--}}
-{{--                                <p><strong>Accountant Signature:</strong> ______________________</p>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-md-6 text-end"> <!-- Bootstrap 5 -->--}}
-{{--                                <p><strong>Authorized Signature:</strong> ______________________</p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
-{{--                        <div class="row mt-4"></div>--}}
-{{--                        <p class="text-muted">--}}
-{{--                            *Note: Payment made is <strong>non-refundable and non-transferable</strong>.<br>--}}
-{{--                            *Note: Receipt made is <strong>for accountant</strong>.--}}
-{{--                        </p>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <button onclick="window.print()" class="btn btn-success mt-3 float-right"><i class="fas fa-print"></i> Print</button>--}}
-{{--                        <button type="button" class="btn btn-primary mt-3 float-right" style="margin-right: 5px;">--}}
-{{--                            <i class="fas fa-download"></i> Generate PDF--}}
-{{--                        </button>--}}
-{{--                <a href="{{ route('fee_receipt.index') }}" class="btn btn-secondary mt-3">Back to List</a>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-    <div class="print-container">
-        <div class="receipt" id="receipt" style="display: none;">
-            <div id="receipt-container" class="receipt-container">
-            <div class="header">
-                <table style=" width: 100%; border-collapse: collapse;">
-                    <tbody>
-                    <tr>
-                        <td class="col-3">
-                            <img src="{{ asset('logo-final.png') }}" alt="Mawarid Tech Academy Logo" style="width: 80px; height: auto;">
-                        </td>
-
-                        <td class="col-1"></td>
-                        <td class="col-9">
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td class="col-12">
-                                        <div class="center-text">
-                                            <h1>Mawarid Tech Academy</h1>
-                                            <p>No.32, Street 606, Tuol Kork, Phnom Penh</p>
-                                            <p>Phone: +855 1280 1470 | Email: info@mawaridtech.com</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        {{-- ── Action Toolbar (Screen Only) ─────────────────────────── --}}
+        <div class="rc-action-bar">
+            <div class="d-flex align-items-center" style="gap: 0.75rem;">
+                <a href="{{ route('fee_receipt.index') }}" class="rc-btn rc-btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>{{ __('Back to List') }}</span>
+                </a>
+                <span class="badge badge-pill badge-primary px-3 py-2" style="font-size:0.85rem;">
+                    <i class="fas fa-receipt mr-1"></i> {{ __('Receipt') }} #{{ $fees->receipt_no }}
+                </span>
             </div>
-            <div class="receipt-title">Fee Receipt</div>
-                <p class="text-muted">
-                    *Note: Receipt for Student.
-                </p>
-        <table class="info-table">
-            <tr>
-                <th>Receipt No.</th>
-                <td >{{ $fees->receipt_no }}</td>
-                <th>Date</th>
-                <td id="date">{{ date_format(date_create($fees->receipt_date), 'F d, Y') }}</td>
-            </tr>
-            <tr>
-                <th>Student Name</th>
-                <td id="studentName">{{ $fees->student_name }}</td>
-                <th>Father/Guardian Name</th>
-                <td>{{ $fees->parent_name ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <th>Course</th>
-                <td id="course">{{ $fees->class_name }}</td>
-                <th>Duration</th>
-                <td>{{ $fees->section_duration_months }} Months</td>
-            </tr>
-            <tr>
-                <th>Shift</th>
-                <td id="shift">{{ $fees->section_name }}</td>
-                <th>Start Date</th>
-                <td id="startDate">{{ $fees->start_date }}</td>
-            </tr>
-        </table>
-        <table class="info-table">
-            <tr>
-                <th>Student's Fees Details</th>
-                <th>Amount</th>
-            </tr>
-            <tr>
-                <td>Total Fee</td>
-                <td><strong>${{ number_format($fees->grand_total, 2) }}</strong></td>
-            </tr>
-            @if($fees->remaining_balance != 0)
-                <tr id="prev_balance">
-                    <td>Previous Balance</td>
-                    <td id="previousFee"><strong>${{ number_format($fees->remaining_balance, 2)}}</strong></td>
+            <div class="d-flex align-items-center" style="gap: 0.6rem;">
+                <button type="button" class="rc-btn rc-btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i>
+                    <span>{{ __('Print Receipt') }}</span>
+                </button>
+                <a href="{{ route('fee_receipt.pdf', $fees->receipt_id) }}" class="rc-btn rc-btn-secondary" target="_blank">
+                    <i class="fas fa-file-pdf text-danger"></i>
+                    <span>{{ __('Download PDF') }}</span>
+                </a>
+            </div>
+        </div>
+
+        {{-- ══════════════════════════════════════════════════════════════
+             VOUCHER 1: STUDENT COPY
+        ══════════════════════════════════════════════════════════════ --}}
+        <div class="rc-voucher">
+            <div class="rc-voucher-header">
+                <div class="rc-brand-left">
+                    <img src="{{ $logoUrl }}" alt="{{ $schoolName }} Logo" class="rc-logo">
+                    <div class="rc-school-info">
+                        <h2>{{ $schoolName }}</h2>
+                        <p><i class="fas fa-map-marker-alt mr-1"></i>{{ $schoolAddress }}</p>
+                        <p><i class="fas fa-phone mr-1"></i>{{ $schoolPhone }} · <i class="fas fa-envelope mr-1"></i>{{ $schoolEmail }}</p>
+                    </div>
+                </div>
+                <div class="rc-voucher-badge-wrap">
+                    <span class="rc-voucher-badge">{{ __('Official Fee Receipt') }}</span>
+                    <div class="rc-copy-label">{{ __('Student Copy') }}</div>
+                </div>
+            </div>
+
+            {{-- Info Grid --}}
+            <table class="rc-info-grid">
+                <tr>
+                    <td class="rc-label">{{ __('Receipt No.') }}</td>
+                    <td class="rc-val"><strong>{{ $fees->receipt_no }}</strong></td>
+                    <td class="rc-label">{{ __('Receipt Date') }}</td>
+                    <td class="rc-val">{{ date('F d, Y', strtotime($fees->receipt_date)) }}</td>
                 </tr>
-            @endif
-            <tr>
-                <td>Paid Fee</td>
-                <td id="paidFee"><strong>${{ number_format($fees->paid, 2) }}</strong></td>
-            </tr>
-            <tr>
-                <td>Balance Fee</td>
-                <td id="balanceFee"><strong>${{ number_format($fees->previous_balance, 2) }}</strong></td>
-            </tr>
-        </table>
+                <tr>
+                    <td class="rc-label">{{ __('Student Name') }}</td>
+                    <td class="rc-val"><strong>{{ $fees->student_name }}</strong></td>
+                    <td class="rc-label">{{ __('Guardian / Parent') }}</td>
+                    <td class="rc-val">{{ $fees->parent_name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td class="rc-label">{{ __('Class / Grade') }}</td>
+                    <td class="rc-val">{{ $fees->class_name }}</td>
+                    <td class="rc-label">{{ __('Section / Shift') }}</td>
+                    <td class="rc-val">{{ $fees->section_name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td class="rc-label">{{ __('Roll Number') }}</td>
+                    <td class="rc-val">{{ $fees->roll ?? 'N/A' }}</td>
+                    <td class="rc-label">{{ __('Payment Mode') }}</td>
+                    <td class="rc-val">{{ $fees->paid_via ?? 'Cash' }}</td>
+                </tr>
+            </table>
 
-        <div class="qr-terms-container">
-            <div class="qr-code">
-                <div id="qr-code">
-                {!! QrCode::size(100)->generate("
-                    Student Name: {$fees->student_name}
-                    Course: {$fees->class_name}
-                    Shift: {$fees->section_name}
-                    Start Date: {$fees->start_date}
-                    Total Fee: \${$fees->grand_total}
-                    Paid Fee: \${$fees->paid}
-                    Previous Balance: \${$fees->remaining_balance}
-                    Remaining Balance: \${$fees->previous_balance}
-                    Paid On: {$fees->receipt_date}
-                    School: Mawarid Tech Academy
-                    ") !!}
-                </div>
-                <p style="text-align: left; font-size: 14px; margin-top: 5px; color: black;">Scan for Details</p>
-            </div>
-            <div class="terms">
-                <p><strong>Terms:</strong></p>
-                <p>1. Fee once paid is non-refundable.</p>
-                <p>2. Receipt must be retained for any future references.</p>
-                <p>3. For any queries, please contact the administration.</p>
-            </div>
-        </div>
-    </div>
-        </div>
-        <div class="receipt">
-            <div id="receipt-container" class="receipt-container">
-                <div class="header">
-                    <table style=" width: 100%; border-collapse: collapse;">
-                        <tbody>
-                        <tr>
-                            <td class="col-3">
-                                <img src="{{ asset('logo-final.png') }}" alt="Mawarid Tech Academy Logo" style="width: 80px; height: auto;">
-                            </td>
-
-                            <td class="col-1"></td>
-                            <td class="col-9">
-                                <table>
-                                    <tbody>
-                                    <tr>
-                                        <td class="col-12">
-                                            <div class="center-text">
-                                                <h1>Mawarid Tech Academy</h1>
-                                                <p>No.32, Street 606, Tuol Kork, Phnom Penh</p>
-                                                <p>Phone: +855 1280 1470 | Email: info@mawaridtech.com</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="receipt-title">Fee Receipt</div>
-                <p class="text-muted">
-                    *Note: Receipt for Accountant.
-                </p>
-                <table class="info-table">
+            {{-- Fee Breakdown Table --}}
+            <table class="rc-items-table">
+                <thead>
                     <tr>
-                        <th>Receipt No.</th>
-                        <td >{{ $fees->receipt_no }}</td>
-                        <th>Date</th>
-                        <td id="date">{{ date_format(date_create($fees->receipt_date), 'F d, Y') }}</td>
+                        <th style="width: 50%;">{{ __('Description') }}</th>
+                        <th style="text-align:center; width: 15%;">{{ __('Duration') }}</th>
+                        <th style="text-align:right; width: 35%;">{{ __('Amount (USD)') }}</th>
                     </tr>
+                </thead>
+                <tbody>
                     <tr>
-                        <th>Student Name</th>
-                        <td id="studentName">{{ $fees->student_name }}</td>
-                        <th>Father/Guardian Name</th>
-                        <td>{{ $fees->parent_name ?? 'N/A'}}</td>
-                    </tr>
-                    <tr>
-                        <th>Course</th>
-                        <td id="course">{{ $fees->class_name }}</td>
-                        <th>Duration</th>
-                        <td>{{ $fees->section_duration_months }} Months</td>
-                    </tr>
-                    <tr>
-                        <th>Shift</th>
-                        <td id="shift">{{ $fees->section_name }}</td>
-                        <th>Start Date</th>
-                        <td id="startDate">{{ $fees->start_date }}</td>
-                    </tr>
-                </table>
-                <table class="info-table">
-                    <tr>
-                        <th>Student's Fees Details</th>
-                        <th>Amount</th>
-                    </tr>
-                    <tr>
-                        <td>Total Fee</td>
-                        <td><strong>${{ number_format($fees->grand_total, 2) }}</strong></td>
+                        <td><strong>{{ __('Tuition Fee') }} · {{ $fees->class_name }} ({{ $fees->section_name ?? 'Regular' }})</strong></td>
+                        <td style="text-align:center;">{{ $fees->section_duration_months ?? 1 }} {{ __('Months') }}</td>
+                        <td style="text-align:right;">${{ number_format($fees->grand_total, 2) }}</td>
                     </tr>
                     @if($fees->remaining_balance != 0)
-                        <tr id="prev_balance">
-                            <td>Previous Balance</td>
-                            <td id="previousFee"><strong>${{ number_format($fees->remaining_balance, 2)}}</strong></td>
-                        </tr>
+                    <tr style="background:#fffbeb;">
+                        <td colspan="2" style="text-align:right;"><strong>{{ __('Previous Outstanding Balance:') }}</strong></td>
+                        <td style="text-align:right; color:#b45309;">${{ number_format($fees->remaining_balance, 2) }}</td>
+                    </tr>
                     @endif
-                    <tr>
-                        <td>Paid Fee</td>
-                        <td id="paidFee"><strong>${{ number_format($fees->paid, 2) }}</strong></td>
+                    <tr style="background:#f0fdf4;">
+                        <td colspan="2" style="text-align:right;"><strong>{{ __('Total Paid This Receipt:') }}</strong></td>
+                        <td style="text-align:right; color:#15803d; font-weight:800; font-size:1rem;">${{ number_format($fees->paid, 2) }}</td>
                     </tr>
-                    <tr>
-                        <td>Balance Fee</td>
-                        <td id="balanceFee"><strong>${{ number_format($fees->previous_balance, 2) }}</strong></td>
+                    <tr style="background:#f8fafc;">
+                        <td colspan="2" style="text-align:right;"><strong>{{ __('Remaining Balance:') }}</strong></td>
+                        <td style="text-align:right; font-weight:700;">${{ number_format($fees->previous_balance, 2) }}</td>
                     </tr>
-                </table>
+                </tbody>
+            </table>
 
-                <div class="qr-terms-container">
-                    <div class="qr-code2">
-                        <div id="qr-code2">
-                        {!! QrCode::size(100)->generate("
-                            Student Name: {$fees->student_name}
-                            Course: {$fees->class_name}
-                            Shift: {$fees->section_name}
-                            Start Date: {$fees->start_date}
-                            Total Fee: {$fees->grand_total}
-                            Paid Fee: \${$fees->paid}
-                            Previous Balance: \${$fees->remaining_balance}
-                            Remaining Balance: \${$fees->previous_balance}
-                            Paid On: {$fees->receipt_date}
-                            School: Mawarid Tech Academy
-                            ") !!}
-                        </div>
-                        <p style="text-align: left; font-size: 14px; margin-top: 5px; color: black;">Scan for Details</p>
+            {{-- Footer (QR Code, Terms, Signatures) --}}
+            <div class="rc-footer-wrap">
+                <div class="rc-qr-box">
+                    {!! QrCode::size(80)->generate("
+Student: {$fees->student_name}
+Class: {$fees->class_name}
+Receipt: {$fees->receipt_no}
+Paid: \${$fees->paid}
+Date: {$fees->receipt_date}
+School: {$schoolName}
+                    ") !!}
+                    <div class="rc-terms-box">
+                        <strong>{{ __('Notice:') }}</strong><br>
+                        • {{ __('Fees once paid are non-refundable and non-transferable.') }}<br>
+                        • {{ __('Please keep this official receipt for future reference.') }}
                     </div>
-                    <div class="terms">
-                        <p><strong>Terms:</strong></p>
-                        <p>1. Fee once paid is non-refundable.</p>
-                        <p>2. Receipt must be retained for any future references.</p>
-                        <p>3. For any queries, please contact the administration.</p>
-                    </div>
-
                 </div>
-
-                <button class="print-btn" onclick="printReceipt()"><i class="fas fa-print"></i> Print Receipt</button>
-                <a href="{{ route('fee_receipt.index') }}" class="btn btn-secondary mt-3"><i class="fas fa-back"></i>Back to List</a>
-                <a href="{{ route('fee_receipt.pdf', $fees->receipt_id) }}" class="btn btn-primary mt-3"><i class="fas fa-download"></i>Generate PDF</a>
+                <div class="rc-signatures">
+                    <div class="rc-sig-block">{{ __('Student / Parent') }}</div>
+                    <div class="rc-sig-block">{{ __('Cashier / Accountant') }}</div>
+                </div>
             </div>
         </div>
+
+        {{-- ══════════════════════════════════════════════════════════════
+             VOUCHER 2: ACCOUNTANT COPY (DUPLICATE FOR SCHOOL RECORDS)
+        ══════════════════════════════════════════════════════════════ --}}
+        <div class="rc-voucher">
+            <div class="rc-voucher-header">
+                <div class="rc-brand-left">
+                    <img src="{{ $logoUrl }}" alt="{{ $schoolName }} Logo" class="rc-logo">
+                    <div class="rc-school-info">
+                        <h2>{{ $schoolName }}</h2>
+                        <p><i class="fas fa-map-marker-alt mr-1"></i>{{ $schoolAddress }}</p>
+                        <p><i class="fas fa-phone mr-1"></i>{{ $schoolPhone }} · <i class="fas fa-envelope mr-1"></i>{{ $schoolEmail }}</p>
+                    </div>
+                </div>
+                <div class="rc-voucher-badge-wrap">
+                    <span class="rc-voucher-badge" style="background:#4338ca;">{{ __('Official Fee Receipt') }}</span>
+                    <div class="rc-copy-label">{{ __('School / Accountant Copy') }}</div>
+                </div>
+            </div>
+
+            {{-- Info Grid --}}
+            <table class="rc-info-grid">
+                <tr>
+                    <td class="rc-label">{{ __('Receipt No.') }}</td>
+                    <td class="rc-val"><strong>{{ $fees->receipt_no }}</strong></td>
+                    <td class="rc-label">{{ __('Receipt Date') }}</td>
+                    <td class="rc-val">{{ date('F d, Y', strtotime($fees->receipt_date)) }}</td>
+                </tr>
+                <tr>
+                    <td class="rc-label">{{ __('Student Name') }}</td>
+                    <td class="rc-val"><strong>{{ $fees->student_name }}</strong></td>
+                    <td class="rc-label">{{ __('Guardian / Parent') }}</td>
+                    <td class="rc-val">{{ $fees->parent_name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td class="rc-label">{{ __('Class / Grade') }}</td>
+                    <td class="rc-val">{{ $fees->class_name }}</td>
+                    <td class="rc-label">{{ __('Section / Shift') }}</td>
+                    <td class="rc-val">{{ $fees->section_name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td class="rc-label">{{ __('Roll Number') }}</td>
+                    <td class="rc-val">{{ $fees->roll ?? 'N/A' }}</td>
+                    <td class="rc-label">{{ __('Payment Mode') }}</td>
+                    <td class="rc-val">{{ $fees->paid_via ?? 'Cash' }}</td>
+                </tr>
+            </table>
+
+            {{-- Fee Breakdown Table --}}
+            <table class="rc-items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">{{ __('Description') }}</th>
+                        <th style="text-align:center; width: 15%;">{{ __('Duration') }}</th>
+                        <th style="text-align:right; width: 35%;">{{ __('Amount (USD)') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{{ __('Tuition Fee') }} · {{ $fees->class_name }} ({{ $fees->section_name ?? 'Regular' }})</strong></td>
+                        <td style="text-align:center;">{{ $fees->section_duration_months ?? 1 }} {{ __('Months') }}</td>
+                        <td style="text-align:right;">${{ number_format($fees->grand_total, 2) }}</td>
+                    </tr>
+                    @if($fees->remaining_balance != 0)
+                    <tr style="background:#fffbeb;">
+                        <td colspan="2" style="text-align:right;"><strong>{{ __('Previous Outstanding Balance:') }}</strong></td>
+                        <td style="text-align:right; color:#b45309;">${{ number_format($fees->remaining_balance, 2) }}</td>
+                    </tr>
+                    @endif
+                    <tr style="background:#f0fdf4;">
+                        <td colspan="2" style="text-align:right;"><strong>{{ __('Total Paid This Receipt:') }}</strong></td>
+                        <td style="text-align:right; color:#15803d; font-weight:800; font-size:1rem;">${{ number_format($fees->paid, 2) }}</td>
+                    </tr>
+                    <tr style="background:#f8fafc;">
+                        <td colspan="2" style="text-align:right;"><strong>{{ __('Remaining Balance:') }}</strong></td>
+                        <td style="text-align:right; font-weight:700;">${{ number_format($fees->previous_balance, 2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {{-- Footer (QR Code, Terms, Signatures) --}}
+            <div class="rc-footer-wrap">
+                <div class="rc-qr-box">
+                    {!! QrCode::size(80)->generate("
+Student: {$fees->student_name}
+Class: {$fees->class_name}
+Receipt: {$fees->receipt_no}
+Paid: \${$fees->paid}
+Date: {$fees->receipt_date}
+School: {$schoolName}
+                    ") !!}
+                    <div class="rc-terms-box">
+                        <strong>{{ __('Internal Records:') }}</strong><br>
+                        • {{ __('Archived in School Accounting Database.') }}<br>
+                        • {{ __('Authorized verification token validated.') }}
+                    </div>
+                </div>
+                <div class="rc-signatures">
+                    <div class="rc-sig-block">{{ __('Auditor / Controller') }}</div>
+                    <div class="rc-sig-block">{{ __('Authorized Signature') }}</div>
+                </div>
+            </div>
+        </div>
+
     </div>
-
-    <script>
-        function printReceipt() {
-            var receipt = document.getElementById('receipt');
-            receipt.style.display = 'block';
-            window.print();
-            receipt.style.display = 'none';
-        }
-    </script>
-
-
-{{--<script>--}}
-{{--    document.addEventListener("DOMContentLoaded", function() {--}}
-
-{{--        // Generate QR Code with all the details--}}
-{{--        const qrContent = `--}}
-{{--                    Student Name: ${studentName}--}}
-{{--                    Course: ${course}--}}
-{{--                    Paid Fee: $${paidFee}--}}
-{{--                    @if($fees->remaining_balance != 0)--}}
-{{--                        Previous Fee: $${previousFee}--}}
-{{--                    @endif--}}
-{{--                    Balance: $${balanceFee}--}}
-{{--                    Paid On: ${date}--}}
-{{--                    School: Mawarid Tech Academy--}}
-{{--                `;    --}}
-
-{{--        const qrContent = `--}}
-{{--                    {!! QrCode::size(200)->generate("--}}
-{{--                    Student Name: {$fees->student_name}--}}
-{{--                    Course: {$fees->class_name}--}}
-{{--                    Paid Fee: \${$fees->paid}--}}
-{{--                    Previous Balance: \${$fees->previous_balance}--}}
-{{--                    Remaining Balance: \${$fees->remaining_balance}--}}
-{{--                    Paid On: {$fees->receipt_date}--}}
-{{--                    School: Mawarid Tech Academy--}}
-{{--                    ") !!}--}}
-{{--                `;--}}
-{{--        new QRCode(document.getElementById('qr-code'), {--}}
-{{--            text: qrContent,--}}
-{{--            width: 100,--}}
-{{--            height: 100--}}
-{{--        });--}}
-{{--        new QRCode(document.getElementById('qr-code2'), {--}}
-{{--            text: qrContent,--}}
-{{--            width: 100,--}}
-{{--            height: 100--}}
-{{--        });--}}
-{{--    });--}}
-{{--</script>--}}
-
+</div>
 
 @endsection

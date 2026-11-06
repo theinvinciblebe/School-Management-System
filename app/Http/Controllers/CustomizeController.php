@@ -123,6 +123,31 @@ class CustomizeController extends Controller
         ], 200);
     }
 
+    public function updateContactInfo(Request $request)
+    {
+        $request->validate([
+            'school_address' => 'nullable|string|max:500',
+            'school_phone'   => 'nullable|string|max:100',
+            'school_email'   => 'nullable|string|max:150',
+        ]);
+
+        DB::table('customize')->updateOrInsert(
+            ['id' => 1],
+            [
+                'school_address' => $request->school_address,
+                'school_phone'   => $request->school_phone,
+                'school_email'   => $request->school_email,
+            ]
+        );
+
+        return response()->json([
+            'message' => 'School Contact Info Updated Successfully!',
+            'school_address' => $request->school_address,
+            'school_phone'   => $request->school_phone,
+            'school_email'   => $request->school_email,
+        ], 200);
+    }
+
     public function getTheme()
     {
         $customization = DB::table('customize')->first();
