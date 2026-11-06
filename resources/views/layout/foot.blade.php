@@ -6,6 +6,267 @@
 <!-- AdminLTE App -->
 <script src="/assets/dist/js/adminlte.min.js"></script>
 
+<!-- Sidebar Scroll Position & OverlayScrollbars Consistency Script -->
+<script>
+    (function () {
+        const SIDEBAR_SCROLL_KEY = 'adminlte_sidebar_scroll_pos';
+        const SIDEBAR_PATH_KEY   = 'adminlte_sidebar_last_path';
+
+        function getSidebar() {
+            return $('.main-sidebar .sidebar');
+        }
+
+        function getOsInstance() {
+            const $sb = getSidebar();
+            if ($sb.length && typeof $sb.overlayScrollbars === 'function') {
+                return $sb.overlayScrollbars() || null;
+            }
+            return null;
+        }
+
+        function syncSidebarTheme(force) {
+            const $mainSidebar = $('.main-sidebar');
+            const $sidebar     = getSidebar();
+            if (!$sidebar.length) return;
+
+            const isLight = $mainSidebar.is('[class*="sidebar-light-"]');
+            $sidebar
+                .toggleClass('os-theme-dark',  isLight)
+                .toggleClass('os-theme-light', !isLight);
+
+            const os = getOsInstance();
+            if (os && typeof os.options === 'function') {
+                os.options({
+                    className: isLight ? 'os-theme-dark' : 'os-theme-light',
+                    overflowBehavior: { x: 'hidden', y: 'scroll' },
+                    scrollbars: {
+                        visibility: 'auto',
+                        autoHide: 'leave',
+                        autoHideDelay: 800,
+                        dragScrolling: true,
+                        clickScrolling: true,
+                        touchSupport: true
+                    },
+                    callbacks: {
+                        onScroll: function() {
+                            saveSidebarScroll();
+                        }
+                    }
+                });
+            }
+        }
+
+        function readSidebarScroll() {
+            try {
+                // 1. Raw os-viewport scrollTop (direct DOM value)
+                const vp = document.querySelector('.main-sidebar .sidebar .os-viewport');
+                if (vp && typeof vp.scrollTop === 'number' && vp.scrollTop > 0) {
+                    return vp.scrollTop;
+                }
+                // 2. OverlayScrollbars API
+                const os = getOsInstance();
+                if (os && typeof os.scroll === 'function') {
+                    const s = os.scroll();
+                    if (s && s.position && typeof s.position.y === 'number' && s.position.y > 0) {
+                        return s.position.y;
+                    }
+                }
+                // 3. Raw sidebar element
+                const sb = document.querySelector('.main-sidebar .sidebar');
+                if (sb && typeof sb.scrollTop === 'number') {
+                    return sb.scrollTop;
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        function saveSidebarScroll() {
+            const pos = readSidebarScroll();
+            if (pos !== null && !isNaN(pos)) {
+                try {
+                    sessionStorage.setItem(SIDEBAR_SCROLL_KEY, Math.round(pos));
+                } catch(e) {}
+            }
+        }
+
+        // Apply scroll synchronously with ZERO animation (duration: 0)
+        function applyScrollY(y) {
+            if (y === null || isNaN(y) || y < 0) return;
+            try {
+                // Direct DOM viewports
+                const vp = document.querySelector('.main-sidebar .sidebar .os-viewport');
+                if (vp) vp.scrollTop = y;
+                const sb = document.querySelector('.main-sidebar .sidebar');
+                if (sb) sb.scrollTop = y;
+
+                // OverlayScrollbars instant scroll (0ms duration)
+                const os = getOsInstance();
+                if (os && typeof os.scroll === 'function') {
+                    os.scroll({ y: y }, 0);
+                }
+            } catch(e) {}
+        }
+
+        function syncTreeviews() {
+            const $sidebar = getSidebar();
+            if (!$sidebar.length) return;
+
+            const isMini = document.body.classList.contains('sidebar-collapse') ||
+                           document.documentElement.classList.contains('sidebar-collapse');
+
+            if (isMini) {
+                // Mini mode: collapse ALL treeviews — no dangling submenus
+                $sidebar.find('.nav-sidebar .nav-item.menu-open, .nav-sidebar .nav-item.menu-is-opening')
+                    .removeClass('menu-open menu-is-opening');
+                $sidebar.find('.nav-sidebar .nav-treeview').each(function () {
+                    this.style.removeProperty('display');
+                    this.style.removeProperty('height');
+                    this.style.display = 'none';
+                });
+            } else {
+                // Expanded mode: open treeview that contains the active link
+                const $active = $sidebar.find('.nav-sidebar .nav-link.active').first();
+                if ($active.length) {
+                    const $tv = $active.closest('.nav-treeview');
+                    if ($tv.length) {
+                        const $parentItem = $tv.closest('.nav-item');
+                        if ($parentItem.length && !$parentItem.hasClass('menu-open')) {
+                            $parentItem.addClass('menu-open');
+                            $parentItem.children('.nav-treeview').css('display', 'block');
+                        }
+                    }
+                }
+            }
+        }
+
+        function restoreSidebarState() {
+            syncSidebarTheme();
+            syncTreeviews();
+
+            const $sidebar = getSidebar();
+            if (!$sidebar.length) return;
+
+            let savedScroll = null;
+            const curPath   = window.location.pathname;
+
+            try {
+                savedScroll = sessionStorage.getItem(SIDEBAR_SCROLL_KEY);
+                sessionStorage.setItem(SIDEBAR_PATH_KEY, curPath);
+            } catch(e) {}
+
+            if (savedScroll !== null) {
+                const targetY = parseInt(savedScroll, 10);
+                if (!isNaN(targetY) && targetY >= 0) {
+                    applyScrollY(targetY);
+                    return;
+                }
+            }
+
+            // ONLY if user has NEVER scrolled (first arrival on site without saved scroll)
+            const activeItem = document.querySelector('.main-sidebar .nav-sidebar .nav-link.active');
+            if (activeItem) {
+                activeItem.scrollIntoView({ block: 'nearest' });
+                saveSidebarScroll();
+            }
+        }
+
+        function initAndRestore() {
+            const $sidebar = getSidebar();
+            if (!$sidebar.length) return;
+
+            if (typeof $.fn.overlayScrollbars === 'function' && !$sidebar.hasClass('os-host')) {
+                const isLight = $('.main-sidebar').is('[class*="sidebar-light-"]');
+                $sidebar.overlayScrollbars({
+                    className: isLight ? 'os-theme-dark' : 'os-theme-light',
+                    overflowBehavior: { x: 'hidden', y: 'scroll' },
+                    scrollbars: {
+                        visibility: 'auto',
+                        autoHide: 'leave',
+                        autoHideDelay: 800,
+                        dragScrolling: true,
+                        clickScrolling: true,
+                        touchSupport: true
+                    },
+                    callbacks: {
+                        onScroll: function() {
+                            saveSidebarScroll();
+                        }
+                    }
+                });
+            }
+
+            restoreSidebarState();
+        }
+
+        $(document).ready(function () {
+            initAndRestore();
+        });
+
+        $(window).on('load', function () {
+            let saved = null;
+            try { saved = sessionStorage.getItem(SIDEBAR_SCROLL_KEY); } catch(e) {}
+            if (saved !== null) {
+                const y = parseInt(saved, 10);
+                if (!isNaN(y) && y > 0) {
+                    applyScrollY(y);
+                }
+            }
+        });
+
+        // 1. Capture scroll event continuously using capture phase (since scroll does not bubble)
+        document.addEventListener('scroll', function (e) {
+            var t = e.target;
+            if (t && (
+                (t.classList && (t.classList.contains('os-viewport') || t.classList.contains('sidebar'))) ||
+                (t.closest && t.closest('.main-sidebar'))
+            )) {
+                saveSidebarScroll();
+            }
+        }, true);
+
+        // 2. Save scroll position on any click or pointerdown in the sidebar
+        document.addEventListener('pointerdown', function (e) {
+            if (e.target && e.target.closest && e.target.closest('.main-sidebar')) {
+                saveSidebarScroll();
+            }
+        }, true);
+
+        // 3. Save scroll on page navigation
+        window.addEventListener('pagehide',    saveSidebarScroll, { passive: true });
+        window.addEventListener('beforeunload', saveSidebarScroll, { passive: true });
+
+        // 4. Click on nav links: save scroll, update active state, and show overlay
+        $(document).on('click', '.main-sidebar .sidebar .nav-link', function (e) {
+            if (e.ctrlKey || e.metaKey || e.shiftKey || $(this).attr('target') === '_blank') return;
+            const href = $(this).attr('href');
+            if (!href || href === '#' || href.startsWith('javascript:')) return;
+
+            saveSidebarScroll();
+
+            if (window.location.pathname === href || window.location.href === href) return;
+
+            // Instant active highlight
+            $('.main-sidebar .sidebar .nav-link').removeClass('active');
+            $(this).addClass('active');
+            showOverlay();
+        });
+
+        // 5. Treeview animation finished: re-save scroll and update OS
+        $(document).on('expanded.lte.treeview collapsed.lte.treeview', function () {
+            setTimeout(function () {
+                const os = getOsInstance();
+                if (os && typeof os.update === 'function') os.update();
+                saveSidebarScroll();
+            }, 320);
+        });
+
+        // Expose globals
+        window.syncSidebarScrollbarTheme   = () => syncSidebarTheme(true);
+        window.syncSidebarSelectedPosition  = restoreSidebarState;
+        window.saveCurrentSidebarScroll    = saveSidebarScroll;
+    })();
+</script>
+
 <!-- jQuery UI 1.11.4 -->
 <script src="/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -295,207 +556,7 @@
     });
 </script>
 
-<!-- Sidebar Scroll Position & OverlayScrollbars Consistency Script -->
-<script>
-    (function () {
-        const SIDEBAR_SCROLL_KEY = 'adminlte_sidebar_scroll_pos';
-        const SIDEBAR_PATH_KEY = 'adminlte_sidebar_last_path';
 
-        function getSidebar() {
-            return $('.main-sidebar .sidebar');
-        }
-
-        function getOsInstance() {
-            const $sidebar = getSidebar();
-            if ($sidebar.length && typeof $sidebar.overlayScrollbars === 'function') {
-                return $sidebar.overlayScrollbars();
-            }
-            return null;
-        }
-
-        function syncSidebarTheme() {
-            const $mainSidebar = $('.main-sidebar');
-            const $sidebar = getSidebar();
-            if (!$sidebar.length) return;
-
-            const isLightSidebar = $mainSidebar.is('[class*="sidebar-light-"]');
-            const targetTheme = isLightSidebar ? 'os-theme-dark' : 'os-theme-light';
-            if (isLightSidebar) {
-                $sidebar.removeClass('os-theme-light').addClass('os-theme-dark');
-            } else {
-                $sidebar.removeClass('os-theme-dark').addClass('os-theme-light');
-            }
-
-            const os = getOsInstance();
-            if (os && typeof os.options === 'function') {
-                os.options({
-                    className: targetTheme,
-                    overflowBehavior: {
-                        x: 'hidden',
-                        y: 'scroll'
-                    },
-                    scrollbars: {
-                        visibility: 'auto',
-                        autoHide: 'leave',
-                        autoHideDelay: 600,
-                        dragScrolling: true,
-                        clickScrolling: true,
-                        touchSupport: true
-                    }
-                });
-            }
-        }
-
-        function saveSidebarScroll() {
-            try {
-                const os = getOsInstance();
-                let pos = null;
-                if (os && typeof os.scroll === 'function') {
-                    const s = os.scroll();
-                    if (s && s.position) {
-                        pos = s.position.y;
-                    }
-                } else {
-                    const $vp = getSidebar().find('.os-viewport');
-                    if ($vp.length) {
-                        pos = $vp.scrollTop();
-                    } else if (getSidebar().length) {
-                        pos = getSidebar()[0].scrollTop;
-                    }
-                }
-                if (pos !== null && !isNaN(pos)) {
-                    sessionStorage.setItem(SIDEBAR_SCROLL_KEY, pos);
-                }
-            } catch (e) {}
-        }
-
-        function syncSidebarSelectedPosition() {
-            const $sidebar = getSidebar();
-            if (!$sidebar.length) return;
-
-            syncSidebarTheme();
-
-            const os = getOsInstance();
-            let currentPath = window.location.pathname;
-            let lastPath = null;
-            let savedScroll = null;
-
-            try {
-                lastPath = sessionStorage.getItem(SIDEBAR_PATH_KEY);
-                savedScroll = sessionStorage.getItem(SIDEBAR_SCROLL_KEY);
-                sessionStorage.setItem(SIDEBAR_PATH_KEY, currentPath);
-            } catch (e) {}
-
-            const $active = $sidebar.find('.nav-sidebar .nav-link.active').first();
-
-            // Ensure parent treeview menu is opened if active item is inside a treeview
-            if ($active.length) {
-                const $parentItem = $active.closest('.nav-treeview').closest('.nav-item');
-                if ($parentItem.length && !$parentItem.hasClass('menu-open')) {
-                    $parentItem.addClass('menu-open');
-                    $parentItem.children('.nav-treeview').show();
-                }
-            }
-
-            // If navigating within the session, restore exact scroll across route changes (no jumping)
-            if (savedScroll !== null) {
-                const targetY = parseInt(savedScroll, 10);
-                if (!isNaN(targetY)) {
-                    if (os && typeof os.scroll === 'function') {
-                        os.scroll({ y: targetY }, 0);
-                    } else {
-                        $sidebar.find('.os-viewport').scrollTop(targetY);
-                    }
-                    return;
-                }
-            }
-
-            // If no saved scroll exists (initial direct URL visit), scroll active item into view
-            if ($active.length) {
-                if (os && typeof os.scroll === 'function') {
-                    os.scroll({ el: $active[0], block: 'center', scroll: 'ifneeded' }, 0);
-                } else {
-                    $active[0].scrollIntoView({ block: 'center', inline: 'nearest' });
-                }
-            }
-        }
-
-        // Run when DOM and AdminLTE are ready
-        $(document).ready(function () {
-            syncSidebarTheme();
-            syncSidebarSelectedPosition();
-
-            // Save on beforeunload
-            window.addEventListener('beforeunload', saveSidebarScroll);
-
-            // Continuously save scroll on os-viewport scroll
-            $(document).on('scroll', '.main-sidebar .sidebar .os-viewport', function () {
-                saveSidebarScroll();
-            });
-
-            // Proactive link prefetching for buttery smooth page navigation
-            const prefetchedLinks = new Set();
-            function prefetchNav(href) {
-                if (!href || href === '#' || href.startsWith('javascript:') || prefetchedLinks.has(href)) return;
-                try {
-                    const targetUrl = new URL(href, window.location.origin);
-                    if (targetUrl.origin !== window.location.origin) return;
-                    if (targetUrl.pathname === window.location.pathname) return;
-                    if (targetUrl.pathname.includes('logout') || targetUrl.pathname.includes('delete')) return;
-
-                    prefetchedLinks.add(href);
-                    const prefetchTag = document.createElement('link');
-                    prefetchTag.rel = 'prefetch';
-                    prefetchTag.href = targetUrl.href;
-                    prefetchTag.as = 'document';
-                    document.head.appendChild(prefetchTag);
-                } catch (e) {}
-            }
-
-            $(document).on('mouseenter pointerdown', '.main-sidebar .sidebar .nav-link', function () {
-                const href = $(this).attr('href');
-                if (href) prefetchNav(href);
-            });
-
-            // Listen to click on nav-links: immediately save position, update active highlight, and show overlay inside overlay-wrapper
-            $(document).on('click', '.main-sidebar .sidebar .nav-link', function (e) {
-                if (e.ctrlKey || e.metaKey || e.shiftKey || $(this).attr('target') === '_blank') {
-                    return;
-                }
-                const href = $(this).attr('href');
-                if (href && href !== '#' && !href.startsWith('javascript:')) {
-                    saveSidebarScroll();
-                    // Avoid showing loader if already on current URL
-                    if (window.location.pathname === href || window.location.href === href) {
-                        return;
-                    }
-                    $('.main-sidebar .sidebar .nav-link').removeClass('active');
-                    $(this).addClass('active');
-                    showOverlay();
-                }
-            });
-
-            // Handle treeview animation finishes
-            $(document).on('expanded.lte.treeview collapsed.lte.treeview', function () {
-                setTimeout(function () {
-                    const os = getOsInstance();
-                    if (os && typeof os.update === 'function') {
-                        os.update();
-                    }
-                    saveSidebarScroll();
-                }, 350);
-            });
-        });
-
-        $(window).on('load', function () {
-            syncSidebarSelectedPosition();
-        });
-
-        // Expose globally so customize page swatch changes can call it
-        window.syncSidebarScrollbarTheme = syncSidebarTheme;
-        window.syncSidebarSelectedPosition = syncSidebarSelectedPosition;
-    })();
-</script>
 
 <script>
     // Bottom-of-page immediate preloader dismissal: ensures preloader is never stuck after scripts execute
@@ -515,8 +576,10 @@
 <!-- PC Desktop Productivity & Responsiveness Engine -->
 <script>
     (function() {
-        // 1. Sidebar Collapse State Persistence on Desktop PC
+        // 1. Sidebar Collapse State Persistence on Desktop PC (>= 992px only)
         function saveSidebarCollapseState(isCollapsed) {
+            // Strictly guard: never persist desktop collapse state on mobile screens
+            if (window.innerWidth < 992) return;
             try {
                 localStorage.setItem('sidebar_collapsed', isCollapsed ? '1' : '0');
                 document.cookie = "sidebar_collapsed=" + (isCollapsed ? "1" : "0") + "; path=/; max-age=31536000; SameSite=Lax";
@@ -530,18 +593,57 @@
 
         $(document).on('collapsed.lte.pushmenu', function() {
             saveSidebarCollapseState(true);
+            if (window.innerWidth >= 992) {
+                // Purge all open treeviews in mini mode so nothing dangles
+                $('.main-sidebar .nav-sidebar .nav-item.menu-open, .main-sidebar .nav-sidebar .nav-item.menu-is-opening').each(function () {
+                    $(this).removeClass('menu-open menu-is-opening');
+                });
+                $('.main-sidebar .nav-sidebar .nav-treeview').each(function () {
+                    this.style.removeProperty('display');
+                    this.style.removeProperty('height');
+                    $(this).hide();
+                });
+            }
         });
 
         $(document).on('shown.lte.pushmenu', function() {
             saveSidebarCollapseState(false);
+            if (window.innerWidth >= 992) {
+                // Restore active parent treeview when sidebar expands
+                const $active = $('.main-sidebar .nav-sidebar .nav-link.active').first();
+                if ($active.length) {
+                    const $parentItem = $active.closest('.nav-treeview').closest('.nav-item');
+                    if ($parentItem.length) {
+                        $parentItem.addClass('menu-open');
+                        $parentItem.children('.nav-treeview').slideDown(180);
+                    }
+                }
+            }
         });
 
         // Pushmenu click fallback
         $(document).on('click', '[data-widget="pushmenu"]', function() {
             setTimeout(function() {
-                var isCollapsed = $('body').hasClass('sidebar-collapse');
-                saveSidebarCollapseState(isCollapsed);
+                if (window.innerWidth >= 992) {
+                    var isCollapsed = $('body').hasClass('sidebar-collapse');
+                    saveSidebarCollapseState(isCollapsed);
+                }
             }, 300);
+        });
+
+        // Smart behavior: if sidebar is in collapsed mini-mode on PC, clicking a menu with submenus smoothly expands it
+        $(document).on('click', '.sidebar-collapse .main-sidebar .nav-sidebar .nav-item > .nav-link', function (e) {
+            if (window.innerWidth < 992) return;
+            const $item = $(this).closest('.nav-item');
+            if ($item.find('.nav-treeview').length) {
+                e.preventDefault();
+                e.stopPropagation();
+                $('[data-widget="pushmenu"]').first().trigger('click');
+                setTimeout(() => {
+                    $item.addClass('menu-open');
+                    $item.children('.nav-treeview').slideDown(180);
+                }, 160);
+            }
         });
 
         // 2. PC Table Density Toggle (Compact vs Comfortable)
@@ -659,15 +761,7 @@
             const emptyState = document.getElementById('smartSearchEmpty');
             const sidebarNav = document.querySelector('.main-sidebar .nav-sidebar');
 
-            // A. Auto-Scroll to Active Link on Page Load
-            try {
-                const activeItem = document.querySelector('.main-sidebar .nav-sidebar .nav-link.active');
-                if (activeItem) {
-                    setTimeout(function() {
-                        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 150);
-                }
-            } catch(e) {}
+
 
             // B. Smart In-Tree Live Filtering
             if (input && sidebarNav) {

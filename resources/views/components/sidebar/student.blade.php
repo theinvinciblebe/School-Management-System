@@ -115,16 +115,15 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{route('exams_list.index')}}" class="nav-link {{ Request::is('exams*')? 'active' : '' }}">
+                    <a href="{{ route('exams_list.index') }}" class="nav-link {{ Request::is('exams*') ? 'active' : '' }}" onclick="showOverlay()">
                         <i class="far fa-circle nav-icon"></i>
-
-                        <p>Exam List</p>
+                        <p>{{ __('Exam List') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{route('exams_grade.index')}}" class="nav-link {{ Request::is('grades*')? 'active' : '' }}">
+                    <a href="{{ route('exams_grade.index') }}" class="nav-link {{ Request::is('grades*') ? 'active' : '' }}" onclick="showOverlay()">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Exam Grades</p>
+                        <p>{{ __('Exam Grades') }}</p>
                     </a>
                 </li>
             </ul>

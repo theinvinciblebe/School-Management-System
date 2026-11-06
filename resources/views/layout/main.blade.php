@@ -39,13 +39,18 @@
                 }
             }
 
-            // Apply PC Sidebar Collapse preference
+            // Apply PC Sidebar Collapse preference (strictly for Desktop >= 992px)
             var sidebarCollapsed = localStorage.getItem('sidebar_collapsed');
-            if (b && window.innerWidth >= 992) {
-                if (sidebarCollapsed === '1') {
-                    b.classList.add('sidebar-collapse');
-                } else if (sidebarCollapsed === '0') {
+            if (b) {
+                if (window.innerWidth < 992) {
                     b.classList.remove('sidebar-collapse');
+                    document.documentElement.classList.remove('sidebar-collapse', 'sidebar-is-collapsed');
+                } else {
+                    if (sidebarCollapsed === '1') {
+                        b.classList.add('sidebar-collapse');
+                    } else if (sidebarCollapsed === '0') {
+                        b.classList.remove('sidebar-collapse');
+                    }
                 }
             }
 
@@ -223,6 +228,17 @@
 
     </div>
     <!-- /.sidebar -->
+    <script>
+      (function() {
+        try {
+          var y = sessionStorage.getItem('adminlte_sidebar_scroll_pos');
+          if (y) {
+            var sb = document.querySelector('.main-sidebar .sidebar');
+            if (sb) sb.scrollTop = parseInt(y, 10);
+          }
+        } catch(e) {}
+      })();
+    </script>
   </aside>
 
   <!-- Content Wrapper. Contains page content -->

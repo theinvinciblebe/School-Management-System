@@ -206,9 +206,9 @@
         @endif
 
         <li class="nav-header">{{ __('Exam Manage') }}</li>
-        <li class="nav-item {{ Request::is('exams*') ||Request::is('grades*')||Request::is('manage-exam-marks*') ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Request::is('exams*') ||Request::is('grades*')||Request::is('manage-exam-marks*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-layer-group"></i>
+        <li class="nav-item {{ Request::is('exams*') || Request::is('grades*') || Request::is('manage-exam-marks*') ? 'menu-is-opening menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('exams*') || Request::is('grades*') || Request::is('manage-exam-marks*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-file-signature"></i>
                 <p>
                     {{ __('Exam Section') }}
                     <i class="right fas fa-angle-left"></i>
@@ -216,19 +216,19 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{route('exams_list.index')}}" class="nav-link {{ Request::is('exams*')? 'active' : '' }}">
+                    <a href="{{ route('exams_list.index') }}" class="nav-link {{ Request::is('exams*') ? 'active' : '' }}" onclick="showOverlay()">
                         <i class="far fa-circle nav-icon"></i>
                         <p>{{ __('Exam List') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{route('exams_grade.index')}}" class="nav-link {{ Request::is('grades*')? 'active' : '' }}">
+                    <a href="{{ route('exams_grade.index') }}" class="nav-link {{ Request::is('grades*') ? 'active' : '' }}" onclick="showOverlay()">
                         <i class="far fa-circle nav-icon"></i>
                         <p>{{ __('Exam Grades') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('exam_marks.index') }}" class="nav-link {{ Request::is('manage-exam-marks*')? 'active' : '' }}">
+                    <a href="{{ route('exam_marks.index') }}" class="nav-link {{ Request::is('manage-exam-marks*') ? 'active' : '' }}" onclick="showOverlay()">
                         <i class="far fa-circle nav-icon"></i>
                         <p>{{ __('Manage Marks') }}</p>
                     </a>

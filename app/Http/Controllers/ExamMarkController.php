@@ -56,7 +56,7 @@ class ExamMarkController extends Controller
                 [
                     'mark_obtained' => $markData['mark_obtained'],
                     'comment' => $markData['comment'] ?? null,
-                    'mark_total' => 100, // Default max marks, or make this configurable
+                    'mark_total' => $request->mark_total ?? 100,
                 ]
             );
         }

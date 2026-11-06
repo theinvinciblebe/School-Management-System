@@ -84,7 +84,8 @@
         @media (min-width: 992px) {
             html.sidebar-is-collapsed body:not(.sidebar-open) .main-sidebar,
             html.sidebar-collapse body:not(.sidebar-open) .main-sidebar,
-            body.sidebar-collapse:not(.sidebar-open) .main-sidebar {
+            body.sidebar-collapse:not(.sidebar-open) .main-sidebar,
+            body.sidebar-collapse .main-sidebar {
                 width: 4.6rem !important;
             }
             html.sidebar-is-collapsed body:not(.sidebar-open) .main-header,
@@ -97,25 +98,6 @@
             html.sidebar-collapse body:not(.sidebar-open) .main-footer,
             body.sidebar-collapse:not(.sidebar-open) .main-footer {
                 margin-left: 4.6rem !important;
-            }
-            html.sidebar-is-collapsed body:not(.sidebar-open) .main-sidebar .brand-link,
-            html.sidebar-collapse body:not(.sidebar-open) .main-sidebar .brand-link,
-            body.sidebar-collapse:not(.sidebar-open) .main-sidebar .brand-link {
-                width: 4.6rem !important;
-                max-width: 4.6rem !important;
-                min-width: 4.6rem !important;
-                padding: 0 !important;
-                justify-content: center !important;
-            }
-            html.sidebar-is-collapsed body:not(.sidebar-open) .main-sidebar .brand-link .modern-brand-details,
-            html.sidebar-collapse body:not(.sidebar-open) .main-sidebar .brand-link .modern-brand-details,
-            body.sidebar-collapse:not(.sidebar-open) .main-sidebar .brand-link .modern-brand-details {
-                display: none !important;
-            }
-            html.sidebar-is-collapsed body:not(.sidebar-open) .main-sidebar .brand-link .modern-brand-logo,
-            html.sidebar-collapse body:not(.sidebar-open) .main-sidebar .brand-link .modern-brand-logo,
-            body.sidebar-collapse:not(.sidebar-open) .main-sidebar .brand-link .modern-brand-logo {
-                margin: 0 auto !important;
             }
         }
 
@@ -781,8 +763,7 @@
             z-index: 1050;
             border-radius: 9999px !important;
             transition: width 0.22s cubic-bezier(0.2, 0, 0, 1),
-                        opacity 0.28s cubic-bezier(0.2, 0, 0, 1),
-                        transform 0.22s cubic-bezier(0.2, 0, 0, 1) !important;
+                        opacity 0.28s cubic-bezier(0.2, 0, 0, 1) !important;
         }
 
         /* Expand comfortably on sidebar or scrollbar hover for effortless grabbing */
@@ -825,8 +806,7 @@
             width: 100% !important;
             min-height: 36px !important;
             transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
-                        box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1),
-                        transform 0.15s ease !important;
+                        box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1) !important;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
@@ -1152,9 +1132,9 @@
             color: #3b82f6;
         }
 
-        /* Ensure active and opening treeviews are rendered open immediately without slide/flicker */
-        .nav-sidebar .menu-open > .nav-treeview,
-        .nav-sidebar .menu-is-opening > .nav-treeview {
+        /* Ensure active and opening treeviews are rendered open immediately without slide/flicker (desktop expanded only) */
+        body:not(.sidebar-collapse) .nav-sidebar .menu-open > .nav-treeview,
+        body:not(.sidebar-collapse) .nav-sidebar .menu-is-opening > .nav-treeview {
             display: block !important;
         }
 
@@ -2301,6 +2281,9 @@
         /* Capsule Navigation Items */
         .nav-sidebar .nav-item {
             margin-bottom: 2px;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
         }
         .nav-sidebar .nav-link {
             border-radius: 10px !important;
@@ -2313,6 +2296,38 @@
             color: rgba(255, 255, 255, 0.72) !important;
             border: 1px solid transparent !important;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            outline: none !important;
+            overflow: hidden !important;
+            position: relative;
+        }
+        /* Eradicate any active tabs, notches, jagged left indicators, or pseudo-elements */
+        .nav-sidebar .nav-link::before,
+        .nav-sidebar .nav-link::after,
+        .nav-sidebar .nav-link.active::before,
+        .nav-sidebar .nav-link.active::after,
+        .nav-sidebar .nav-item::before,
+        .nav-sidebar .nav-item::after,
+        .nav-sidebar .nav-item.active::before,
+        .nav-sidebar .nav-item.active::after,
+        .nav-sidebar > .nav-item::before,
+        .nav-sidebar > .nav-item::after,
+        .nav-sidebar > .nav-item > .nav-link::before,
+        .nav-sidebar > .nav-item > .nav-link::after,
+        .nav-sidebar > .nav-item > .nav-link.active::before,
+        .nav-sidebar > .nav-item > .nav-link.active::after,
+        .nav-sidebar .nav-treeview .nav-link::before,
+        .nav-sidebar .nav-treeview .nav-link::after,
+        .nav-sidebar .nav-treeview .nav-link.active::before,
+        .nav-sidebar .nav-treeview .nav-link.active::after,
+        .nav-sidebar .nav-treeview .nav-item.active::before,
+        .nav-sidebar .nav-treeview .nav-item.active::after {
+            content: none !important;
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            border: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
         html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-link {
             color: #334155 !important;
@@ -2371,8 +2386,11 @@
             color: #ffffff !important;
             font-weight: 600 !important;
             box-shadow: 0 4px 14px -1px rgba(79, 70, 229, 0.45) !important;
-            border-color: rgba(255, 255, 255, 0.15) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 10px !important;
             transform: none !important;
+            outline: none !important;
+            overflow: hidden !important;
         }
         .nav-sidebar .nav-link.active > .nav-icon {
             background: rgba(255, 255, 255, 0.22) !important;
@@ -2433,6 +2451,7 @@
             border-radius: 8px !important;
             color: rgba(255, 255, 255, 0.65) !important;
             border: 1px solid transparent !important;
+            outline: none !important;
         }
         html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-treeview .nav-link {
             color: #475569 !important;
@@ -2466,12 +2485,13 @@
             color: #818cf8 !important;
         }
         .nav-sidebar .nav-treeview .nav-link.active {
-            background: rgba(99, 102, 241, 0.16) !important;
+            background: rgba(99, 102, 241, 0.18) !important;
             color: #a5b4fc !important;
             font-weight: 600 !important;
-            border: 1px solid rgba(99, 102, 241, 0.3) !important;
+            border: 1px solid rgba(99, 102, 241, 0.35) !important;
             box-shadow: none !important;
             transform: none !important;
+            outline: none !important;
         }
         html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-treeview .nav-link.active {
             background: rgba(99, 102, 241, 0.12) !important;
@@ -2646,209 +2666,374 @@
             color: #ef4444 !important;
         }
 
-        /* Collapsed Mini-Sidebar Mode */
-        html.sidebar-collapse .main-sidebar,
-        html.sidebar-is-collapsed .main-sidebar,
-        body.sidebar-collapse .main-sidebar {
-            width: 4.6rem !important;
+        /* Collapsed Mini-Sidebar Mode (PC Desktop Only >= 992px) */
+        @media (min-width: 992px) {
+            html.sidebar-collapse .main-sidebar,
+            html.sidebar-is-collapsed .main-sidebar,
+            body.sidebar-collapse .main-sidebar {
+                width: 4.6rem !important;
+            }
+
+            html.sidebar-collapse .main-sidebar .brand-link,
+            html.sidebar-is-collapsed .main-sidebar .brand-link,
+            body.sidebar-collapse .main-sidebar .brand-link,
+            .sidebar-mini.sidebar-collapse .main-sidebar .brand-link,
+            .layout-navbar-fixed.sidebar-mini.sidebar-collapse .wrapper .brand-link,
+            body.sidebar-collapse .main-sidebar .brand-link.modern-brand-header,
+            html.sidebar-is-collapsed .main-sidebar .brand-link.modern-brand-header,
+            html.sidebar-collapse .main-sidebar .brand-link.modern-brand-header {
+                width: 4.6rem !important;
+                max-width: 4.6rem !important;
+                min-width: 4.6rem !important;
+                padding: 0 !important;
+                justify-content: center !important;
+                overflow: hidden !important;
+                height: calc(3.5rem + 1px) !important;
+            }
+
+            /* Prevent any hover expansion on brand-link when sidebar is collapsed */
+            body.sidebar-collapse .main-sidebar:hover .brand-link,
+            html.sidebar-is-collapsed .main-sidebar:hover .brand-link,
+            html.sidebar-collapse .main-sidebar:hover .brand-link,
+            .sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-link {
+                width: 4.6rem !important;
+                max-width: 4.6rem !important;
+                min-width: 4.6rem !important;
+                justify-content: center !important;
+                padding: 0 !important;
+            }
+
+            html.sidebar-collapse .modern-brand-details,
+            html.sidebar-is-collapsed .modern-brand-details,
+            body.sidebar-collapse .modern-brand-details,
+            .sidebar-mini.sidebar-collapse .modern-brand-details,
+            body.sidebar-collapse .main-sidebar:hover .modern-brand-details,
+            html.sidebar-is-collapsed .main-sidebar:hover .modern-brand-details,
+            html.sidebar-collapse .main-sidebar:hover .modern-brand-details {
+                display: none !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                width: 0 !important;
+                height: 0 !important;
+                pointer-events: none !important;
+            }
+
+            html.sidebar-collapse .modern-brand-logo,
+            html.sidebar-is-collapsed .modern-brand-logo,
+            body.sidebar-collapse .modern-brand-logo,
+            .sidebar-mini.sidebar-collapse .modern-brand-logo,
+            body.sidebar-collapse .main-sidebar:hover .modern-brand-logo,
+            html.sidebar-is-collapsed .main-sidebar:hover .modern-brand-logo {
+                margin: 0 auto !important;
+            }
+
+            body.sidebar-collapse .modern-user-card,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-user-card,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-user-card {
+                margin: 0.65rem auto !important;
+                padding: 0 !important;
+                width: 44px !important;
+                height: 44px !important;
+                justify-content: center !important;
+                border-radius: 12px !important;
+            }
+
+            body.sidebar-collapse .modern-user-info,
+            body.sidebar-collapse .modern-user-arrow,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-user-info,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-user-arrow,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-user-info,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-user-arrow {
+                display: none !important;
+            }
+
+            /* Mini Search Pill (Magnifying Glass Button in Mini Mode) */
+            body.sidebar-collapse .modern-sidebar-search-container,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-sidebar-search-container,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-sidebar-search-container {
+                margin: 0.35rem auto 0.75rem auto !important;
+                width: 44px !important;
+            }
+
+            body.sidebar-collapse .modern-search-pill,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-pill,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-search-pill {
+                padding: 0 !important;
+                justify-content: center !important;
+                width: 44px !important;
+                height: 40px !important;
+                margin: 0 auto !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            body.sidebar-collapse .modern-search-prefix,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-prefix,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-search-prefix {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+                margin: 0 !important;
+                color: rgba(255, 255, 255, 0.65) !important;
+            }
+            html:not(.dark-mode) body.sidebar-collapse .modern-search-prefix,
+            html:not(.dark-mode) html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-prefix,
+            html:not(.dark-mode) html.sidebar-collapse body:not(.sidebar-open) .modern-search-prefix {
+                color: #475569 !important;
+            }
+
+            body.sidebar-collapse .modern-search-input,
+            body.sidebar-collapse .modern-search-actions,
+            body.sidebar-collapse .modern-search-clear-btn,
+            body.sidebar-collapse .modern-search-kbd,
+            body.sidebar-collapse .smart-search-count-badge,
+            body.sidebar-collapse .smart-search-empty,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-input,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-actions,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-clear-btn,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-kbd,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .smart-search-count-badge,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .smart-search-empty,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-search-input,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-search-actions,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-search-clear-btn,
+            html.sidebar-collapse body:not(.sidebar-open) .modern-search-kbd,
+            html.sidebar-collapse body:not(.sidebar-open) .smart-search-count-badge,
+            html.sidebar-collapse body:not(.sidebar-open) .smart-search-empty {
+                display: none !important;
+            }
+
+            /* Strictly Destroy Submenus in Collapsed Mini Mode (Prevent Tree Dangle, Lines & Circles) */
+            body.sidebar-collapse .nav-sidebar .nav-treeview,
+            body.sidebar-collapse .nav-sidebar .nav-treeview *,
+            body.sidebar-collapse .nav-sidebar .menu-open > .nav-treeview,
+            body.sidebar-collapse .nav-sidebar .menu-is-opening > .nav-treeview,
+            body.sidebar-collapse .main-sidebar .nav-sidebar .nav-treeview,
+            body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview,
+            body.sidebar-collapse .nav-sidebar [class*="nav-treeview"],
+            /* Target AdminLTE inline style="display:block" override */
+            body.sidebar-collapse .nav-sidebar .nav-treeview[style],
+            body.sidebar-collapse .nav-sidebar .menu-open > .nav-treeview[style],
+            .sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar .nav-treeview,
+            .sidebar-mini.sidebar-collapse .main-sidebar .nav-sidebar .menu-open > .nav-treeview,
+            .sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview,
+            .sidebar-mini.sidebar-collapse .nav-sidebar .nav-treeview[style],
+            html.sidebar-collapse .nav-sidebar .nav-treeview,
+            html.sidebar-collapse .nav-sidebar .nav-treeview *,
+            html.sidebar-collapse .nav-sidebar .menu-open > .nav-treeview,
+            html.sidebar-collapse .nav-sidebar .menu-is-opening > .nav-treeview,
+            html.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview,
+            html.sidebar-collapse .nav-sidebar .nav-treeview[style],
+            html.sidebar-is-collapsed .nav-sidebar .nav-treeview,
+            html.sidebar-is-collapsed .nav-sidebar .nav-treeview *,
+            html.sidebar-is-collapsed .nav-sidebar .menu-open > .nav-treeview,
+            html.sidebar-is-collapsed .nav-sidebar .menu-is-opening > .nav-treeview,
+            html.sidebar-is-collapsed .main-sidebar:hover .nav-sidebar .nav-treeview,
+            html.sidebar-is-collapsed .nav-sidebar .nav-treeview[style] {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                max-height: 0 !important;
+                opacity: 0 !important;
+                overflow: hidden !important;
+                pointer-events: none !important;
+                border: none !important;
+                border-left: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            body.sidebar-collapse .nav-sidebar .nav-treeview .nav-item::before,
+            body.sidebar-collapse .nav-sidebar .nav-treeview .nav-item::after,
+            html.sidebar-collapse .nav-sidebar .nav-treeview .nav-item::before,
+            html.sidebar-collapse .nav-sidebar .nav-treeview .nav-item::after,
+            html.sidebar-is-collapsed .nav-sidebar .nav-treeview .nav-item::before,
+            html.sidebar-is-collapsed .nav-sidebar .nav-treeview .nav-item::after {
+                display: none !important;
+                content: none !important;
+                border: none !important;
+            }
+
+            /* Navigation Links in Mini Mode: Centered 44x44 Rounded Squares with Zero Overflow */
+            body.sidebar-collapse .nav-sidebar .nav-item,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-item,
+            html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-item {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                overflow: hidden !important;
+                position: relative !important;
+            }
+
+            /* Suppress AdminLTE hover-popup treeview (floats to the right of icon in mini mode) */
+            body.sidebar-collapse .nav-sidebar .nav-item:hover > .nav-treeview,
+            html.sidebar-collapse .nav-sidebar .nav-item:hover > .nav-treeview,
+            html.sidebar-is-collapsed .nav-sidebar .nav-item:hover > .nav-treeview,
+            body.sidebar-collapse .nav-sidebar .nav-item > .nav-treeview[style],
+            html.sidebar-collapse .nav-sidebar .nav-item > .nav-treeview[style],
+            html.sidebar-is-collapsed .nav-sidebar .nav-item > .nav-treeview[style] {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                position: static !important;
+            }
+
+            body.sidebar-collapse .nav-sidebar .nav-item .nav-link,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-item .nav-link,
+            html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-item .nav-link,
+            body.sidebar-collapse .nav-sidebar .nav-link.active,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link.active,
+            html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-link.active {
+                width: 44px !important;
+                height: 44px !important;
+                max-width: 44px !important;
+                min-width: 44px !important;
+                margin: 4px auto !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                border-radius: 10px !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+            }
+
+            body.sidebar-collapse .nav-sidebar .nav-link > .nav-icon,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link > .nav-icon,
+            html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-link > .nav-icon {
+                margin: 0 !important;
+                width: 32px !important;
+                height: 32px !important;
+            }
+
+            body.sidebar-collapse .nav-sidebar .nav-link p,
+            body.sidebar-collapse .nav-sidebar .nav-link .right,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link p,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link .right {
+                display: none !important;
+            }
+
+            body.sidebar-collapse .nav-sidebar .nav-header,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-header,
+            html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-header {
+                display: none !important;
+            }
         }
 
-        html.sidebar-collapse .main-sidebar .brand-link,
-        html.sidebar-is-collapsed .main-sidebar .brand-link,
-        body.sidebar-collapse .main-sidebar .brand-link,
-        .sidebar-mini.sidebar-collapse .main-sidebar .brand-link,
-        .layout-navbar-fixed.sidebar-mini.sidebar-collapse .wrapper .brand-link,
-        body.sidebar-collapse .main-sidebar .brand-link.modern-brand-header,
-        html.sidebar-is-collapsed .main-sidebar .brand-link.modern-brand-header,
-        html.sidebar-collapse .main-sidebar .brand-link.modern-brand-header {
-            width: 4.6rem !important;
-            max-width: 4.6rem !important;
-            min-width: 4.6rem !important;
-            padding: 0 !important;
-            justify-content: center !important;
-            overflow: hidden !important;
-            height: calc(3.5rem + 1px) !important;
-        }
+        /* =========================================================
+           Responsive / Mobile (< 992px) Off-Canvas Drawer Architecture
+           ========================================================= */
+        @media (max-width: 991.98px) {
+            /* 1. Brand Link MUST NEVER be fixed or float detached on mobile */
+            .layout-navbar-fixed .wrapper .brand-link,
+            .layout-navbar-fixed .wrapper .main-sidebar .brand-link,
+            .layout-navbar-fixed.sidebar-mini.sidebar-collapse .wrapper .brand-link,
+            .layout-navbar-fixed .main-sidebar .brand-link,
+            .layout-navbar-fixed .brand-link,
+            .main-sidebar .brand-link,
+            .brand-link,
+            .brand-link.modern-brand-header {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                bottom: auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                z-index: 1 !important;
+                float: none !important;
+            }
 
-        /* Prevent any hover expansion on brand-link when sidebar is collapsed */
-        body.sidebar-collapse .main-sidebar:hover .brand-link,
-        html.sidebar-is-collapsed .main-sidebar:hover .brand-link,
-        html.sidebar-collapse .main-sidebar:hover .brand-link,
-        .sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-link {
-            width: 4.6rem !important;
-            max-width: 4.6rem !important;
-            min-width: 4.6rem !important;
-            justify-content: center !important;
-            padding: 0 !important;
-        }
+            /* 2. When sidebar is closed on mobile, completely remove it from screen flow */
+            body:not(.sidebar-open) .main-sidebar,
+            html:not(.sidebar-open) .main-sidebar,
+            body:not(.sidebar-open) aside.main-sidebar,
+            html:not(.sidebar-open) aside.main-sidebar {
+                display: none !important;
+                visibility: hidden !important;
+                transform: translateX(-100%) !important;
+                -webkit-transform: translateX(-100%) !important;
+                margin-left: 0 !important;
+                width: 0 !important;
+                max-width: 0 !important;
+                pointer-events: none !important;
+                box-shadow: none !important;
+            }
+            body:not(.sidebar-open) .main-sidebar .brand-link,
+            body:not(.sidebar-open) .brand-link.modern-brand-header {
+                display: none !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
+            }
 
-        html.sidebar-collapse .modern-brand-details,
-        html.sidebar-is-collapsed .modern-brand-details,
-        body.sidebar-collapse .modern-brand-details,
-        .sidebar-mini.sidebar-collapse .modern-brand-details,
-        body.sidebar-collapse .main-sidebar:hover .modern-brand-details,
-        html.sidebar-is-collapsed .main-sidebar:hover .modern-brand-details,
-        html.sidebar-collapse .main-sidebar:hover .modern-brand-details {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            width: 0 !important;
-            height: 0 !important;
-            pointer-events: none !important;
-        }
+            /* 3. When sidebar is open on mobile, it slides in cleanly as a 270px drawer */
+            body.sidebar-open .main-sidebar,
+            html.sidebar-open .main-sidebar,
+            body.sidebar-open aside.main-sidebar {
+                display: block !important;
+                visibility: visible !important;
+                transform: translateX(0) !important;
+                -webkit-transform: translateX(0) !important;
+                width: 270px !important;
+                max-width: 85vw !important;
+                margin-left: 0 !important;
+                box-shadow: 6px 0 30px rgba(0, 0, 0, 0.45) !important;
+                z-index: 1045 !important;
+                pointer-events: auto !important;
+            }
+            body.sidebar-open .main-sidebar .brand-link,
+            body.sidebar-open .brand-link.modern-brand-header {
+                display: flex !important;
+                visibility: visible !important;
+                width: 100% !important;
+            }
+            body.sidebar-open .modern-brand-details {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: auto !important;
+            }
+            body.sidebar-open .modern-user-info,
+            body.sidebar-open .modern-user-arrow {
+                display: flex !important;
+            }
+            body.sidebar-open .nav-sidebar .nav-link p {
+                display: flex !important;
+            }
 
-        html.sidebar-collapse .modern-brand-logo,
-        html.sidebar-is-collapsed .modern-brand-logo,
-        body.sidebar-collapse .modern-brand-logo,
-        .sidebar-mini.sidebar-collapse .modern-brand-logo,
-        body.sidebar-collapse .main-sidebar:hover .modern-brand-logo,
-        html.sidebar-is-collapsed .main-sidebar:hover .modern-brand-logo {
-            margin: 0 auto !important;
-        }
+            /* 4. Completely neutralize desktop mini-mode classes on mobile */
+            body.sidebar-collapse .main-sidebar,
+            html.sidebar-collapse .main-sidebar,
+            html.sidebar-is-collapsed .main-sidebar {
+                width: 270px !important;
+                max-width: 85vw !important;
+            }
+            body.sidebar-collapse:not(.sidebar-open) .main-sidebar,
+            html.sidebar-collapse body:not(.sidebar-open) .main-sidebar,
+            html.sidebar-is-collapsed body:not(.sidebar-open) .main-sidebar {
+                display: none !important;
+                visibility: hidden !important;
+                transform: translateX(-100%) !important;
+                pointer-events: none !important;
+                width: 0 !important;
+            }
 
-        body.sidebar-collapse .modern-user-card,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-user-card,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-user-card {
-            margin: 0.65rem auto !important;
-            padding: 0 !important;
-            width: 44px !important;
-            height: 44px !important;
-            justify-content: center !important;
-            border-radius: 12px !important;
-        }
-
-        body.sidebar-collapse .modern-user-info,
-        body.sidebar-collapse .modern-user-arrow,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-user-info,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-user-arrow,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-user-info,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-user-arrow {
-            display: none !important;
-        }
-
-        /* Mini Search Pill (Magnifying Glass Button in Mini Mode) */
-        body.sidebar-collapse .modern-sidebar-search-container,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-sidebar-search-container,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-sidebar-search-container {
-            margin: 0.35rem auto 0.75rem auto !important;
-            width: 44px !important;
-        }
-
-        body.sidebar-collapse .modern-search-pill,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-pill,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-search-pill {
-            padding: 0 !important;
-            justify-content: center !important;
-            width: 44px !important;
-            height: 40px !important;
-            margin: 0 auto !important;
-            cursor: pointer !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-
-        body.sidebar-collapse .modern-search-prefix,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-prefix,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-search-prefix {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 100% !important;
-            margin: 0 !important;
-            color: rgba(255, 255, 255, 0.65) !important;
-        }
-        html:not(.dark-mode) body.sidebar-collapse .modern-search-prefix,
-        html:not(.dark-mode) html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-prefix,
-        html:not(.dark-mode) html.sidebar-collapse body:not(.sidebar-open) .modern-search-prefix {
-            color: #475569 !important;
-        }
-
-        body.sidebar-collapse .modern-search-input,
-        body.sidebar-collapse .modern-search-actions,
-        body.sidebar-collapse .modern-search-clear-btn,
-        body.sidebar-collapse .modern-search-kbd,
-        body.sidebar-collapse .smart-search-count-badge,
-        body.sidebar-collapse .smart-search-empty,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-input,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-actions,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-clear-btn,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .modern-search-kbd,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .smart-search-count-badge,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .smart-search-empty,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-search-input,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-search-actions,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-search-clear-btn,
-        html.sidebar-collapse body:not(.sidebar-open) .modern-search-kbd,
-        html.sidebar-collapse body:not(.sidebar-open) .smart-search-count-badge,
-        html.sidebar-collapse body:not(.sidebar-open) .smart-search-empty {
-            display: none !important;
-        }
-
-        /* Completely Hide Submenus in Collapsed Mini Mode (Prevent Tree Dangle) */
-        body.sidebar-collapse .nav-sidebar .nav-treeview,
-        body.sidebar-collapse .nav-sidebar .menu-open > .nav-treeview,
-        body.sidebar-collapse .nav-sidebar .menu-is-opening > .nav-treeview,
-        html.sidebar-collapse .nav-sidebar .nav-treeview,
-        html.sidebar-collapse .nav-sidebar .menu-open > .nav-treeview,
-        html.sidebar-collapse .nav-sidebar .menu-is-opening > .nav-treeview,
-        html.sidebar-is-collapsed .nav-sidebar .nav-treeview,
-        html.sidebar-is-collapsed .nav-sidebar .menu-open > .nav-treeview,
-        html.sidebar-is-collapsed .nav-sidebar .menu-is-opening > .nav-treeview {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            opacity: 0 !important;
-            overflow: hidden !important;
-            pointer-events: none !important;
-        }
-
-        /* Navigation Links in Mini Mode: Centered 44x44 Rounded Squares with Zero Overflow */
-        body.sidebar-collapse .nav-sidebar .nav-item,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-item,
-        html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-item {
-            width: 100% !important;
-            display: flex !important;
-            justify-content: center !important;
-        }
-
-        body.sidebar-collapse .nav-sidebar .nav-item .nav-link,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-item .nav-link,
-        html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-item .nav-link,
-        body.sidebar-collapse .nav-sidebar .nav-link.active,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link.active,
-        html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-link.active {
-            width: 44px !important;
-            height: 44px !important;
-            max-width: 44px !important;
-            min-width: 44px !important;
-            margin: 4px auto !important;
-            padding: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border-radius: 10px !important;
-            box-sizing: border-box !important;
-        }
-
-        body.sidebar-collapse .nav-sidebar .nav-link > .nav-icon,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link > .nav-icon,
-        html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-link > .nav-icon {
-            margin: 0 !important;
-            width: 32px !important;
-            height: 32px !important;
-        }
-
-        body.sidebar-collapse .nav-sidebar .nav-link p,
-        body.sidebar-collapse .nav-sidebar .nav-link .right,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link p,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-link .right {
-            display: none !important;
-        }
-
-        body.sidebar-collapse .nav-sidebar .nav-header,
-        html.sidebar-is-collapsed body:not(.sidebar-open) .nav-sidebar .nav-header,
-        html.sidebar-collapse body:not(.sidebar-open) .nav-sidebar .nav-header {
-            display: none !important;
+            /* 5. Content wrapper, header, footer always 100% width with 0 left margin on mobile */
+            .main-header,
+            .content-wrapper,
+            .main-footer,
+            body.sidebar-collapse .main-header,
+            body.sidebar-collapse .content-wrapper,
+            body.sidebar-collapse .main-footer {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
         }
     </style>
 
