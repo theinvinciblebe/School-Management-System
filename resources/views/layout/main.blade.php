@@ -1,10 +1,14 @@
 @php
     $themeCookie = request()->cookie('theme') ?? ($_COOKIE['theme'] ?? null);
     $isDark = ($themeCookie === 'dark-mode');
+    $sidebarCookie = request()->cookie('sidebar_collapsed') ?? ($_COOKIE['sidebar_collapsed'] ?? null);
+    $isSidebarCollapsed = ($sidebarCookie === '1');
+    $compactCookie = request()->cookie('pc_compact_mode') ?? ($_COOKIE['pc_compact_mode'] ?? null);
+    $isCompactMode = ($compactCookie === '1');
 @endphp
 @include("layout.head")
 
-<body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $isDark ? 'dark-mode' : '' }} {{ $customizes->accent_color ?? '' }} {{ app()->getLocale() === 'km' ? 'lang-km' : '' }}" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}; height: auto;">
+<body id="mainBody" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ $isDark ? 'dark-mode' : '' }} {{ $isSidebarCollapsed ? 'sidebar-collapse' : '' }} {{ $isCompactMode ? 'pc-compact-mode' : '' }} {{ $customizes->accent_color ?? '' }} {{ app()->getLocale() === 'km' ? 'lang-km' : '' }}" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}; height: auto;">
 <script>
     (function () {
         try {
@@ -32,6 +36,26 @@
                     b.classList.remove('dark-mode');
                     b.classList.add('light-mode');
                     b.style.backgroundColor = '';
+                }
+            }
+
+            // Apply PC Sidebar Collapse preference
+            var sidebarCollapsed = localStorage.getItem('sidebar_collapsed');
+            if (b && window.innerWidth >= 992) {
+                if (sidebarCollapsed === '1') {
+                    b.classList.add('sidebar-collapse');
+                } else if (sidebarCollapsed === '0') {
+                    b.classList.remove('sidebar-collapse');
+                }
+            }
+
+            // Apply PC Compact Mode preference
+            var compactMode = localStorage.getItem('pc_compact_mode');
+            if (b) {
+                if (compactMode === '1') {
+                    b.classList.add('pc-compact-mode');
+                } else if (compactMode === '0') {
+                    b.classList.remove('pc-compact-mode');
                 }
             }
         } catch(e) {}
@@ -71,20 +95,23 @@
     <!-- Navbar -->
     <nav id="mainNav" class="main-header navbar navbar-expand navbar-dark {{ $customizes->nav_color ?? '' }}">
         <!-- Left navbar links -->
-        <ul class="navbar-nav">
+        <ul class="navbar-nav align-items-center">
             <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button" title="{{ __('Toggle Sidebar (Alt + S)') }}"><i class="fas fa-bars"></i></a>
             </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="/dashboard" class="nav-link">{{ __('Home') }}</a>
-            </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">{{ __('Contact') }}</a>
-            </li>
+
+            <!-- PC Desktop Quick Command & Search -->
+            @include('components.navbar.pc-quick-search')
         </ul>
 
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto align-items-center">
+            <!-- PC Compact Table Density Toggle -->
+            @include('components.navbar.pc-density-toggle')
+
+            <!-- PC Keyboard Shortcuts Helper Button -->
+            @include('components.navbar.pc-shortcuts-btn')
+
             <!-- Dark / Light Mode Toggle -->
             @include('components.navbar.theme-toggle')
 
@@ -93,68 +120,106 @@
 
             <!-- Notifications Dropdown Menu -->
             @include('components.navbar.notifications')
-
-            <li class="nav-item">
-                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                    <i class="fas fa-expand-arrows-alt"></i>
-                </a>
-            </li>
-            <!-- <li class="nav-item">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                    <i class="fas fa-th-large"></i>
-                </a>
-            </li> -->
         </ul>
     </nav>
     <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar {{ $customizes->dark_sidebar_variants ?? 'sidebar-dark-primary' }} elevation-4 {{ $customizes->sidebar_color ?? 'bg-dark' }} ">
+  <aside class="main-sidebar {{ $customizes->dark_sidebar_variants ?? 'sidebar-dark-primary' }} elevation-4 {{ $customizes->sidebar_color ?? 'bg-dark' }} modern-main-sidebar sidebar-no-expand">
     <!-- Brand Logo -->
-    <a href="/dashboard" class="brand-link">
-      <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Brand Logo" class="brand-image img-circle elevation-3" style="width: 33px; height: 33px; object-fit: cover; border-radius: 50%;">
-      <span class="brand-text font-weight-light">{{ $customizes->brand_title ?? 'N/A'}}</span>
+    <a href="/dashboard" class="brand-link modern-brand-header">
+      <div class="modern-brand-logo">
+        <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Brand Logo" class="brand-image img-circle">
+      </div>
+      <div class="modern-brand-details">
+        <span class="brand-text modern-brand-title">{{ $customizes->brand_title ?? 'School MS' }}</span>
+        <span class="modern-brand-pill">{{ __('v2.0') }}</span>
+      </div>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 mb-3 d-flex" id="user-panel" style="cursor: pointer;">
-        <div class="image" >
-            <img id="profilePhoto" src="{{ Auth::user()->photo_url ?? asset('noimg.jpg') }}"
-                 class="img-circle elevation-2"
-                 alt="User Image"
-                 width="50" height="50">
+      @php
+          $authUser = Auth::user();
+          $userRole = $authUser->role ?? null;
+          $roleTitle = match((int)$userRole) {
+              0 => __('Administrator'),
+              1 => __('Teacher'),
+              2 => __('Student'),
+              3 => __('Accountant'),
+              4 => __('Receptionist'),
+              default => __('User'),
+          };
+          $roleBadgeClass = match((int)$userRole) {
+              0 => 'role-admin',
+              1 => 'role-teacher',
+              2 => 'role-student',
+              3 => 'role-accountant',
+              4 => 'role-reception',
+              default => 'role-default',
+          };
+      @endphp
 
+      <!-- Modern Floating User Profile Card -->
+      <a href="{{ route('user.profile') }}" class="modern-user-card" id="user-panel" title="{{ __('View Profile') }}">
+        <div class="modern-user-avatar-wrap">
+          <img id="profilePhoto" src="{{ $authUser->photo_url ?? asset('noimg.jpg') }}"
+               class="modern-user-avatar"
+               alt="{{ $authUser->name ?? 'User' }}">
+          <span class="modern-avatar-status" title="{{ __('Online') }}"></span>
         </div>
-        <div class="info">
-          <a href="{{ route('user.profile') }}" class="d-block">
-              @if (Auth::check())
-                  <p>{{ __('Welcome') }}, {{ Auth::user()->name }}!</p>
-              @endif
-          </a>
-        </div>
-      </div>
-
-        <!-- SidebarSearch Form -->
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="{{ __('Search') }}" aria-label="{{ __('Search') }}">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar">
-              <i class="fas fa-search fa-fw"></i>
-            </button>
+        <div class="modern-user-info">
+          <div class="modern-user-name" title="{{ $authUser->name ?? '' }}">
+            {{ $authUser->name ?? __('User') }}
+          </div>
+          <div class="modern-user-role-wrap">
+            <span class="modern-user-role-badge {{ $roleBadgeClass }}">
+              {{ (strcasecmp($authUser->name ?? '', $roleTitle) === 0 && (int)$userRole === 0) ? __('Super Admin') : $roleTitle }}
+            </span>
           </div>
         </div>
+        <div class="modern-user-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </a>
+
+      <!-- Modern Smart Sidebar Search Form -->
+      <div class="modern-sidebar-search-container" id="smartSidebarSearchContainer">
+        <div class="modern-search-pill" id="smartSidebarSearchWrapper">
+          <span class="modern-search-prefix">
+            <i class="fas fa-search" id="smartSearchIcon"></i>
+          </span>
+          <input class="modern-search-input" 
+                 id="smartSidebarSearchInput"
+                 type="text" 
+                 placeholder="{{ __('Filter menus (/)...') }}" 
+                 aria-label="{{ __('Filter navigation') }}"
+                 spellcheck="false"
+                 autocomplete="off">
+          <div class="modern-search-actions">
+            <span class="badge smart-search-count-badge d-none" id="smartSearchCount">0</span>
+            <button class="btn modern-search-clear-btn d-none" id="smartSearchClearBtn" type="button" aria-label="{{ __('Clear') }}" title="{{ __('Clear search (Esc)') }}">
+              <i class="fas fa-times"></i>
+            </button>
+            <!-- <span class="modern-search-kbd" onclick="if(window.openPcCommandPalette){ window.openPcCommandPalette(); }" title="{{ __('Command Palette (Ctrl + K)') }}">
+              <kbd>Ctrl K</kbd>
+            </span> -->
+          </div>
+        </div>
+        <div id="smartSearchEmpty" class="smart-search-empty d-none">
+          <i class="fas fa-search-minus mr-1"></i>
+          <span>{{ __('No matching menus found') }}</span>
+          <div class="smart-search-empty-hint">{{ __('Press Esc to reset') }}</div>
+        </div>
       </div>
-        @stack('scripts')
+      @stack('scripts')
 
       <!-- Sidebar Menu -->
-        @includeWhen(Auth::check() && Auth::user()->role === 0, 'components.sidebar.admin')
-        @includeWhen(Auth::check() && Auth::user()->role === 1, 'components.sidebar.teacher')
-        @includeWhen(Auth::check() && Auth::user()->role === 2, 'components.sidebar.student')
-        @includeWhen(Auth::check() && Auth::user()->role === 3, 'components.sidebar.accountant')
-        @includeWhen(Auth::check() && Auth::user()->role === 4, 'components.sidebar.reception')
+      @includeWhen(Auth::check() && Auth::user()->role === 0, 'components.sidebar.admin')
+      @includeWhen(Auth::check() && Auth::user()->role === 1, 'components.sidebar.teacher')
+      @includeWhen(Auth::check() && Auth::user()->role === 2, 'components.sidebar.student')
+      @includeWhen(Auth::check() && Auth::user()->role === 3, 'components.sidebar.accountant')
+      @includeWhen(Auth::check() && Auth::user()->role === 4, 'components.sidebar.reception')
 
     </div>
     <!-- /.sidebar -->
@@ -181,6 +246,10 @@
         </aside>
         <!-- /.control-sidebar -->
 
+    <!-- PC Desktop Efficiency Components -->
+    @include('components.pc-command-palette')
+    @include('components.pc-shortcuts-modal')
+
 </div>
 <!-- ./wrapper -->
 
@@ -206,7 +275,7 @@
                     contentWrapper.classList.add('dark-mode');
                     contentWrapper.style.backgroundColor = '#232323';
                 }
-                if (themeSwitch) themeSwitch.checked = true;
+                document.querySelectorAll('input[name="theme-switch"]').forEach(function (el) { el.checked = true; });
                 if (navbarThemeToggle) {
                     navbarThemeToggle.classList.add('is-dark');
                     navbarThemeToggle.classList.remove('is-light');
@@ -241,7 +310,7 @@
                     contentWrapper.classList.add('light-mode');
                     contentWrapper.style.backgroundColor = '';
                 }
-                if (themeSwitch) themeSwitch.checked = false;
+                document.querySelectorAll('input[name="theme-switch"]').forEach(function (el) { el.checked = false; });
                 if (navbarThemeToggle) {
                     navbarThemeToggle.classList.remove('is-dark');
                     navbarThemeToggle.classList.add('is-light');
@@ -306,37 +375,27 @@
                 });
             }
 
-            if (themeSwitch) {
-                themeSwitch.addEventListener('change', function () {
+            document.querySelectorAll('input[name="theme-switch"]').forEach(function (sw) {
+                sw.addEventListener('change', function () {
                     toggleTheme(this.checked);
                 });
-            }
+            });
 
-            if (wrapper) {
-                wrapper.addEventListener('click', function (e) {
+            document.querySelectorAll('.theme-mode-wrapper').forEach(function (wrap) {
+                wrap.addEventListener('click', function (e) {
                     if (e.target.closest('.modern-theme-switch')) return;
-                    if (themeSwitch) {
-                        themeSwitch.checked = !themeSwitch.checked;
-                        toggleTheme(themeSwitch.checked);
-                    } else {
+                    const willBeDark = !document.documentElement.classList.contains('dark-mode');
+                    toggleTheme(willBeDark);
+                });
+
+                wrap.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
                         const willBeDark = !document.documentElement.classList.contains('dark-mode');
                         toggleTheme(willBeDark);
                     }
                 });
-
-                wrapper.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        if (themeSwitch) {
-                            themeSwitch.checked = !themeSwitch.checked;
-                            toggleTheme(themeSwitch.checked);
-                        } else {
-                            const willBeDark = !document.documentElement.classList.contains('dark-mode');
-                            toggleTheme(willBeDark);
-                        }
-                    }
-                });
-            }
+            });
         });
     })();
 </script>

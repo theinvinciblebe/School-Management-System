@@ -256,16 +256,6 @@
             </ul>
         </li>
 
-        <li class="nav-header">{{ __('Upload & Access File') }}</li>
-        <li class="nav-item ">
-            <a href="https://mediafile.mawaridtech.com/" class="nav-link ">
-                <i class="nav-icon fas fa-cloud-upload-alt" aria-hidden="true"></i>
-                <p>
-                    {{ __('MediaFile') }}
-                </p>
-            </a>
-        </li>
-
         <li class="nav-header">{{ __('Setting') }}</li>
         <li class="nav-item {{ Request::is('activity-logs') || Request::is('user-management')|| Request::is('customize') ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link {{ Request::is('activity-logs') || Request::is('user-management')|| Request::is('customize') ? 'active' : '' }}">
@@ -283,8 +273,6 @@
                         <p>{{ __('Customizes') }}</p>
                     </a>
                 </li>
-                <div class="dropdown-divider"></div>
-                @include('components.sidebar.theme-switch')
                 <div class="dropdown-divider"></div>
                 <li class="nav-item">
                     <a href="{{ route('user.index') }}" class="nav-link {{ Request::is('user-management')? 'active' : '' }}">

@@ -146,5 +146,17 @@
     "Teaching & Marks": "បង្រៀន & កត់ពិន្ទុ",
     "Learning & Marks": "រៀនសូត្រ & ពិន្ទុ",
     "Fees & Expenses": "ថ្លៃសិក្សា & ចំណាយ",
-    "Front Desk & Staff": "ទទួលភ្ញៀវ & បុគ្គលិក"
+    "Front Desk & Staff": "ទទួលភ្ញៀវ & បុគ្គលិក",
+    "Quick search...": "ស្វែងរកលឿន...",
+    "Quick Search or Command (Ctrl + K)": "ស្វែងរក ឬពាក្យបញ្ជា (Ctrl + K)",
+    "Toggle Sidebar (Alt + S)": "បិទ/បើក របារចំហៀង (Alt + S)",
+    "Toggle Compact Table Density (Alt + C)": "បិទ/បើក កម្រិតបង្ហាញតារាងបង្រួម (Alt + C)",
+    "Switch to Comfortable display (Alt + C)": "ប្តូរទៅកម្រិតបង្ហាញទូទៅ (Alt + C)",
+    "Switch to Compact display (Alt + C)": "ប្តូរទៅកម្រិតបង្ហាញបង្រួម (Alt + C)",
+    "PC Keyboard Shortcuts": "ផ្លូវកាត់ក្តារចុចលើកុំព្យូទ័រ",
+    "Command Palette": "ផ្ទាំងពាក្យបញ្ជា",
+    "Fullscreen (Alt + F)": "ពេញអេក្រង់ (Alt + F)",
+    "Toggle Fullscreen": "បិទ/បើក ពេញអេក្រង់",
+    "Compact table density enabled": "បានបើកកម្រិតបង្ហាញតារាងបង្រួម",
+    "Comfortable table density enabled": "បានបើកកម្រិតបង្ហាញតារាងទូទៅ"
 }

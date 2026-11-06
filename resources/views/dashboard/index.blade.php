@@ -483,6 +483,38 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* PC Desktop Efficiency Hero Card */
+        .dash-pc-hero-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 14px;
+            padding: 1.1rem 1.4rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-width: 250px;
+        }
+        .dash-pc-clock {
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+        .dash-pc-shortcuts-hint {
+            font-size: 0.76rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        .dash-pc-kbd {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.68rem;
+            color: #ffffff;
+            font-family: inherit;
+        }
     </style>
 
     <div class="dash-container">
@@ -526,6 +558,24 @@
                                 <i class="fas fa-palette"></i>
                                 <span>{{ __('Settings') }}</span>
                             </a>
+                        </div>
+                    </div>
+
+                    <!-- Desktop PC Workstation Info -->
+                    <div class="col-lg-4 d-none d-lg-flex flex-column align-items-end justify-content-center text-right">
+                        <div class="dash-pc-hero-card">
+                            <div class="d-flex align-items-center justify-content-end mb-1">
+                                <span class="pulse-dot mr-2"></span>
+                                <span class="text-uppercase font-weight-bold" style="font-size: 0.72rem; letter-spacing: 0.8px; color: rgba(255, 255, 255, 0.85);">{{ __('Workstation Ready') }}</span>
+                            </div>
+                            <div class="dash-pc-clock" id="dashPcClock">{{ now()->format('h:i:s A') }}</div>
+                            <div class="dash-pc-shortcuts-hint mt-2">
+                                <span><kbd class="dash-pc-kbd">Ctrl K</kbd> {{ __('Search') }}</span>
+                                <span class="mx-1">•</span>
+                                <span><kbd class="dash-pc-kbd">Alt S</kbd> {{ __('Sidebar') }}</span>
+                                <span class="mx-1">•</span>
+                                <span><kbd class="dash-pc-kbd">Alt C</kbd> {{ __('Compact') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1076,6 +1126,15 @@
                     }, 250);
                 });
             }
+
+            // Live Workstation Clock for PC
+            setInterval(function () {
+                const el = document.getElementById('dashPcClock');
+                if (el) {
+                    const d = new Date();
+                    el.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                }
+            }, 1000);
         });
     </script>
 @endsection

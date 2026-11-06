@@ -512,6 +512,422 @@
     })();
 </script>
 
+<!-- PC Desktop Productivity & Responsiveness Engine -->
+<script>
+    (function() {
+        // 1. Sidebar Collapse State Persistence on Desktop PC
+        function saveSidebarCollapseState(isCollapsed) {
+            try {
+                localStorage.setItem('sidebar_collapsed', isCollapsed ? '1' : '0');
+                document.cookie = "sidebar_collapsed=" + (isCollapsed ? "1" : "0") + "; path=/; max-age=31536000; SameSite=Lax";
+                if (isCollapsed) {
+                    document.documentElement.classList.add('sidebar-is-collapsed', 'sidebar-collapse');
+                } else {
+                    document.documentElement.classList.remove('sidebar-is-collapsed', 'sidebar-collapse');
+                }
+            } catch(e) {}
+        }
+
+        $(document).on('collapsed.lte.pushmenu', function() {
+            saveSidebarCollapseState(true);
+        });
+
+        $(document).on('shown.lte.pushmenu', function() {
+            saveSidebarCollapseState(false);
+        });
+
+        // Pushmenu click fallback
+        $(document).on('click', '[data-widget="pushmenu"]', function() {
+            setTimeout(function() {
+                var isCollapsed = $('body').hasClass('sidebar-collapse');
+                saveSidebarCollapseState(isCollapsed);
+            }, 300);
+        });
+
+        // 2. PC Table Density Toggle (Compact vs Comfortable)
+        function togglePcCompactMode() {
+            const isCompact = document.body.classList.toggle('pc-compact-mode');
+            document.documentElement.classList.toggle('pc-compact-mode', isCompact);
+            try {
+                localStorage.setItem('pc_compact_mode', isCompact ? '1' : '0');
+                document.cookie = "pc_compact_mode=" + (isCompact ? "1" : "0") + "; path=/; max-age=31536000; SameSite=Lax";
+            } catch(e) {}
+
+            const btn = document.getElementById('navbarPcDensityToggle');
+            const icon = document.getElementById('pcDensityIcon');
+            if (btn) btn.classList.toggle('active', isCompact);
+            if (icon) {
+                if (isCompact) {
+                    icon.classList.remove('fa-compress-arrows-alt');
+                    icon.classList.add('fa-expand-arrows-alt');
+                    if (btn) btn.setAttribute('title', '{{ __("Switch to Comfortable display (Alt + C)") }}');
+                } else {
+                    icon.classList.remove('fa-expand-arrows-alt');
+                    icon.classList.add('fa-compress-arrows-alt');
+                    if (btn) btn.setAttribute('title', '{{ __("Switch to Compact display (Alt + C)") }}');
+                }
+            }
+            if (typeof toastr !== 'undefined') {
+                toastr.clear();
+                toastr.info(isCompact ? '{{ __("Compact table density enabled") }}' : '{{ __("Comfortable table density enabled") }}');
+            }
+        }
+        window.togglePcCompactMode = togglePcCompactMode;
+
+        // 3. Global PC Productivity Keyboard Shortcuts
+        document.addEventListener('keydown', function(e) {
+            const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable;
+
+            // Esc: Close Command Palette or Shortcuts Modal
+            if (e.key === 'Escape') {
+                if (typeof closePcCommandPalette === 'function') closePcCommandPalette();
+                if (typeof closePcShortcutsModal === 'function') closePcShortcutsModal();
+                return;
+            }
+
+            // Ctrl + K or Cmd + K: Open Command Palette
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                if (typeof togglePcCommandPalette === 'function') togglePcCommandPalette();
+                return;
+            }
+
+            // '/' key outside of input: Focus Smart Filter or Open Command Palette
+            if (!isInput && e.key === '/') {
+                e.preventDefault();
+                const isCollapsed = document.body.classList.contains('sidebar-collapse');
+                const sbInput = document.getElementById('smartSidebarSearchInput');
+                if (!isCollapsed && sbInput) {
+                    sbInput.focus();
+                    sbInput.select();
+                } else if (typeof openPcCommandPalette === 'function') {
+                    openPcCommandPalette();
+                }
+                return;
+            }
+
+            // Alt + S or Alt + B: Toggle Sidebar Collapse (Maximize table view)
+            if (e.altKey && (e.key.toLowerCase() === 's' || e.key.toLowerCase() === 'b')) {
+                e.preventDefault();
+                $('[data-widget="pushmenu"]').first().trigger('click');
+                return;
+            }
+
+            // Alt + T: Toggle Theme
+            if (e.altKey && e.key.toLowerCase() === 't') {
+                e.preventDefault();
+                const isDark = document.documentElement.classList.contains('dark-mode');
+                if (typeof window.toggleTheme === 'function') window.toggleTheme(!isDark);
+                return;
+            }
+
+            // Alt + C: Toggle Compact Mode
+            if (e.altKey && e.key.toLowerCase() === 'c') {
+                e.preventDefault();
+                togglePcCompactMode();
+                return;
+            }
+
+            // Alt + D or Alt + H: Jump to Dashboard
+            if (e.altKey && (e.key.toLowerCase() === 'd' || e.key.toLowerCase() === 'h')) {
+                e.preventDefault();
+                if (typeof showOverlay === 'function') showOverlay();
+                window.location.href = '/dashboard';
+                return;
+            }
+
+            // Alt + F: Toggle Fullscreen
+            if (e.altKey && e.key.toLowerCase() === 'f') {
+                e.preventDefault();
+                $('[data-widget="fullscreen"]').first().trigger('click');
+                return;
+            }
+
+            // '?' (Shift + /) or Ctrl + /: Open Shortcuts Cheat Sheet
+            if ((!isInput && e.key === '?') || ((e.ctrlKey || e.metaKey) && e.key === '/')) {
+                e.preventDefault();
+                if (typeof openPcShortcutsModal === 'function') openPcShortcutsModal();
+                return;
+            }
+        });
+
+        // 4. Smart Sidebar Suite: In-Tree Live Filter, Auto-Scroll & Collapsed Floating Tooltips
+        (function() {
+            const input = document.getElementById('smartSidebarSearchInput');
+            const clearBtn = document.getElementById('smartSearchClearBtn');
+            const countBadge = document.getElementById('smartSearchCount');
+            const emptyState = document.getElementById('smartSearchEmpty');
+            const sidebarNav = document.querySelector('.main-sidebar .nav-sidebar');
+
+            // A. Auto-Scroll to Active Link on Page Load
+            try {
+                const activeItem = document.querySelector('.main-sidebar .nav-sidebar .nav-link.active');
+                if (activeItem) {
+                    setTimeout(function() {
+                        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 150);
+                }
+            } catch(e) {}
+
+            // B. Smart In-Tree Live Filtering
+            if (input && sidebarNav) {
+                let originalStates = [];
+                function snapshotTree() {
+                    originalStates = [];
+                    sidebarNav.querySelectorAll('.nav-item').forEach(function(item) {
+                        originalStates.push({
+                            item: item,
+                            isOpen: item.classList.contains('menu-open') || item.classList.contains('menu-is-opening')
+                        });
+                    });
+                }
+                snapshotTree();
+
+                function filterSidebar(query) {
+                    query = (query || '').trim().toLowerCase();
+
+                    // Remove existing highlights
+                    sidebarNav.querySelectorAll('.smart-search-hl').forEach(function(hl) {
+                        const parent = hl.parentNode;
+                        if (parent) {
+                            parent.replaceChild(document.createTextNode(hl.textContent), hl);
+                            parent.normalize();
+                        }
+                    });
+
+                    if (!query) {
+                        if (clearBtn) clearBtn.classList.add('d-none');
+                        if (countBadge) countBadge.classList.add('d-none');
+                        if (emptyState) emptyState.classList.add('d-none');
+
+                        sidebarNav.querySelectorAll('.nav-item').forEach(function(item) {
+                            item.classList.remove('d-none', 'smart-match-item');
+                        });
+                        sidebarNav.querySelectorAll('.nav-header').forEach(function(h) {
+                            h.classList.remove('d-none');
+                        });
+
+                        // Restore original open state
+                        originalStates.forEach(function(s) {
+                            if (s.isOpen) {
+                                s.item.classList.add('menu-open');
+                                const tv = s.item.querySelector(':scope > .nav-treeview');
+                                if (tv) tv.style.display = 'block';
+                            } else {
+                                s.item.classList.remove('menu-open');
+                                const tv = s.item.querySelector(':scope > .nav-treeview');
+                                if (tv) tv.style.display = 'none';
+                            }
+                        });
+                        return;
+                    }
+
+                    if (clearBtn) clearBtn.classList.remove('d-none');
+
+                    let matchCount = 0;
+                    const allItems = Array.from(sidebarNav.querySelectorAll('.nav-item'));
+
+                    allItems.forEach(function(item) {
+                        const link = item.querySelector(':scope > .nav-link');
+                        const p = link ? link.querySelector('p') : null;
+                        if (!p) return;
+
+                        // Get text without right badges/icons
+                        let text = '';
+                        p.childNodes.forEach(function(node) {
+                            if (node.nodeType === Node.TEXT_NODE) text += node.textContent;
+                        });
+                        text = text.trim().toLowerCase();
+                        if (!text) text = p.innerText.trim().toLowerCase();
+
+                        if (text.includes(query)) {
+                            matchCount++;
+                            item.classList.remove('d-none');
+                            item.classList.add('smart-match-item');
+
+                            // Highlight text
+                            highlightInElement(p, query);
+
+                            // Expand ancestors
+                            let parent = item.parentElement;
+                            while (parent && parent !== sidebarNav) {
+                                if (parent.classList.contains('nav-item')) {
+                                    parent.classList.remove('d-none');
+                                    parent.classList.add('menu-open');
+                                    const tv = parent.querySelector(':scope > .nav-treeview');
+                                    if (tv) tv.style.display = 'block';
+                                }
+                                if (parent.classList.contains('nav-treeview')) {
+                                    parent.style.display = 'block';
+                                }
+                                parent = parent.parentElement;
+                            }
+                        } else {
+                            item.classList.remove('smart-match-item');
+                        }
+                    });
+
+                    // Hide non-matching leaf items
+                    allItems.forEach(function(item) {
+                        const isMatch = item.classList.contains('smart-match-item');
+                        const hasChildMatch = item.querySelector('.smart-match-item');
+                        if (!isMatch && !hasChildMatch) {
+                            item.classList.add('d-none');
+                        } else {
+                            item.classList.remove('d-none');
+                        }
+                    });
+
+                    // Hide empty headers
+                    const headers = sidebarNav.querySelectorAll('.nav-header');
+                    headers.forEach(function(h) {
+                        let next = h.nextElementSibling;
+                        let hasVisible = false;
+                        while (next && !next.classList.contains('nav-header')) {
+                            if (!next.classList.contains('d-none')) {
+                                hasVisible = true;
+                                break;
+                            }
+                            next = next.nextElementSibling;
+                        }
+                        if (!hasVisible) {
+                            h.classList.add('d-none');
+                        } else {
+                            h.classList.remove('d-none');
+                        }
+                    });
+
+                    if (countBadge) {
+                        countBadge.innerText = matchCount;
+                        countBadge.classList.remove('d-none');
+                    }
+                    if (emptyState) {
+                        if (matchCount === 0) {
+                            emptyState.classList.remove('d-none');
+                        } else {
+                            emptyState.classList.add('d-none');
+                        }
+                    }
+                }
+
+                function highlightInElement(el, query) {
+                    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+                    const textNodes = [];
+                    while (walker.nextNode()) {
+                        const parent = walker.currentNode.parentElement;
+                        if (!parent.classList.contains('badge') && !parent.classList.contains('right')) {
+                            textNodes.push(walker.currentNode);
+                        }
+                    }
+                    textNodes.forEach(function(node) {
+                        const val = node.nodeValue;
+                        const idx = val.toLowerCase().indexOf(query);
+                        if (idx >= 0) {
+                            const frag = document.createDocumentFragment();
+                            const before = document.createTextNode(val.substring(0, idx));
+                            const mark = document.createElement('mark');
+                            mark.className = 'smart-search-hl';
+                            mark.textContent = val.substring(idx, idx + query.length);
+                            const after = document.createTextNode(val.substring(idx + query.length));
+
+                            frag.appendChild(before);
+                            frag.appendChild(mark);
+                            frag.appendChild(after);
+                            node.parentNode.replaceChild(frag, node);
+                        }
+                    });
+                }
+
+                input.addEventListener('input', function() {
+                    filterSidebar(this.value);
+                });
+
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function() {
+                        input.value = '';
+                        filterSidebar('');
+                        input.focus();
+                    });
+                }
+
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        input.value = '';
+                        filterSidebar('');
+                        input.blur();
+                    } else if (e.key === 'Enter') {
+                        const topLink = sidebarNav.querySelector('.smart-match-item > .nav-link, .nav-item:not(.d-none) > .nav-link');
+                        if (topLink) {
+                            e.preventDefault();
+                            topLink.click();
+                        }
+                    }
+                });
+
+                // Click on search pill in mini mode triggers Command Palette
+                const pillWrapper = document.getElementById('smartSidebarSearchWrapper');
+                if (pillWrapper) {
+                    pillWrapper.addEventListener('click', function(e) {
+                        const isCollapsed = document.body.classList.contains('sidebar-collapse') || document.documentElement.classList.contains('sidebar-collapse');
+                        if (isCollapsed) {
+                            e.preventDefault();
+                            if (typeof openPcCommandPalette === 'function') openPcCommandPalette();
+                        }
+                    });
+                }
+            }
+
+            // C. Smart Floating Tooltips in Collapsed Mini Mode
+            let miniTooltip = null;
+            function getOrCreateTooltip() {
+                if (!miniTooltip) {
+                    miniTooltip = document.createElement('div');
+                    miniTooltip.className = 'smart-sidebar-tooltip';
+                    document.body.appendChild(miniTooltip);
+                }
+                return miniTooltip;
+            }
+
+            $(document).on('mouseenter', '.main-sidebar .nav-sidebar .nav-link', function() {
+                const isCollapsed = document.body.classList.contains('sidebar-collapse') || document.documentElement.classList.contains('sidebar-collapse');
+                if (!isCollapsed) return;
+
+                const p = this.querySelector('p');
+                if (!p) return;
+
+                let title = '';
+                p.childNodes.forEach(function(n) {
+                    if (n.nodeType === Node.TEXT_NODE) title += n.textContent;
+                });
+                title = title.trim();
+                if (!title) title = p.innerText.trim();
+                if (!title) return;
+
+                const tip = getOrCreateTooltip();
+                tip.innerHTML = '<span>' + title + '</span>';
+
+                const badge = p.querySelector('.badge');
+                if (badge) {
+                    tip.innerHTML += '<span class="badge ' + badge.className.replace('right', '') + ' ml-2">' + badge.innerText + '</span>';
+                }
+
+                const rect = this.getBoundingClientRect();
+                tip.style.top = (rect.top + (rect.height / 2)) + 'px';
+                tip.style.left = (rect.right + 12) + 'px';
+                tip.classList.add('show');
+            });
+
+            $(document).on('mouseleave', '.main-sidebar .nav-sidebar .nav-link', function() {
+                if (miniTooltip) miniTooltip.classList.remove('show');
+            });
+
+            window.addEventListener('scroll', function() {
+                if (miniTooltip) miniTooltip.classList.remove('show');
+            }, true);
+        })();
+    })();
+</script>
+
 {{--@stack('scripts')--}}
 
 </body>

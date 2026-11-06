@@ -1,3 +1,7 @@
+@php
+    $themeCookie = request()->cookie('theme') ?? ($_COOKIE['theme'] ?? null);
+    $isDark = ($themeCookie === 'dark-mode');
+@endphp
 @extends('layout.main')
 
 @section('content')
@@ -859,11 +863,20 @@
     body.dark-mode .mockup-card-dummy .font-weight-bold {
         color: #f8fafc !important;
     }
+
+    body.dark-mode .theme-mode-studio-panel {
+        background: rgba(255, 255, 255, 0.04) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    body.dark-mode .theme-mode-studio-panel h5 {
+        color: #ffffff !important;
+    }
 </style>
 
 <div class="custom-studio">
     <!-- Hero Header -->
-    <div class="studio-header">
+    <div class="studio-header d-flex flex-wrap align-items-center justify-content-between">
         <div class="studio-header-content">
             <div class="studio-badge">
                 <span class="status-dot"></span>
@@ -873,6 +886,11 @@
             <p class="text-white-50 mb-0" style="max-width: 650px; font-size: 1rem; line-height: 1.5;">
                 Personalize your school brand, browser tab identity, and AdminLTE navigation themes. Test changes in the real-time interactive preview before saving.
             </p>
+        </div>
+        <div class="studio-header-theme-toggle mt-3 mt-lg-0" style="position: relative; z-index: 2;">
+            <ul class="navbar-nav list-unstyled m-0">
+                @include('components.sidebar.theme-switch')
+            </ul>
         </div>
     </div>
 
@@ -1046,6 +1064,44 @@
                         <span class="badge badge-light border">Live UI Synchronization</span>
                     </div>
                     <div class="studio-card-body">
+                        <!-- Theme Mode (Dark / Light) Control Panel -->
+                        <div class="theme-mode-studio-panel mb-4 p-3 rounded d-flex flex-wrap align-items-center justify-content-between" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px;">
+                            <div class="d-flex align-items-center mb-2 mb-sm-0">
+                                <div class="mr-3 p-2 rounded-circle" style="background: rgba(99, 102, 241, 0.12); color: #4f46e5; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                    <i class="fas fa-circle-half-stroke"></i>
+                                </div>
+                                <div>
+                                    <h5 class="m-0 font-weight-bold text-dark" style="font-size: 1rem;">{{ __('System Interface Mode') }}</h5>
+                                    <p class="text-muted small m-0">{{ __('Toggle between Dark Mode (Obsidian) and Light Mode (Daylight)') }}</p>
+                                </div>
+                            </div>
+                            <div class="nav-item theme-mode-item list-unstyled m-0">
+                                <div class="theme-mode-wrapper px-3 py-2 shadow-sm" style="min-width: 175px;" onclick="window.toggleTheme(!document.documentElement.classList.contains('dark-mode'))">
+                                    <div class="theme-mode-label">
+                                        <span class="theme-icon-container">
+                                            <i class="fas fa-sun theme-icon-sun {{ ($isDark ?? false) ? 'd-none' : '' }}"></i>
+                                            <i class="fas fa-moon theme-icon-moon {{ ($isDark ?? false) ? '' : 'd-none' }}"></i>
+                                        </span>
+                                        <span class="theme-text" id="themeLabelText">{{ ($isDark ?? false) ? __('Dark Mode') : __('Light Mode') }}</span>
+                                    </div>
+                                    <div class="theme-switch-container">
+                                        <label class="modern-theme-switch" for="themeSwitchPanel" onclick="event.stopPropagation();">
+                                            <input type="checkbox" id="themeSwitchPanel" name="theme-switch" aria-label="Toggle dark/light theme mode" {{ ($isDark ?? false) ? 'checked' : '' }}>
+                                            <span class="theme-slider">
+                                                <span class="slider-icons">
+                                                    <i class="fas fa-sun slider-sun"></i>
+                                                    <i class="fas fa-moon slider-moon"></i>
+                                                </span>
+                                                <span class="slider-knob"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
                         <!-- Preset Color Themes -->
                         <div class="mb-4">
                             <div class="swatch-group-label">

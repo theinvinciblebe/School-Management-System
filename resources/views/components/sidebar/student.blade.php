@@ -129,16 +129,6 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-header">Upload & Access File</li>
-        <li class="nav-item ">
-            <a href="https://mediafile.mawaridtech.com/" class="nav-link ">
-                <i class="nav-icon fas fa-cloud-upload-alt" aria-hidden="true"></i>
-
-                <p>
-                    MediaFile
-                </p>
-            </a>
-        </li>
         <li class="nav-item">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-cog"></i>
@@ -150,8 +140,6 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
-                @include('components.sidebar.theme-switch')
-                <div class="dropdown-divider"></div>
                 <li class="nav-item">
                     <a href="/logout" class="nav-link logout-btn">
                         <i class="fas fa-sign-out-alt nav-icon"></i>
