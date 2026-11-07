@@ -199,6 +199,14 @@
                 </div>
                 <kbd class="pc-palette-item-shortcut">?</kbd>
             </div>
+
+            <a href="/logout" class="pc-palette-item logout-btn" data-keywords="logout log out sign out exit leave switch user">
+                <div class="pc-palette-item-left">
+                    <div class="pc-palette-item-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;"><i class="fas fa-sign-out-alt"></i></div>
+                    <span class="pc-palette-item-text text-danger font-weight-bold">{{ __('Log Out of Account') }}</span>
+                </div>
+                <span class="badge badge-danger" style="font-size: 0.7rem;">{{ __('Exit') }}</span>
+            </a>
         </div>
 
         <!-- Footer with Shortcut Hints -->

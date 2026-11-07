@@ -2666,6 +2666,62 @@
             color: #ef4444 !important;
         }
 
+        /* Top Navbar User Menu & Quick Logout Button */
+        .navbar-user-avatar {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .user-menu-btn:hover .navbar-user-avatar {
+            transform: scale(1.08);
+            border-color: #ffffff;
+        }
+        .navbar-quick-logout-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            margin: auto 3px;
+            padding: 0 !important;
+            color: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .navbar-quick-logout-btn:hover {
+            background: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #ef4444 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        }
+        .navbar-quick-logout-btn:hover i {
+            color: #ffffff !important;
+        }
+        html.dark-mode .dropdown-user-header {
+            background: linear-gradient(135deg, #3730a3, #4338ca) !important;
+        }
+        html.dark-mode .modern-user-dropdown-menu {
+            background: #1e2235 !important;
+            border: 1px solid #2e354f !important;
+            color: #f8fafc !important;
+        }
+        html.dark-mode .modern-user-dropdown-menu .dropdown-item {
+            color: #cbd5e1 !important;
+        }
+        html.dark-mode .modern-user-dropdown-menu .dropdown-item:hover {
+            background: #252c42 !important;
+            color: #ffffff !important;
+        }
+        html.dark-mode .modern-user-dropdown-menu .bg-light {
+            background: #171a2a !important;
+            border-top: 1px solid #2e354f !important;
+        }
+
         /* Collapsed Mini-Sidebar Mode (PC Desktop Only >= 992px) */
         @media (min-width: 992px) {
             html.sidebar-collapse .main-sidebar,

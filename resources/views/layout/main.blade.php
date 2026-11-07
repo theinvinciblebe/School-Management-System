@@ -125,6 +125,9 @@
 
             <!-- Notifications Dropdown Menu -->
             @include('components.navbar.notifications')
+
+            <!-- User Profile & Quick Logout in Top Navbar -->
+            @include('components.navbar.user-menu')
         </ul>
     </nav>
     <!-- /.navbar -->

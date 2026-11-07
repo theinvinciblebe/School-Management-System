@@ -15,7 +15,7 @@
     $themeCookie = request()->cookie('theme') ?? ($_COOKIE['theme'] ?? null);
     $isDark = ($themeCookie === 'dark-mode');
 
-    // Test accounts with real user images
+    // Test accounts with role icons
     $testAccounts = [
         [
             'role' => 0,
@@ -26,7 +26,6 @@
             'password' => '123456',
             'badge' => __('Full Access'),
             'icon' => 'fas fa-user-shield',
-            'image' => asset('assets/dist/img/avatar5.png'),
             'color' => '#ef4444',
             'bg' => 'rgba(239, 68, 68, 0.12)',
             'border' => 'rgba(239, 68, 68, 0.3)'
@@ -40,7 +39,6 @@
             'password' => '123456',
             'badge' => __('Teaching & Marks'),
             'icon' => 'fas fa-chalkboard-teacher',
-            'image' => asset('teachers_image/1738645193.jpg'),
             'color' => '#3b82f6',
             'bg' => 'rgba(59, 130, 246, 0.12)',
             'border' => 'rgba(59, 130, 246, 0.3)'
@@ -54,7 +52,6 @@
             'password' => '123456',
             'badge' => __('Learning & Marks'),
             'icon' => 'fas fa-user-graduate',
-            'image' => asset('students_image/1738571728.jpg'),
             'color' => '#10b981',
             'bg' => 'rgba(16, 185, 129, 0.12)',
             'border' => 'rgba(16, 185, 129, 0.3)'
@@ -68,7 +65,6 @@
             'password' => '123456',
             'badge' => __('Fees & Expenses'),
             'icon' => 'fas fa-file-invoice-dollar',
-            'image' => asset('staffs_image/1741584558.jpg'),
             'color' => '#f59e0b',
             'bg' => 'rgba(245, 158, 11, 0.12)',
             'border' => 'rgba(245, 158, 11, 0.3)'
@@ -82,7 +78,6 @@
             'password' => '123456',
             'badge' => __('Front Desk & Staff'),
             'icon' => 'fas fa-concierge-bell',
-            'image' => asset('staffs_image/1741581999.png'),
             'color' => '#8b5cf6',
             'bg' => 'rgba(139, 92, 246, 0.12)',
             'border' => 'rgba(139, 92, 246, 0.3)'
@@ -519,50 +514,35 @@
             box-shadow: 0 0 0 2px var(--role-border, rgba(99, 102, 241, 0.25));
         }
 
-        /* Avatar Container in Role Button */
-        .role-pill-avatar-wrapper {
-            position: relative;
+        /* User Icon Box in Role Button */
+        .role-pill-icon-box {
             width: 42px;
             height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .role-pill-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--role-color, var(--primary));
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            background: var(--card-bg);
-        }
-
-        .role-pill-btn:hover .role-pill-avatar {
-            transform: scale(1.08);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-        }
-
-        .role-pill-btn.active .role-pill-avatar {
-            box-shadow: 0 0 0 3px var(--card-bg), 0 0 0 5px var(--role-color, var(--primary));
-        }
-
-        .role-pill-badge-icon {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 17px;
-            height: 17px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.58rem;
+            font-size: 1.15rem;
+            color: var(--role-color, var(--primary));
+            background: var(--role-bg, rgba(99, 102, 241, 0.1));
+            border: 1.5px solid var(--role-border, rgba(99, 102, 241, 0.25));
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .role-pill-btn:hover .role-pill-icon-box {
+            transform: scale(1.1);
+            background: var(--role-color, var(--primary));
             color: #ffffff;
-            border: 2px solid var(--card-bg);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-color: var(--role-color, var(--primary));
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+        }
+
+        .role-pill-btn.active .role-pill-icon-box {
+            background: var(--role-color, var(--primary));
+            color: #ffffff;
+            border-color: var(--role-color, var(--primary));
+            box-shadow: 0 0 0 3px var(--card-bg), 0 0 0 5px var(--role-color, var(--primary));
         }
 
         .role-pill-label {
@@ -610,37 +590,27 @@
 
         .active-avatar-ring {
             position: relative;
-            width: 58px;
-            height: 58px;
+            width: 56px;
+            height: 56px;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .active-user-img {
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2.5px solid var(--active-color, var(--primary));
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--card-bg);
-        }
-
-        .active-badge-icon {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 22px;
-            height: 22px;
+        .active-user-icon-box {
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.68rem;
-            color: #ffffff;
-            border: 2.5px solid var(--card-bg);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-            transition: background 0.3s ease;
+            font-size: 1.55rem;
+            color: var(--active-color, var(--primary));
+            background: var(--active-bg, rgba(99, 102, 241, 0.12));
+            border: 2px solid var(--active-color, var(--primary));
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .active-user-details {
@@ -913,19 +883,19 @@
         @if ($currentLang === 'km')
             <a href="{{ route('lang.switch', 'en') }}" class="control-pill" title="Switch to English">
                 <span class="flag-icon flag-icon-us"></span>
-                <span>English</span>
+                <span>ENG</span>
             </a>
         @else
             <a href="{{ route('lang.switch', 'km') }}" class="control-pill" title="ប្តូរទៅភាសាខ្មែរ">
                 <span class="flag-icon flag-icon-kh"></span>
-                <span>ភាសាខ្មែរ</span>
+                <span>KH</span>
             </a>
         @endif
 
         <!-- Theme Toggle -->
         <button type="button" id="loginThemeToggle" class="control-pill" title="Toggle Theme" aria-label="Toggle Theme">
             <i class="fas {{ $isDark ? 'fa-sun text-warning' : 'fa-moon text-primary' }}" id="loginThemeIcon"></i>
-            <span id="loginThemeLabel">{{ $isDark ? __('Light Mode') : __('Dark Mode') }}</span>
+            <!-- <span id="loginThemeLabel">{{ $isDark ? __('Light Mode') : __('Dark Mode') }}</span> -->
         </button>
     </div>
 
@@ -1016,7 +986,6 @@
                                 data-password="{{ $account['password'] }}"
                                 data-name="{{ $account['name'] }}"
                                 data-rolename="{{ $account['display_role'] }}"
-                                data-image="{{ $account['image'] }}"
                                 data-color="{{ $account['color'] }}"
                                 data-bg="{{ $account['bg'] }}"
                                 data-border="{{ $account['border'] }}"
@@ -1024,14 +993,8 @@
                                 data-badge="{{ $account['badge'] }}"
                                 style="--role-color: {{ $account['color'] }}; --role-bg: {{ $account['bg'] }}; --role-border: {{ $account['border'] }};"
                                 title="Auto-fill {{ $account['display_role'] }} ({{ $account['email'] }})">
-                            <div class="role-pill-avatar-wrapper">
-                                <img src="{{ $account['image'] }}"
-                                     alt="{{ $account['display_role'] }}"
-                                     class="role-pill-avatar"
-                                     onerror="this.onerror=null; this.src='{{ asset('assets/dist/img/avatar.png') }}'">
-                                <span class="role-pill-badge-icon" style="background: {{ $account['color'] }};">
-                                    <i class="{{ $account['icon'] }}"></i>
-                                </span>
+                            <div class="role-pill-icon-box">
+                                <i class="{{ $account['icon'] }}"></i>
                             </div>
                             <span class="role-pill-label">{{ $account['display_role'] }}</span>
                             <span class="role-pill-badge">{{ $account['badge'] }}</span>
@@ -1043,16 +1006,13 @@
             <!-- ACTIVE USER PROFILE SHOWCASE CARD -->
             <div id="activeUserShowcase"
                  class="active-user-showcase"
-                 style="--active-color: {{ $testAccounts[0]['color'] }};">
+                 style="--active-color: {{ $testAccounts[0]['color'] }}; --active-bg: {{ $testAccounts[0]['bg'] }};">
                 <div class="active-avatar-ring">
-                    <img id="activeUserImg"
-                         src="{{ $testAccounts[0]['image'] }}"
-                         alt="{{ $testAccounts[0]['name'] }}"
-                         class="active-user-img"
-                         onerror="this.onerror=null; this.src='{{ asset('assets/dist/img/avatar.png') }}'">
-                    <span id="activeUserBadgeIcon" class="active-badge-icon" style="background: {{ $testAccounts[0]['color'] }};">
+                    <div id="activeUserIconBox"
+                         class="active-user-icon-box"
+                         style="background: {{ $testAccounts[0]['bg'] }}; border-color: {{ $testAccounts[0]['color'] }}; color: {{ $testAccounts[0]['color'] }};">
                         <i class="{{ $testAccounts[0]['icon'] }}" id="activeUserIconTag"></i>
-                    </span>
+                    </div>
                 </div>
                 <div class="active-user-details">
                     <div class="active-name-wrap">
@@ -1177,8 +1137,7 @@
 
             // Active user showcase elements
             const activeUserShowcase = document.getElementById('activeUserShowcase');
-            const activeUserImg = document.getElementById('activeUserImg');
-            const activeUserBadgeIcon = document.getElementById('activeUserBadgeIcon');
+            const activeUserIconBox = document.getElementById('activeUserIconBox');
             const activeUserIconTag = document.getElementById('activeUserIconTag');
             const activeUserName = document.getElementById('activeUserName');
             const activeRoleTag = document.getElementById('activeRoleTag');
@@ -1200,18 +1159,20 @@
             function updateActiveUserCard(data) {
                 if (!activeUserShowcase) return;
 
-                // Subtle pop animation on avatar
-                if (activeUserImg) {
-                    activeUserImg.style.transform = 'scale(0.88)';
+                // Subtle pop animation on icon box
+                if (activeUserIconBox) {
+                    activeUserIconBox.style.transform = 'scale(0.85)';
                     setTimeout(() => {
-                        activeUserImg.src = data.image;
-                        activeUserImg.style.transform = 'scale(1)';
-                    }, 120);
+                        activeUserIconBox.style.background = data.bg;
+                        activeUserIconBox.style.borderColor = data.color;
+                        activeUserIconBox.style.color = data.color;
+                        if (activeUserIconTag) activeUserIconTag.className = data.icon;
+                        activeUserIconBox.style.transform = 'scale(1)';
+                    }, 100);
                 }
 
                 activeUserShowcase.style.setProperty('--active-color', data.color);
-                if (activeUserBadgeIcon) activeUserBadgeIcon.style.background = data.color;
-                if (activeUserIconTag) activeUserIconTag.className = data.icon;
+                activeUserShowcase.style.setProperty('--active-bg', data.bg);
                 if (activeUserName) activeUserName.textContent = data.name;
                 if (activeRoleTag) {
                     activeRoleTag.textContent = data.roleName;
@@ -1233,7 +1194,6 @@
                     const password = this.getAttribute('data-password');
                     const name = this.getAttribute('data-name');
                     const roleName = this.getAttribute('data-rolename');
-                    const image = this.getAttribute('data-image');
                     const color = this.getAttribute('data-color');
                     const bg = this.getAttribute('data-bg');
                     const border = this.getAttribute('data-border');
@@ -1243,9 +1203,9 @@
                     emailInput.value = email;
                     passwordInput.value = password;
 
-                    // Update the active user image showcase card
+                    // Update the active user icon showcase card
                     updateActiveUserCard({
-                        email, name, roleName, image, color, bg, border, icon, badge
+                        email, name, roleName, color, bg, border, icon, badge
                     });
 
                     // Gentle highlight feedback animation on form inputs
