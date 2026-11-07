@@ -281,7 +281,7 @@ html.dark-mode .pr-sig-title { color: #cbd5e1; }
 @media print {
     @page {
         size: A4 portrait;
-        margin: 12mm;
+        margin: 10mm;
     }
     html, body {
         background: #ffffff !important;
@@ -292,34 +292,56 @@ html.dark-mode .pr-sig-title { color: #cbd5e1; }
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
-    .main-header, .main-sidebar, .main-footer, .pr-action-bar, .content-header {
+    .main-header, 
+    .main-sidebar, 
+    .main-footer, 
+    .pr-action-bar, 
+    .navbar, 
+    .sidebar, 
+    #systemPreloader, 
+    .system-preloader, 
+    .overlay, 
+    #contentOverlay,
+    .content-header {
         display: none !important;
     }
-    .content-wrapper {
+    .content-wrapper, .wrapper, section.content {
         margin: 0 !important;
         padding: 0 !important;
         background: transparent !important;
+        min-height: auto !important;
+        display: block !important;
     }
     .pr-screen-wrap {
+        display: block !important;
         max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
     }
     .pr-voucher-card {
+        display: block !important;
         border: 1.5px solid #000000 !important;
         box-shadow: none !important;
         border-radius: 0 !important;
         padding: 15px !important;
+        page-break-inside: avoid !important;
     }
     .pr-items-table th {
         background: #000000 !important;
         color: #ffffff !important;
         border-color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .pr-grand-total-row td {
+        background: #f1f5f9 !important;
+        color: #000000 !important;
+        border-top: 2px solid #000000 !important;
     }
 }
 </style>
 
-<div class="content-header pb-0">
+<section class="content py-3">
     <div class="pr-screen-wrap">
 
         {{-- ── Action Toolbar (Screen Only) ─────────────────────────── --}}
@@ -461,6 +483,6 @@ html.dark-mode .pr-sig-title { color: #cbd5e1; }
         </div>
 
     </div>
-</div>
+</section>
 
 @endsection

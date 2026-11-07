@@ -241,7 +241,7 @@ html.dark-mode .rc-btn-secondary {
 @media print {
     @page {
         size: A4 portrait;
-        margin: 8mm;
+        margin: 6mm 8mm;
     }
     html, body {
         background: #ffffff !important;
@@ -252,20 +252,34 @@ html.dark-mode .rc-btn-secondary {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
-    .main-header, .main-sidebar, .main-footer, .rc-action-bar, .content-header {
+    .main-header, 
+    .main-sidebar, 
+    .main-footer, 
+    .rc-action-bar, 
+    .navbar, 
+    .sidebar, 
+    #systemPreloader, 
+    .system-preloader, 
+    .overlay, 
+    #contentOverlay,
+    .content-header {
         display: none !important;
     }
-    .content-wrapper {
+    .content-wrapper, .wrapper, section.content {
         margin: 0 !important;
         padding: 0 !important;
         background: transparent !important;
+        min-height: auto !important;
+        display: block !important;
     }
     .rc-screen-wrap {
+        display: block !important;
         max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
     }
     .rc-voucher {
+        display: block !important;
         border: 1.5px solid #000000 !important;
         box-shadow: none !important;
         padding: 10px 14px !important;
@@ -280,16 +294,23 @@ html.dark-mode .rc-btn-secondary {
     .rc-voucher-badge {
         background: #000000 !important;
         color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
     .rc-items-table th {
         background: #000000 !important;
         color: #ffffff !important;
         border-color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .rc-info-grid td, .rc-items-table td {
+        border-color: #64748b !important;
     }
 }
 </style>
 
-<div class="content-header pb-0">
+<section class="content py-3">
     <div class="rc-screen-wrap">
 
         {{-- ── Action Toolbar (Screen Only) ─────────────────────────── --}}
@@ -522,6 +543,6 @@ School: {$schoolName}
         </div>
 
     </div>
-</div>
+</section>
 
 @endsection

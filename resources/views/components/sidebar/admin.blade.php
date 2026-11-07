@@ -97,13 +97,46 @@
         </li>
 
         <li class="nav-header">{{ __('Accounting Section') }}</li>
-        <li class="nav-item {{ request()->is('accounting') ? 'menu-is-opening menu-open' : '' }}">
-            <a href="/accounting" class="nav-link {{ request()->is('accounting') || request()->is('purchase_req*')|| request()->is('fee_receipt*') ? 'active' : '' }}" onclick="showOverlay()">
-                <i class="nav-icon fas fa-newspaper"></i>
+        @php
+            $isAccountingActive = request()->is('accounting*') || 
+                                 request()->is('fee_receipt*') || request()->is('fee-receipt*') || 
+                                 request()->is('purchase_req*') || request()->is('purchase-req*') || 
+                                 request()->is('profit*') || request()->is('transaction*');
+        @endphp
+        <li class="nav-item {{ $isAccountingActive ? 'menu-is-opening menu-open' : '' }}">
+            <a href="#" class="nav-link {{ $isAccountingActive ? 'active' : '' }}">
+                <i class="nav-icon fas fa-file-invoice-dollar"></i>
                 <p>
                     {{ __('Accounting') }}
+                    <i class="right fas fa-angle-left"></i>
                 </p>
             </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('accounting.index') }}" class="nav-link {{ request()->is('accounting') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ __('Accounting Hub') }}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('fee_receipt.index') }}" class="nav-link {{ request()->is('fee_receipt*') || request()->is('fee-receipt*') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ __('Fee Receipts & Billing') }}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('purchase_req.index') }}" class="nav-link {{ request()->is('purchase_req*') || request()->is('purchase-req*') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ __('Purchase Requests') }}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('accounting.transactions') }}" class="nav-link {{ request()->is('profit*') || request()->is('transaction*') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ __('Profit & Transactions') }}</p>
+                    </a>
+                </li>
+            </ul>
         </li>
 
 
