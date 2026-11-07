@@ -1,5 +1,7 @@
 @extends('layout.main')
 
+@section('title', 'PurchaseRequest_' . preg_replace('/[^A-Za-z0-9\-_]/', '', $purchase->request_no ?? 'Voucher') . '_' . \Illuminate\Support\Str::slug($purchase->department ?? 'General'))
+
 @section('content')
 
 @php
@@ -356,7 +358,7 @@ html.dark-mode .pr-sig-title { color: #cbd5e1; }
                 </span>
             </div>
             <div class="d-flex align-items-center" style="gap: 0.6rem;">
-                <button type="button" class="pr-btn pr-btn-primary" onclick="window.print()">
+                <button type="button" class="pr-btn pr-btn-primary" onclick="printPurchaseVoucher()">
                     <i class="fas fa-print"></i>
                     <span>{{ __('Print Voucher') }}</span>
                 </button>
@@ -484,5 +486,21 @@ html.dark-mode .pr-sig-title { color: #cbd5e1; }
 
     </div>
 </section>
+
+<script>
+    function printPurchaseVoucher() {
+        var originalTitle = document.title;
+        var printFilename = "{{ 'PurchaseRequest_' . preg_replace('/[^A-Za-z0-9\-_]/', '', $purchase->request_no ?? 'Voucher') . '_' . \Illuminate\Support\Str::slug($purchase->department ?? 'General') }}";
+        document.title = printFilename;
+        window.print();
+        window.addEventListener('afterprint', function onAfterPrint() {
+            document.title = originalTitle;
+            window.removeEventListener('afterprint', onAfterPrint);
+        }, { once: true });
+        setTimeout(function() {
+            document.title = originalTitle;
+        }, 3000);
+    }
+</script>
 
 @endsection

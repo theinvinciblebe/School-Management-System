@@ -1,15 +1,23 @@
 @extends('layout.main')
+@section('title', 'Purchase Requests')
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <div class="card-title">
-                <h3>Purchased Request List</h3>
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap" style="gap: 0.75rem;">
+            <div class="d-flex align-items-center" style="gap: 0.75rem;">
+                <a href="{{ route('accounting.index') }}" class="btn btn-outline-secondary btn-sm" title="{{ __('Back to Accounting Hub') }}">
+                    <i class="fas fa-arrow-left mr-1"></i> {{ __('Back') }}
+                </a>
+                <h3 class="card-title font-weight-bold mb-0" style="font-size: 1.25rem;">
+                    <i class="fas fa-file-invoice text-info mr-1"></i> {{ __('Purchased Request List') }}
+                </h3>
             </div>
-            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addPurchaseRequestModal">
-                <i class="fas fa-plus-square"></i>
-                Make New Purchase Request
-            </button>
+            <div class="d-flex align-items-center" style="gap: 0.5rem;">
+                <button type="button" class="btn btn-primary btn-sm font-weight-bold" data-toggle="modal" data-target="#addPurchaseRequestModal">
+                    <i class="fas fa-plus-square mr-1"></i>
+                    {{ __('Make New Purchase Request') }}
+                </button>
+            </div>
 
             <button type="button" class="floating-button" data-toggle="modal" data-target="#addPurchaseRequestModal">
                 <i class="fas fa-plus"></i>

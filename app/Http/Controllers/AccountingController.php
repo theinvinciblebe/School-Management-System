@@ -191,30 +191,94 @@ class AccountingController extends Controller
         ));
     }
 
-    public function transactions(){
-        // Get unique years for the dropdown
+    public function transactions(Request $request)
+    {
         $this->authorizeAccountingAccess();
+
+        $driver = DB::connection()->getDriverName();
+        $yearExpr = $driver === 'sqlite' ? "strftime('%Y', date)" : "YEAR(date)";
+
         $years = DB::table('transactions')
-            ->selectRaw('YEAR(date) as year')
-            ->groupByRaw('YEAR(date)')
+            ->selectRaw("{$yearExpr} as year")
+            ->groupByRaw($yearExpr)
             ->orderByDesc('year')
             ->pluck('year');
 
-        return view('accounting.profit', compact('years'));
+        if ($years->isEmpty()) {
+            $years = collect([now()->year]);
+        }
+
+        $selectedYear = (int)$request->input('year', $years->first() ?? now()->year);
+
+        $transactions = DB::table('transactions')
+            ->whereYear('date', $selectedYear)
+            ->orderBy('date', 'asc')
+            ->get();
+
+        $totalProfit = (float)$transactions->where('type', 'profit')->sum('amount');
+        $totalExpense = (float)$transactions->where('type', 'expense')->sum('amount');
+        $netBalance = $totalProfit - $totalExpense;
+        $profitMargin = $totalProfit > 0 ? round(($netBalance / $totalProfit) * 100, 1) : 0;
+
+        $profitByCategory = $transactions->where('type', 'profit')
+            ->groupBy('category')
+            ->map(fn($group) => $group->sum('amount'))
+            ->sortDesc();
+
+        $expenseByCategory = $transactions->where('type', 'expense')
+            ->groupBy('category')
+            ->map(fn($group) => $group->sum('amount'))
+            ->sortDesc();
+
+        return view('accounting.profit', compact(
+            'years',
+            'selectedYear',
+            'transactions',
+            'totalProfit',
+            'totalExpense',
+            'netBalance',
+            'profitMargin',
+            'profitByCategory',
+            'expenseByCategory'
+        ));
     }
 
     public function transactionData(Request $request)
     {
         $this->authorizeAccountingAccess();
-        $year = $request->input('year', now()->year);
+        $year = (int)$request->input('year', now()->year);
 
         $transactions = DB::table('transactions')
             ->whereYear('date', $year)
             ->orderBy('date', 'asc')
             ->get();
 
+        $totalProfit = (float)$transactions->where('type', 'profit')->sum('amount');
+        $totalExpense = (float)$transactions->where('type', 'expense')->sum('amount');
+        $netBalance = $totalProfit - $totalExpense;
+        $profitMargin = $totalProfit > 0 ? round(($netBalance / $totalProfit) * 100, 1) : 0;
+
+        $profitByCategory = $transactions->where('type', 'profit')
+            ->groupBy('category')
+            ->map(fn($group) => $group->sum('amount'))
+            ->sortDesc();
+
+        $expenseByCategory = $transactions->where('type', 'expense')
+            ->groupBy('category')
+            ->map(fn($group) => $group->sum('amount'))
+            ->sortDesc();
+
         return response()->json([
             'transactions' => $transactions,
+            'summary' => [
+                'year' => $year,
+                'total_profit' => $totalProfit,
+                'total_expense' => $totalExpense,
+                'net_balance' => $netBalance,
+                'profit_margin' => $profitMargin,
+                'profit_by_category' => $profitByCategory,
+                'expense_by_category' => $expenseByCategory,
+            ]
         ]);
     }
 
@@ -722,7 +786,11 @@ class AccountingController extends Controller
 
         $pdf = PDF::loadView('accounting.fee_receipt_pdf', compact('fees', 'items', 'qrCodeBase64'));
 
-        return $pdf->stream('fee_receipt.pdf');
+        $cleanReceiptNo = preg_replace('/[^A-Za-z0-9\-_]/', '', $fees->receipt_no ?? 'Receipt');
+        $cleanStudentName = \Illuminate\Support\Str::slug($fees->student_name ?? 'Student');
+        $filename = "FeeReceipt_{$cleanReceiptNo}_{$cleanStudentName}.pdf";
+
+        return $pdf->stream($filename);
     }
     public function getFeeItems($id)
     {

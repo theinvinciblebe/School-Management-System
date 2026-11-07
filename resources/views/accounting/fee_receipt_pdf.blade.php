@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>{{ $customizes->brand_title ?? 'School System' }} - Fee Receipt #{{ $fees->receipt_no }}</title>
+    <title>FeeReceipt_{{ preg_replace('/[^A-Za-z0-9\-_]/', '', $fees->receipt_no ?? 'Receipt') }}_{{ \Illuminate\Support\Str::slug($fees->student_name ?? 'Student') }}</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;

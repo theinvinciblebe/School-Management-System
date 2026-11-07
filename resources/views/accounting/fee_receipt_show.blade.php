@@ -1,5 +1,7 @@
 @extends('layout.main')
 
+@section('title', 'FeeReceipt_' . preg_replace('/[^A-Za-z0-9\-_]/', '', $fees->receipt_no ?? 'Receipt') . '_' . \Illuminate\Support\Str::slug($fees->student_name ?? 'Student'))
+
 @section('content')
 
 @php
@@ -325,14 +327,17 @@ html.dark-mode .rc-btn-secondary {
                 </span>
             </div>
             <div class="d-flex align-items-center" style="gap: 0.6rem;">
-                <button type="button" class="rc-btn rc-btn-primary" onclick="window.print()">
+                <button type="button" class="rc-btn rc-btn-primary" onclick="printReceipt()">
                     <i class="fas fa-print"></i>
                     <span>{{ __('Print Receipt') }}</span>
                 </button>
-                <a href="{{ route('fee_receipt.pdf', $fees->receipt_id) }}" class="rc-btn rc-btn-secondary" target="_blank">
+                <!-- <a href="{{ route('fee_receipt.pdf', $fees->receipt_id) }}" 
+                   download="FeeReceipt_{{ preg_replace('/[^A-Za-z0-9\-_]/', '', $fees->receipt_no ?? 'Receipt') }}_{{ \Illuminate\Support\Str::slug($fees->student_name ?? 'Student') }}.pdf"
+                   class="rc-btn rc-btn-secondary" 
+                   target="_blank">
                     <i class="fas fa-file-pdf text-danger"></i>
                     <span>{{ __('Download PDF') }}</span>
-                </a>
+                </a> -->
             </div>
         </div>
 
@@ -544,5 +549,21 @@ School: {$schoolName}
 
     </div>
 </section>
+
+<script>
+    function printReceipt() {
+        var originalTitle = document.title;
+        var printFilename = "{{ 'FeeReceipt_' . preg_replace('/[^A-Za-z0-9\-_]/', '', $fees->receipt_no ?? 'Receipt') . '_' . \Illuminate\Support\Str::slug($fees->student_name ?? 'Student') }}";
+        document.title = printFilename;
+        window.print();
+        window.addEventListener('afterprint', function onAfterPrint() {
+            document.title = originalTitle;
+            window.removeEventListener('afterprint', onAfterPrint);
+        }, { once: true });
+        setTimeout(function() {
+            document.title = originalTitle;
+        }, 3000);
+    }
+</script>
 
 @endsection

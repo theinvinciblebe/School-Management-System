@@ -277,7 +277,7 @@
         setTimeout(dismissPreloader, 1800);
     </script>
 
-    <title>{{ $customizes->url_title ?? config('app.name') }}</title>
+    <title>@hasSection('title')@yield('title') - {{ $customizes->url_title ?? config('app.name') }}@else{{ $customizes->url_title ?? config('app.name') }}@endif</title>
 
     @php
         $rawFavicon = $customizes->url_icon ?? 'favicon.ico';
