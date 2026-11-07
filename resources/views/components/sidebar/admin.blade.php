@@ -287,14 +287,6 @@
                         <p>{{ __('Activity Log Page') }}</p>
                     </a>
                 </li>
-                <div class="dropdown-divider"></div>
-                <li class="nav-item">
-                    <a href="/logout" class="nav-link logout-btn">
-                        <i class="fas fa-sign-out-alt nav-icon" aria-hidden="true"></i>
-                        <p>{{ __('Logout') }}</p>
-                    </a>
-                </li>
-
             </ul>
         </li>
 

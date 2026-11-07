@@ -238,6 +238,7 @@
         // 4. Click on nav links: save scroll, update active state, and show overlay
         $(document).on('click', '.main-sidebar .sidebar .nav-link', function (e) {
             if (e.ctrlKey || e.metaKey || e.shiftKey || $(this).attr('target') === '_blank') return;
+            if ($(this).hasClass('logout-btn') || $(this).closest('.logout-btn').length || $(this).attr('href') === '/logout') return;
             const href = $(this).attr('href');
             if (!href || href === '#' || href.startsWith('javascript:')) return;
 
@@ -426,7 +427,13 @@
     // Handle logout button click
     $(document).on('click', '.logout-btn', function (e) {
         e.preventDefault(); // Prevent default navigation
-        let logoutUrl = $(this).attr('href'); // Get the logout route from href
+        e.stopPropagation(); // Stop event bubbling so other listeners do not trigger
+        let logoutUrl = $(this).attr('href') || '/logout'; // Get the logout route from href
+
+        // Hide overlay if it was somehow shown
+        if (typeof hideOverlay === 'function') {
+            hideOverlay();
+        }
 
         Swal.fire({
             title: "Are you sure you want to log out?",
@@ -435,10 +442,19 @@
             showCancelButton: true,
             confirmButtonColor: "#d33",
             cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, log out!"
+            confirmButtonText: "Yes, log out!",
+            cancelButtonText: "Cancel"
         }).then((result) => {
             if (result.isConfirmed) {
+                if (typeof showOverlay === 'function') {
+                    showOverlay();
+                }
                 window.location.href = logoutUrl; // Redirect to logout route
+            } else {
+                // User cancelled: ensure overlay remains completely hidden
+                if (typeof hideOverlay === 'function') {
+                    hideOverlay();
+                }
             }
         });
     });

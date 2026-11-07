@@ -159,16 +159,6 @@
                     <i class="right fas fa-angle-left"></i>
                 </p>
             </a>
-
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="/logout" class="nav-link logout-btn">
-                        <i class="fas fa-sign-out-alt nav-icon"></i>
-                        <p>Logout</p>
-                    </a>
-                </li>
-
-            </ul>
         </li>
 
         <li class="nav-header text-uppercase mt-2" style="font-size: 0.68rem; letter-spacing: 0.08em; opacity: 0.7;">{{ __('Account') }}</li>

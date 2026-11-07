@@ -202,6 +202,20 @@
             if (!a || !a.href) return;
             var href = a.getAttribute('href') || '';
             if (a.target === '_blank' || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+            // Never auto-show overlay on logout actions, dropdowns, modal triggers, or widgets
+            if (a.classList.contains('logout-btn') || 
+                a.closest('.logout-btn') || 
+                href === '/logout' || 
+                href.includes('/logout') ||
+                a.hasAttribute('data-toggle') || 
+                a.hasAttribute('data-widget') || 
+                a.hasAttribute('data-dismiss') || 
+                a.getAttribute('role') === 'button' ||
+                a.classList.contains('no-overlay')) {
+                return;
+            }
+
             try {
                 var url = new URL(a.href, window.location.origin);
                 if (url.origin === window.location.origin) {

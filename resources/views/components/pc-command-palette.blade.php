@@ -304,6 +304,11 @@
 
             const href = item.getAttribute('href');
             if (href) {
+                if (item.classList.contains('logout-btn') || href === '/logout') {
+                    closePcCommandPalette();
+                    $(item).trigger('click');
+                    return;
+                }
                 if (typeof showOverlay === 'function') showOverlay();
                 window.location.href = href;
             }
