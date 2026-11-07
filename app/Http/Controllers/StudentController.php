@@ -12,7 +12,7 @@ class StudentController extends Controller
 {
     protected function authorizeAccountantAccess()
     {
-        if (!in_array(Auth::user()->role, [0, 3, 4])) {
+        if (!in_array((int) Auth::user()->role, [0, 1, 3, 4], true)) {
             abort(403);
         }
     }

@@ -194,7 +194,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        @foreach($classes as $class)
+                        @foreach($classes ?? [] as $class)
                             <li class="nav-item">
                                 <a href="{{ route('marks.byClass', ['class_id' => $class->class_id]) }}"
                                    class="nav-link {{ request()->is('marks/class/'.$class->class_id) ? 'active' : '' }}">
@@ -324,6 +324,12 @@
         </li>
 
         <li class="nav-header text-uppercase mt-2" style="font-size: 0.68rem; letter-spacing: 0.08em; opacity: 0.7;">{{ __('Account') }}</li>
+        <li class="nav-item">
+            <a href="{{ route('user.profile') }}" class="nav-link {{ Request::is('user-profile*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-user-circle"></i>
+                <p>{{ __('My Profile') }}</p>
+            </a>
+        </li>
         <li class="nav-item">
             <a href="/logout" class="nav-link logout-btn">
                 <i class="fas fa-sign-out-alt nav-icon text-danger" aria-hidden="true"></i>

@@ -11,14 +11,14 @@ class ClassController extends Controller
 {
     protected function authorizeTeacherAccess()
     {
-        if (!in_array(Auth::user()->role, [0, 1])) {
+        if (!in_array((int) Auth::user()->role, [0, 1], true)) {
             abort(403);
         }
     }
 
     protected function authorizeAccountantAccess()
     {
-        if (!in_array(Auth::user()->role, [0, 3, 4])) {
+        if (!in_array((int) Auth::user()->role, [0, 1, 3, 4], true)) {
             abort(403);
         }
     }

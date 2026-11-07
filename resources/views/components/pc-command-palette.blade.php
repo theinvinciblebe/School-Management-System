@@ -13,6 +13,10 @@
             <kbd class="pc-kbd-badge" style="cursor: pointer;" onclick="closePcCommandPalette()">ESC</kbd>
         </div>
 
+        @php
+            $paletteUserRole = Auth::check() ? (int) Auth::user()->role : null;
+        @endphp
+
         <!-- Filterable Commands & Navigation Items -->
         <div id="pcPaletteList" class="pc-palette-list">
             <!-- Navigation Section -->
@@ -26,37 +30,45 @@
                 <kbd class="pc-palette-item-shortcut">Alt + D</kbd>
             </a>
 
-            <a href="/students" class="pc-palette-item" data-keywords="students student list directory enroll pupils">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fas fa-user-graduate"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Students Directory') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/students</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 1, 3, 4]))
+                <a href="/students" class="pc-palette-item" data-keywords="students student list directory enroll pupils">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fas fa-user-graduate"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Students Directory') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/students</span>
+                </a>
+            @endif
 
-            <a href="/students/create" class="pc-palette-item" data-keywords="enroll student add admission new">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fas fa-user-plus"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Enroll New Student') }}</span>
-                </div>
-                <span class="badge badge-success px-2 py-1" style="font-size: 0.72rem;">{{ __('Add') }}</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 4]))
+                <a href="/students/create" class="pc-palette-item" data-keywords="enroll student add admission new">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fas fa-user-plus"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Enroll New Student') }}</span>
+                    </div>
+                    <span class="badge badge-success px-2 py-1" style="font-size: 0.72rem;">{{ __('Add') }}</span>
+                </a>
+            @endif
 
-            <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="pc-palette-item" data-keywords="attendance student daily roll call present absent">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;"><i class="fas fa-user-check"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Student Attendance') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/attendance</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 1]))
+                <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="pc-palette-item" data-keywords="attendance student daily roll call present absent">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;"><i class="fas fa-user-check"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Student Attendance') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/attendance</span>
+                </a>
+            @endif
 
-            <a href="/staff/attendance" class="pc-palette-item" data-keywords="staff attendance teacher employee instructors roll call">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fas fa-clipboard-check"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Staff Attendance') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/staff/attendance</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 4]))
+                <a href="/staff/attendance" class="pc-palette-item" data-keywords="staff attendance teacher employee instructors roll call">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fas fa-clipboard-check"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Staff Attendance') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/staff/attendance</span>
+                </a>
+            @endif
 
             <a href="/teachers" class="pc-palette-item" data-keywords="teachers faculty instructor educator staff">
                 <div class="pc-palette-item-left">
@@ -66,72 +78,110 @@
                 <span class="text-muted" style="font-size: 0.78rem;">/teachers</span>
             </a>
 
-            <a href="/class" class="pc-palette-item" data-keywords="classes class grade sections room">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;"><i class="fas fa-school"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Classes & Grades') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/class</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 1, 3, 4]))
+                <a href="/class" class="pc-palette-item" data-keywords="classes class grade sections room">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;"><i class="fas fa-school"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Classes & Grades') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/class</span>
+                </a>
+            @endif
 
-            <a href="/class-routines" class="pc-palette-item" data-keywords="class routine timetable schedule period lesson hours">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;"><i class="fas fa-calendar-alt"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Class Routine & Timetable') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/class-routines</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 1, 2, 4]))
+                <a href="/class-routines" class="pc-palette-item" data-keywords="class routine timetable schedule period lesson hours">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;"><i class="fas fa-calendar-alt"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Class Routine & Timetable') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/class-routines</span>
+                </a>
 
-            <a href="/classes-subject" class="pc-palette-item" data-keywords="subjects curriculum course syllabus book learning">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;"><i class="fas fa-book-open"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Subject Management') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/classes-subject</span>
-            </a>
+                <a href="/classes-subject" class="pc-palette-item" data-keywords="subjects curriculum course syllabus book learning">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;"><i class="fas fa-book-open"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Subject Management') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/classes-subject</span>
+                </a>
+            @endif
 
-            <a href="/departments" class="pc-palette-item" data-keywords="departments department organization division faculty">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(100, 116, 139, 0.15); color: #64748b;"><i class="fas fa-building"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Departments') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/departments</span>
-            </a>
+            @if (in_array($paletteUserRole, [0, 1, 2]))
+                <a href="{{ route('myClass.index') }}" class="pc-palette-item" data-keywords="class materials documents learning pdf syllabus slides">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;"><i class="fas fa-cubes"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Class Materials') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/myClass</span>
+                </a>
+            @endif
+
+            @if (in_array($paletteUserRole, [0, 4]))
+                <a href="/departments" class="pc-palette-item" data-keywords="departments department organization division faculty">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(100, 116, 139, 0.15); color: #64748b;"><i class="fas fa-building"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Departments') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/departments</span>
+                </a>
+            @endif
 
             <!-- Financials & Administration Section -->
-            <div class="pc-palette-group-title">{{ __('Finance & Administration') }}</div>
+            @if (in_array($paletteUserRole, [0, 3, 4]))
+                <div class="pc-palette-group-title">{{ __('Finance & Administration') }}</div>
 
-            <a href="/profit" class="pc-palette-item" data-keywords="profit financials accounting revenue expense cash flow ledger balance">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fas fa-chart-line"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Financial Reports & Profit') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/profit</span>
-            </a>
+                @if (in_array($paletteUserRole, [0, 3]))
+                    <a href="/profit" class="pc-palette-item" data-keywords="profit financials accounting revenue expense cash flow ledger balance">
+                        <div class="pc-palette-item-left">
+                            <div class="pc-palette-item-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fas fa-chart-line"></i></div>
+                            <span class="pc-palette-item-text">{{ __('Financial Reports & Profit') }}</span>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.78rem;">/profit</span>
+                    </a>
+                @endif
 
-            <a href="/fee_receipt" class="pc-palette-item" data-keywords="fee receipt tuition billing invoice payment student fee">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fas fa-file-invoice-dollar"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Fee Receipts & Invoices') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/fee_receipt</span>
-            </a>
+                <a href="/fee_receipt" class="pc-palette-item" data-keywords="fee receipt tuition billing invoice payment student fee">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fas fa-file-invoice-dollar"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Fee Receipts & Invoices') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/fee_receipt</span>
+                </a>
 
-            <a href="/purchase_req" class="pc-palette-item" data-keywords="purchase request requisition procurement orders supply expense">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;"><i class="fas fa-shopping-cart"></i></div>
-                    <span class="pc-palette-item-text">{{ __('Purchase Requests') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/purchase_req</span>
-            </a>
+                <a href="/purchase_req" class="pc-palette-item" data-keywords="purchase request requisition procurement orders supply expense">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;"><i class="fas fa-shopping-cart"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Purchase Requests') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/purchase_req</span>
+                </a>
+            @endif
 
-            <a href="/user-management" class="pc-palette-item" data-keywords="users accounts permissions roles security authentication">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fas fa-user-shield"></i></div>
-                    <span class="pc-palette-item-text">{{ __('User Access Management') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/user-management</span>
-            </a>
+            @if ($paletteUserRole === 0)
+                <a href="/user-management" class="pc-palette-item" data-keywords="users accounts permissions roles security authentication">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fas fa-user-shield"></i></div>
+                        <span class="pc-palette-item-text">{{ __('User Access Management') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/user-management</span>
+                </a>
+
+                <a href="/customize" class="pc-palette-item" data-keywords="customize settings theme color logo branding appearance">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e;"><i class="fas fa-sliders-h"></i></div>
+                        <span class="pc-palette-item-text">{{ __('System Customization') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/customize</span>
+                </a>
+
+                <a href="{{ route('activity.logs') }}" class="pc-palette-item" data-keywords="activity logs audit trail security system events">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fas fa-history"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Audit Trail & Activity Logs') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/activity-logs</span>
+                </a>
+            @endif
 
             <a href="/user-profile" class="pc-palette-item" data-keywords="profile my account password settings photo avatar name">
                 <div class="pc-palette-item-left">
@@ -139,14 +189,6 @@
                     <span class="pc-palette-item-text">{{ __('My Profile') }}</span>
                 </div>
                 <span class="text-muted" style="font-size: 0.78rem;">/user-profile</span>
-            </a>
-
-            <a href="/customize" class="pc-palette-item" data-keywords="customize settings theme color logo branding appearance">
-                <div class="pc-palette-item-left">
-                    <div class="pc-palette-item-icon" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e;"><i class="fas fa-sliders-h"></i></div>
-                    <span class="pc-palette-item-text">{{ __('System Customization') }}</span>
-                </div>
-                <span class="text-muted" style="font-size: 0.78rem;">/customize</span>
             </a>
 
             <a href="/inbox" class="pc-palette-item" data-keywords="inbox messages requests notifications approvals mail">

@@ -86,9 +86,73 @@ class User extends Authenticatable
         return asset('admin_image/noimg.jpg');
     }
 
-    public function hasRole($role)
+    public function isAdmin(): bool
     {
-        return $this->role === $role; // Example: '0' for admin, '1' for teacher, etc.
+        return (int) $this->role === 0;
+    }
+
+    public function isTeacher(): bool
+    {
+        return (int) $this->role === 1;
+    }
+
+    public function isStudent(): bool
+    {
+        return (int) $this->role === 2;
+    }
+
+    public function isAccountant(): bool
+    {
+        return (int) $this->role === 3;
+    }
+
+    public function isReceptionist(): bool
+    {
+        return (int) $this->role === 4;
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array((int) $this->role, [0, 1, 3, 4], true);
+    }
+
+    public function hasRole($roles): bool
+    {
+        $roleMap = [
+            'admin'        => 0,
+            'teacher'      => 1,
+            'student'      => 2,
+            'accountant'   => 3,
+            'reception'    => 4,
+            'receptionist' => 4,
+        ];
+
+        if (!is_array($roles)) {
+            $roles = [$roles];
+        }
+
+        $myRole = (int) $this->role;
+        foreach ($roles as $r) {
+            if (is_numeric($r) && (int) $r === $myRole) {
+                return true;
+            }
+            if (is_string($r) && isset($roleMap[strtolower($r)]) && $roleMap[strtolower($r)] === $myRole) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getRoleNameAttribute(): string
+    {
+        return match ((int) $this->role) {
+            0 => 'Admin',
+            1 => 'Teacher',
+            2 => 'Student',
+            3 => 'Accountant',
+            4 => 'Receptionist',
+            default => 'User'
+        };
     }
 
     /**

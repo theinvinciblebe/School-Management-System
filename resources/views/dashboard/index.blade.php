@@ -517,6 +517,19 @@
         }
     </style>
 
+    @php
+        $authUser = Auth::user();
+        $userRole = (int) ($authUser ? $authUser->role : 0);
+        $roleInfo = match($userRole) {
+            0 => ['label' => 'Administrator', 'badge' => 'badge-danger', 'icon' => 'fas fa-shield-alt'],
+            1 => ['label' => 'Teacher', 'badge' => 'badge-primary', 'icon' => 'fas fa-chalkboard-teacher'],
+            2 => ['label' => 'Student', 'badge' => 'badge-success', 'icon' => 'fas fa-user-graduate'],
+            3 => ['label' => 'Accountant', 'badge' => 'badge-warning text-dark', 'icon' => 'fas fa-file-invoice-dollar'],
+            4 => ['label' => 'Receptionist', 'badge' => 'badge-info', 'icon' => 'fas fa-concierge-bell'],
+            default => ['label' => 'User', 'badge' => 'badge-secondary', 'icon' => 'fas fa-user']
+        };
+    @endphp
+
     <div class="dash-container">
         <div class="container-fluid">
 
@@ -530,34 +543,140 @@
                                 {{ now()->format('l, F j, Y') }}
                             </span>
                             <span class="dash-badge">
+                                <i class="{{ $roleInfo['icon'] }} mr-1"></i>
+                                {{ $roleInfo['label'] }} {{ __('Portal') }}
+                            </span>
+                            <span class="dash-badge">
                                 <i class="fas fa-check-circle text-emerald-400"></i>
-                                {{ __('Academic Management Online') }}
+                                {{ __('System Online') }}
                             </span>
                         </div>
-                        <h1>{{ __('Welcome back') }}, {{ Auth::check() ? Auth::user()->name : 'Administrator' }}! 👋</h1>
-                        <p>Here is your school system's real-time academic status, daily attendance metrics, and financial performance overview.</p>
+                        <h1>{{ __('Welcome back') }}, {{ Auth::check() ? Auth::user()->name : 'User' }}! 👋</h1>
+                        <p>
+                            @if ($userRole === 0)
+                                {{ __('Here is your school system executive overview, daily attendance metrics, and financial performance.') }}
+                            @elseif ($userRole === 1)
+                                {{ __('Here is your academic teaching portal, student marksheet progress, and classroom schedules.') }}
+                            @elseif ($userRole === 2)
+                                {{ __('Here is your personal student learning dashboard, class schedules, exam updates, and materials.') }}
+                            @elseif ($userRole === 3)
+                                {{ __('Here is your financial workstation, student fee receipts, purchase requisitions, and ledger reports.') }}
+                            @elseif ($userRole === 4)
+                                {{ __('Here is your front-desk reception hub, student admission inquiries, and staff attendance tracking.') }}
+                            @endif
+                        </p>
                         
                         <div class="dash-hero-actions">
-                            <a href="/students/create" class="btn-dash-action btn-dash-action-primary" onclick="showOverlay()">
-                                <i class="fas fa-user-plus"></i>
-                                <span>{{ __('Enroll Student') }}</span>
-                            </a>
-                            <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
-                                <i class="fas fa-user-check"></i>
-                                <span>{{ __('Student Attendance') }}</span>
-                            </a>
-                            <a href="/staff/attendance" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
-                                <i class="fas fa-clipboard-check"></i>
-                                <span>{{ __('Staff Attendance') }}</span>
-                            </a>
-                            <a href="/profit" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
-                                <i class="fas fa-chart-line"></i>
-                                <span>{{ __('Financials') }}</span>
-                            </a>
-                            <a href="/customize" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
-                                <i class="fas fa-palette"></i>
-                                <span>{{ __('Settings') }}</span>
-                            </a>
+                            @if ($userRole === 0)
+                                <a href="/students/create" class="btn-dash-action btn-dash-action-primary" onclick="showOverlay()">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>{{ __('Enroll Student') }}</span>
+                                </a>
+                                <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-user-check"></i>
+                                    <span>{{ __('Student Attendance') }}</span>
+                                </a>
+                                <a href="/staff/attendance" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <span>{{ __('Staff Attendance') }}</span>
+                                </a>
+                                <a href="/profit" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>{{ __('Financials') }}</span>
+                                </a>
+                                <a href="/customize" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-palette"></i>
+                                    <span>{{ __('Settings') }}</span>
+                                </a>
+                                <a href="{{ route('activity.logs') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-history"></i>
+                                    <span>{{ __('Audit Trail') }}</span>
+                                </a>
+                            @elseif ($userRole === 1)
+                                <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="btn-dash-action btn-dash-action-primary" onclick="showOverlay()">
+                                    <i class="fas fa-user-check"></i>
+                                    <span>{{ __('Take Attendance') }}</span>
+                                </a>
+                                <a href="{{ route('exam_marks.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-check-double"></i>
+                                    <span>{{ __('Manage Marks') }}</span>
+                                </a>
+                                <a href="{{ route('myClass.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>{{ __('Class Materials') }}</span>
+                                </a>
+                                <a href="{{ route('class_routines.show_classes') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>{{ __('Class Routine') }}</span>
+                                </a>
+                                <a href="{{ route('user.profile') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>{{ __('My Profile') }}</span>
+                                </a>
+                            @elseif ($userRole === 2)
+                                <a href="{{ route('class_routines.show_classes') }}" class="btn-dash-action btn-dash-action-primary" onclick="showOverlay()">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>{{ __('My Timetable') }}</span>
+                                </a>
+                                <a href="{{ route('myClass.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-cubes"></i>
+                                    <span>{{ __('Class Materials') }}</span>
+                                </a>
+                                <a href="{{ route('classesSubject') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-book-open"></i>
+                                    <span>{{ __('My Subjects') }}</span>
+                                </a>
+                                <a href="{{ route('exams_list.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>{{ __('Exam Schedule') }}</span>
+                                </a>
+                                <a href="{{ route('user.profile') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>{{ __('My Profile') }}</span>
+                                </a>
+                            @elseif ($userRole === 3)
+                                <a href="{{ route('fee_receipt.index') }}" class="btn-dash-action btn-dash-action-primary" onclick="showOverlay()">
+                                    <i class="fas fa-receipt"></i>
+                                    <span>{{ __('Fee Billing') }}</span>
+                                </a>
+                                <a href="{{ route('purchase_req.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-file-invoice"></i>
+                                    <span>{{ __('Purchase Requests') }}</span>
+                                </a>
+                                <a href="{{ route('accounting.transactions') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>{{ __('Profits & Ledger') }}</span>
+                                </a>
+                                <a href="{{ route('accounting.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-wallet"></i>
+                                    <span>{{ __('Accounting Hub') }}</span>
+                                </a>
+                                <a href="{{ route('user.profile') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>{{ __('My Profile') }}</span>
+                                </a>
+                            @elseif ($userRole === 4)
+                                <a href="{{ route('students.create') }}" class="btn-dash-action btn-dash-action-primary" onclick="showOverlay()">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>{{ __('Enroll Student') }}</span>
+                                </a>
+                                <a href="{{ route('admissions.list') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <span>{{ __('Admissions') }}</span>
+                                </a>
+                                <a href="{{ route('staffAttendance.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <span>{{ __('Staff Attendance') }}</span>
+                                </a>
+                                <a href="{{ route('fee_receipt.index') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-receipt"></i>
+                                    <span>{{ __('Fee Billing') }}</span>
+                                </a>
+                                <a href="{{ route('user.profile') }}" class="btn-dash-action btn-dash-action-ghost" onclick="showOverlay()">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>{{ __('My Profile') }}</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -689,12 +808,16 @@
                         <span class="badge px-3 py-2 ml-2" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e; font-weight: 600; font-size: 0.85rem;">
                             <i class="fas fa-times-circle mr-1"></i> {{ $absent_atd }} {{ __('Absent') }}
                         </span>
-                        <a href="{{ $studentAttendanceUrl }}" class="dash-card-link ml-3" style="font-size: 0.86rem;" onclick="showOverlay()">
-                            {{ __('Student Attendance') }} <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="/staff/attendance" class="dash-card-link ml-3 text-muted" style="font-size: 0.86rem;" onclick="showOverlay()">
-                            {{ __('Staff Attendance') }} <i class="fas fa-arrow-right"></i>
-                        </a>
+                        @if(in_array($userRole, [0, 1]))
+                            <a href="{{ $studentAttendanceUrl }}" class="dash-card-link ml-3" style="font-size: 0.86rem;" onclick="showOverlay()">
+                                {{ __('Student Attendance') }} <i class="fas fa-arrow-right"></i>
+                            </a>
+                        @endif
+                        @if(in_array($userRole, [0, 4]))
+                            <a href="/staff/attendance" class="dash-card-link ml-3 text-muted" style="font-size: 0.86rem;" onclick="showOverlay()">
+                                {{ __('Staff Attendance') }} <i class="fas fa-arrow-right"></i>
+                            </a>
+                        @endif
                     </div>
                 </div>
 
@@ -712,128 +835,236 @@
                         <div class="w-100 bg-secondary" style="opacity: 0.25;"></div>
                     </div>
                     <div class="text-muted mt-2" style="font-size: 0.8rem;">
-                        <i class="fas fa-info-circle mr-1"></i> No student attendance recorded yet for today. <a href="{{ $studentAttendanceUrl }}" class="dash-card-link">Take student attendance now</a>.
+                        <i class="fas fa-info-circle mr-1"></i> {{ __('No student attendance recorded yet for today.') }}
+                        @if(in_array($userRole, [0, 1]))
+                            <a href="{{ $studentAttendanceUrl }}" class="dash-card-link">{{ __('Take student attendance now') }}</a>.
+                        @endif
                     </div>
                 @endif
             </div>
 
-            <!-- Charts Section: Main Trends (Line) & Expense Breakdown (Donut) -->
-            <div class="row">
-                <!-- Line Chart: Cash Flow / Profit & Expense Trends -->
-                <div class="col-xl-8 col-lg-7 col-md-12 mb-4">
-                    <div class="chart-panel">
-                        <div class="chart-panel-header">
-                            <div>
-                                <h3 class="chart-title">
-                                    <i class="fas fa-chart-line text-indigo" style="color: #6366f1;"></i>
-                                    {{ __('Financial Performance & Cash Flow') }}
-                                </h3>
-                                <p class="text-muted m-0" style="font-size: 0.82rem;">Monthly breakdown of revenues vs operational expenditures</p>
+            @if (in_array($userRole, [0, 3]))
+                <!-- Charts Section: Main Trends (Line) & Expense Breakdown (Donut) -->
+                <div class="row">
+                    <!-- Line Chart: Cash Flow / Profit & Expense Trends -->
+                    <div class="col-xl-8 col-lg-7 col-md-12 mb-4">
+                        <div class="chart-panel">
+                            <div class="chart-panel-header">
+                                <div>
+                                    <h3 class="chart-title">
+                                        <i class="fas fa-chart-line text-indigo" style="color: #6366f1;"></i>
+                                        {{ __('Financial Performance & Cash Flow') }}
+                                    </h3>
+                                    <p class="text-muted m-0" style="font-size: 0.82rem;">Monthly breakdown of revenues vs operational expenditures</p>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <select id="year-filter" class="select-modern">
+                                        @foreach($years as $year)
+                                            <option value="{{ $year }}">{{ $year }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="/profit" class="btn btn-sm btn-outline-primary ml-2" style="border-radius: 8px; font-weight: 600;" onclick="showOverlay()">
+                                        <i class="fas fa-external-link-alt mr-1"></i> Full Report
+                                    </a>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <select id="year-filter" class="select-modern">
-                                    @foreach($years as $year)
-                                        <option value="{{ $year }}">{{ $year }}</option>
-                                    @endforeach
-                                </select>
-                                <a href="/profit" class="btn btn-sm btn-outline-primary ml-2" style="border-radius: 8px; font-weight: 600;" onclick="showOverlay()">
-                                    <i class="fas fa-external-link-alt mr-1"></i> Full Report
+
+                            <!-- Dynamic KPI Pills for Selected Year -->
+                            <div class="chart-kpis">
+                                <div class="chart-kpi-item">
+                                    <span class="chart-kpi-label">{{ __('Total Revenue') }}</span>
+                                    <span class="chart-kpi-value kpi-profit" id="kpi-total-profit">$0.00</span>
+                                </div>
+                                <div class="chart-kpi-item">
+                                    <span class="chart-kpi-label">{{ __('Total Expenses') }}</span>
+                                    <span class="chart-kpi-value kpi-expense" id="kpi-total-expense">$0.00</span>
+                                </div>
+                                <div class="chart-kpi-item">
+                                    <span class="chart-kpi-label">{{ __('Net Balance') }}</span>
+                                    <span class="chart-kpi-value kpi-net" id="kpi-net-margin">$0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- Canvas -->
+                            <div style="position: relative; height: 320px; width: 100%;">
+                                <canvas id="profit-chart-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Doughnut Chart: Expense Breakdown -->
+                    <div class="col-xl-4 col-lg-5 col-md-12 mb-4">
+                        <div class="chart-panel">
+                            <div class="chart-panel-header">
+                                <div>
+                                    <h3 class="chart-title">
+                                        <i class="fas fa-chart-pie" style="color: #f43f5e;"></i>
+                                        {{ __('Expense Distribution') }}
+                                    </h3>
+                                    <p class="text-muted m-0" style="font-size: 0.82rem;">Allocation by category</p>
+                                </div>
+                                <a href="/accounting" class="dash-card-link" style="font-size: 0.82rem;" onclick="showOverlay()">
+                                    {{ __('Accounting') }} <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
-                        </div>
 
-                        <!-- Dynamic KPI Pills for Selected Year -->
-                        <div class="chart-kpis">
-                            <div class="chart-kpi-item">
-                                <span class="chart-kpi-label">{{ __('Total Revenue') }}</span>
-                                <span class="chart-kpi-value kpi-profit" id="kpi-total-profit">$0.00</span>
+                            <!-- Canvas Doughnut -->
+                            <div style="position: relative; height: 260px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                                <canvas id="expenses-chart-canvas"></canvas>
                             </div>
-                            <div class="chart-kpi-item">
-                                <span class="chart-kpi-label">{{ __('Total Expenses') }}</span>
-                                <span class="chart-kpi-value kpi-expense" id="kpi-total-expense">$0.00</span>
-                            </div>
-                            <div class="chart-kpi-item">
-                                <span class="chart-kpi-label">{{ __('Net Balance') }}</span>
-                                <span class="chart-kpi-value kpi-net" id="kpi-net-margin">$0.00</span>
-                            </div>
-                        </div>
 
-                        <!-- Canvas -->
-                        <div style="position: relative; height: 320px; width: 100%;">
-                            <canvas id="profit-chart-canvas"></canvas>
+                            <!-- Custom Category Legend Pills -->
+                            <div id="expense-legend-container" class="mt-3" style="max-height: 120px; overflow-y: auto;">
+                                <!-- Populated via JavaScript -->
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Doughnut Chart: Expense Breakdown -->
-                <div class="col-xl-4 col-lg-5 col-md-12 mb-4">
-                    <div class="chart-panel">
-                        <div class="chart-panel-header">
+            @else
+                <!-- Academic & Learning Resource Cards (For Teachers, Students, & Receptionists) -->
+                <div class="row mb-4">
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="chart-panel p-4 h-100 d-flex flex-column justify-content-between">
                             <div>
-                                <h3 class="chart-title">
-                                    <i class="fas fa-chart-pie" style="color: #f43f5e;"></i>
-                                    {{ __('Expense Distribution') }}
-                                </h3>
-                                <p class="text-muted m-0" style="font-size: 0.82rem;">Allocation by category</p>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="dash-card-icon icon-sky mr-2"><i class="fas fa-calendar-alt"></i></div>
+                                    <h5 class="font-weight-bold m-0">{{ __('Class Schedule & Timetables') }}</h5>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.88rem;">{{ __('Review classroom routines, daily subject periods, and scheduled session intervals.') }}</p>
                             </div>
-                            <a href="/accounting" class="dash-card-link" style="font-size: 0.82rem;" onclick="showOverlay()">
-                                {{ __('Accounting') }} <i class="fas fa-arrow-right"></i>
+                            <a href="{{ route('class_routines.show_classes') }}" class="btn btn-outline-primary btn-sm font-weight-bold mt-2" onclick="showOverlay()">
+                                <i class="fas fa-calendar mr-1"></i> {{ __('View Routines') }}
                             </a>
                         </div>
-
-                        <!-- Canvas Doughnut -->
-                        <div style="position: relative; height: 260px; width: 100%; display: flex; align-items: center; justify-content: center;">
-                            <canvas id="expenses-chart-canvas"></canvas>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="chart-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="dash-card-icon icon-indigo mr-2"><i class="fas fa-cubes"></i></div>
+                                    <h5 class="font-weight-bold m-0">{{ __('Class Materials & Lessons') }}</h5>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.88rem;">{{ __('Access course learning resources, syllabus materials, downloadable documents, and lecture videos.') }}</p>
+                            </div>
+                            <a href="{{ route('myClass.index') }}" class="btn btn-outline-primary btn-sm font-weight-bold mt-2" onclick="showOverlay()">
+                                <i class="fas fa-folder-open mr-1"></i> {{ __('Open Materials') }}
+                            </a>
                         </div>
-
-                        <!-- Custom Category Legend Pills -->
-                        <div id="expense-legend-container" class="mt-3" style="max-height: 120px; overflow-y: auto;">
-                            <!-- Populated via JavaScript -->
+                    </div>
+                    <div class="col-lg-4 col-md-12 mb-3">
+                        <div class="chart-panel p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="dash-card-icon icon-emerald mr-2"><i class="fas fa-layer-group"></i></div>
+                                    <h5 class="font-weight-bold m-0">{{ __('Exams & Academic Grading') }}</h5>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.88rem;">{{ __('Stay up-to-date with upcoming examinations, grading thresholds, and term assessments.') }}</p>
+                            </div>
+                            <a href="{{ route('exams_list.index') }}" class="btn btn-outline-primary btn-sm font-weight-bold mt-2" onclick="showOverlay()">
+                                <i class="fas fa-clipboard-list mr-1"></i> {{ __('View Exams') }}
+                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
-            <!-- Quick Access / Administrative Hub -->
+            <!-- Quick Access / Role-Based Shortcuts -->
             <div class="mb-4">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <h4 class="font-weight-bold m-0" style="font-size: 1.05rem;">
-                        <i class="fas fa-th-large mr-2 text-primary"></i> {{ __('Administrative Shortcuts') }}
+                        <i class="fas fa-th-large mr-2 text-primary"></i> {{ __('Quick Shortcuts') }}
                     </h4>
-                    <span class="text-muted" style="font-size: 0.82rem;">Quick operations & settings</span>
+                    <span class="text-muted" style="font-size: 0.82rem;">{{ __('Tailored for your role') }} ({{ $roleInfo['label'] }})</span>
                 </div>
                 <div class="shortcut-grid">
-                    <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.12);"><i class="fas fa-user-check"></i></div>
-                        <span class="shortcut-label">{{ __('Student Attendance') }}</span>
-                    </a>
-                    <a href="/staff/attendance" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon" style="color: #6366f1; background: rgba(99, 102, 241, 0.12);"><i class="fas fa-clipboard-check"></i></div>
-                        <span class="shortcut-label">{{ __('Staff Attendance') }}</span>
-                    </a>
-                    <a href="/class-routines" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon"><i class="fas fa-calendar-alt"></i></div>
-                        <span class="shortcut-label">{{ __('Class Routine') }}</span>
-                    </a>
-                    <a href="/classes-subject" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon"><i class="fas fa-book-open"></i></div>
-                        <span class="shortcut-label">{{ __('Subjects') }}</span>
-                    </a>
-                    <a href="/departments" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon"><i class="fas fa-building"></i></div>
-                        <span class="shortcut-label">{{ __('Departments') }}</span>
-                    </a>
-                    <a href="/profit" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-                        <span class="shortcut-label">{{ __('Accounting') }}</span>
-                    </a>
-                    <a href="/customize" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon"><i class="fas fa-sliders-h"></i></div>
-                        <span class="shortcut-label">{{ __('Customization') }}</span>
-                    </a>
-                    <a href="/user-management" class="shortcut-item" onclick="showOverlay()">
-                        <div class="shortcut-icon"><i class="fas fa-user-shield"></i></div>
-                        <span class="shortcut-label">{{ __('User Access') }}</span>
+                    @if (in_array($userRole, [0, 1]))
+                        <a href="{{ !empty($defaultClassId) ? route('attendance.show', $defaultClassId) : '/attendance/class/62' }}" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.12);"><i class="fas fa-user-check"></i></div>
+                            <span class="shortcut-label">{{ __('Student Attendance') }}</span>
+                        </a>
+                        <a href="{{ route('exam_marks.index') }}" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.12);"><i class="fas fa-check-double"></i></div>
+                            <span class="shortcut-label">{{ __('Manage Marks') }}</span>
+                        </a>
+                    @endif
+
+                    @if (in_array($userRole, [0, 4]))
+                        <a href="/staff/attendance" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon" style="color: #6366f1; background: rgba(99, 102, 241, 0.12);"><i class="fas fa-clipboard-check"></i></div>
+                            <span class="shortcut-label">{{ __('Staff Attendance') }}</span>
+                        </a>
+                        <a href="{{ route('admissions.list') }}" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon" style="color: #06b6d4; background: rgba(6, 182, 212, 0.12);"><i class="fas fa-clipboard-list"></i></div>
+                            <span class="shortcut-label">{{ __('Admissions') }}</span>
+                        </a>
+                        <a href="/departments" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-building"></i></div>
+                            <span class="shortcut-label">{{ __('Departments') }}</span>
+                        </a>
+                    @endif
+
+                    @if (in_array($userRole, [0, 1, 2, 4]))
+                        <a href="/class-routines" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <span class="shortcut-label">{{ __('Class Routine') }}</span>
+                        </a>
+                        <a href="/classes-subject" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-book-open"></i></div>
+                            <span class="shortcut-label">{{ __('Subjects') }}</span>
+                        </a>
+                    @endif
+
+                    @if (in_array($userRole, [0, 1, 2]))
+                        <a href="{{ route('myClass.index') }}" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-cubes"></i></div>
+                            <span class="shortcut-label">{{ __('Class Material') }}</span>
+                        </a>
+                        <a href="{{ route('exams_list.index') }}" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-layer-group"></i></div>
+                            <span class="shortcut-label">{{ __('Exam Schedule') }}</span>
+                        </a>
+                    @endif
+
+                    @if (in_array($userRole, [0, 3, 4]))
+                        <a href="/fee_receipt" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-receipt"></i></div>
+                            <span class="shortcut-label">{{ __('Fee Billing') }}</span>
+                        </a>
+                        <a href="/purchase_req" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-file-invoice"></i></div>
+                            <span class="shortcut-label">{{ __('Purchase Requests') }}</span>
+                        </a>
+                        <a href="/accounting" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-wallet"></i></div>
+                            <span class="shortcut-label">{{ __('Accounting Hub') }}</span>
+                        </a>
+                    @endif
+
+                    @if (in_array($userRole, [0, 3]))
+                        <a href="/profit" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-chart-line"></i></div>
+                            <span class="shortcut-label">{{ __('Profits & Ledger') }}</span>
+                        </a>
+                    @endif
+
+                    @if ($userRole === 0)
+                        <a href="/customize" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-sliders-h"></i></div>
+                            <span class="shortcut-label">{{ __('Customization') }}</span>
+                        </a>
+                        <a href="/user-management" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-user-shield"></i></div>
+                            <span class="shortcut-label">{{ __('User Access') }}</span>
+                        </a>
+                        <a href="{{ route('activity.logs') }}" class="shortcut-item" onclick="showOverlay()">
+                            <div class="shortcut-icon"><i class="fas fa-history"></i></div>
+                            <span class="shortcut-label">{{ __('Audit Trail') }}</span>
+                        </a>
+                    @endif
+
+                    <a href="{{ route('user.profile') }}" class="shortcut-item" onclick="showOverlay()">
+                        <div class="shortcut-icon" style="color: #6366f1; background: rgba(99, 102, 241, 0.12);"><i class="fas fa-user-circle"></i></div>
+                        <span class="shortcut-label">{{ __('My Profile') }}</span>
                     </a>
                 </div>
             </div>

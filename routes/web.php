@@ -101,6 +101,9 @@ Route::middleware(['auth', 'log.activity'])->group(function () {
     Route::get('/students/information', [StudentController::class, 'info'])->name('students.info');
     Route::get('/students/info', [StudentController::class, 'info']);
     Route::get('/students/class/{class_id}', [StudentController::class, 'showByClass'])->name('students.byClass');
+
+    // Academic Sessions (Shared View for all roles)
+    Route::get('/sessions', [acdSessionController::class, 'index'])->name('sessions.index');
 });
 
 
@@ -244,8 +247,7 @@ Route::middleware(['auth', 'role:0,1,3,4', 'log.activity'])->group(function () {
     Route::put('/section/update/{id}', [SectionController::class, 'update'])->name('section.update');
     Route::delete('/section/destroy/{id}', [SectionController::class, 'destroy'])->name('section.destroy');
 
-    // Academic Sessions
-    Route::get('/sessions', [acdSessionController::class, 'index'])->name('sessions.index');
+    // Academic Session Management
     Route::post('/sessions/store', [acdSessionController::class, 'store'])->name('sessions.store');
     Route::put('/sessions/{id}/update', [acdSessionController::class, 'update'])->name('sessions.update');
     Route::delete('/sessions/{id}/destroy', [acdSessionController::class, 'destroy'])->name('sessions.destroy');

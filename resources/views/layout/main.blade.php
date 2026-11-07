@@ -222,11 +222,11 @@
       </div>
 
       <!-- Sidebar Menu -->
-      @includeWhen(Auth::check() && Auth::user()->role === 0, 'components.sidebar.admin')
-      @includeWhen(Auth::check() && Auth::user()->role === 1, 'components.sidebar.teacher')
-      @includeWhen(Auth::check() && Auth::user()->role === 2, 'components.sidebar.student')
-      @includeWhen(Auth::check() && Auth::user()->role === 3, 'components.sidebar.accountant')
-      @includeWhen(Auth::check() && Auth::user()->role === 4, 'components.sidebar.reception')
+      @includeWhen(Auth::check() && (int) Auth::user()->role === 0, 'components.sidebar.admin')
+      @includeWhen(Auth::check() && (int) Auth::user()->role === 1, 'components.sidebar.teacher')
+      @includeWhen(Auth::check() && (int) Auth::user()->role === 2, 'components.sidebar.student')
+      @includeWhen(Auth::check() && (int) Auth::user()->role === 3, 'components.sidebar.accountant')
+      @includeWhen(Auth::check() && (int) Auth::user()->role === 4, 'components.sidebar.reception')
 
     </div>
     <!-- /.sidebar -->

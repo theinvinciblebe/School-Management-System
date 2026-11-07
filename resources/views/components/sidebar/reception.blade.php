@@ -52,8 +52,7 @@
         @php
             $isAccountingActive = request()->is('accounting*') || 
                                  request()->is('fee_receipt*') || request()->is('fee-receipt*') || 
-                                 request()->is('purchase_req*') || request()->is('purchase-req*') || 
-                                 request()->is('profit*') || request()->is('transaction*');
+                                 request()->is('purchase_req*') || request()->is('purchase-req*');
         @endphp
         <li class="nav-item {{ $isAccountingActive ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link {{ $isAccountingActive ? 'active' : '' }}">
@@ -80,12 +79,6 @@
                     <a href="{{ route('purchase_req.index') }}" class="nav-link {{ request()->is('purchase_req*') || request()->is('purchase-req*') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>{{ __('Purchase Requests') }}</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('accounting.transactions') }}" class="nav-link {{ request()->is('profit*') || request()->is('transaction*') ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>{{ __('Profit & Transactions') }}</p>
                     </a>
                 </li>
             </ul>
@@ -150,15 +143,21 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
+                    <a href="{{ route('admissions.list') }}" class="nav-link {{ Request::is('admissions*') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ __('Admissions List') }}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{route('students.index')}}" class="nav-link {{ Request::is('students') || Request::is('students/create') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Admit Student</p>
+                        <p>{{ __('Admit Student') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('students.info') }}" class="nav-link {{ Request::is('students/info*') || Request::is('students/information*') || Request::is('students/class/*') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Student Information</p>
+                        <p>{{ __('Student Information') }}</p>
                     </a>
                 </li>
 
@@ -166,20 +165,18 @@
         </li>
 
         <li class="nav-header">Notifications</li>
-        <li class="nav-item {{ request()->is('Userinbox') ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is('Userinbox') ? 'active' : '' }}">
+        <li class="nav-item {{ request()->is('Userinbox') || request()->is('inbox') ? 'menu-is-opening menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is('Userinbox') || request()->is('inbox') ? 'active' : '' }}">
                 <i class="nav-icon far fa-envelope"></i>
                 <p>
-
                     Message
-
                     <i class="right fas fa-angle-left"></i>
                     <span id="notification-badge" class="right badge badge-info navbar-badge" style="display: none">0</span>
                 </p>
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{ route('message.Userinbox') }}" class="nav-link {{ request()->is('Userinbox') ? 'active' : '' }}" onclick="showOverlay()">
+                    <a href="{{ route('message.inbox') }}" class="nav-link {{ request()->is('inbox') || request()->is('Userinbox') ? 'active' : '' }}" onclick="showOverlay()">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Inbox</p>
                     </a>
@@ -187,21 +184,13 @@
             </ul>
         </li>
 
-        <li class="nav-header">Settings</li>
+        <li class="nav-header text-uppercase mt-2" style="font-size: 0.68rem; letter-spacing: 0.08em; opacity: 0.7;">{{ __('Account & Settings') }}</li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-cog"></i>
-                <p>
-
-                    Setting
-
-                    <i class="right fas fa-angle-left"></i>
-                </p>
+            <a href="{{ route('user.profile') }}" class="nav-link {{ request()->is('user-profile*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-user-circle"></i>
+                <p>{{ __('My Profile') }}</p>
             </a>
-
         </li>
-
-        <li class="nav-header text-uppercase mt-2" style="font-size: 0.68rem; letter-spacing: 0.08em; opacity: 0.7;">{{ __('Account') }}</li>
         <li class="nav-item">
             <a href="/logout" class="nav-link logout-btn">
                 <i class="fas fa-sign-out-alt nav-icon text-danger"></i>
