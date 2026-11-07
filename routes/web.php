@@ -127,6 +127,8 @@ Route::middleware(['auth', 'role:0', 'log.activity'])->group(function () {
 
     // Activity Logs
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity.logs');
+    Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity.logs.export');
+    Route::post('/activity-logs/clear', [ActivityLogController::class, 'clear'])->name('activity.logs.clear');
 
     // Admin Messages & Approval Quick Action
     Route::post('/inbox/quick-action', [InboxController::class, 'quickAction'])->name('inbox.quickAction');

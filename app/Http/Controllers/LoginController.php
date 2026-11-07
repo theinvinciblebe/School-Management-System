@@ -39,6 +39,13 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
+            \App\Models\ActivityLog::record(
+                'User Logged In',
+                "User '{$user->name}' ({$user->email}) logged in successfully",
+                $request,
+                $user
+            );
+
             switch ($user->role) {
                 case 0: // Admin
                     return redirect()->route('dashboard');
@@ -63,6 +70,16 @@ class LoginController extends Controller
 
     public function logout()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+            \App\Models\ActivityLog::record(
+                'User Logged Out',
+                "User '{$user->name}' logged out of system session",
+                request(),
+                $user
+            );
+        }
+
         Auth::logout();
         return redirect('/login');
     }

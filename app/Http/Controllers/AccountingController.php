@@ -36,7 +36,7 @@ class AccountingController extends Controller
             ->whereYear('date', $currentYear)
             ->whereMonth('date', $currentMonth)
             ->sum('amount');
-        $monthExpense = (float)DB::table('transactions')
+        $monthExpense = (float)DB::table('transactions')    
             ->where('type', 'expense')
             ->whereYear('date', $currentYear)
             ->whereMonth('date', $currentMonth)
