@@ -2031,24 +2031,29 @@
         }
         .modern-user-avatar-wrap {
             position: relative;
-            width: 42px;
-            height: 42px;
-            min-width: 42px;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
             flex-shrink: 0;
         }
         .modern-user-avatar {
-            width: 42px !important;
-            height: 42px !important;
+            width: 44px !important;
+            height: 44px !important;
             border-radius: 12px !important;
             object-fit: cover !important;
-            border: 2px solid rgba(255, 255, 255, 0.16);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
             display: block;
-            transition: border-color 0.2s ease;
+            transition: all 0.25s ease;
+        }
+        .modern-user-card:hover .modern-user-avatar {
+            transform: scale(1.06);
+            border-color: #818cf8;
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
         }
         html:not(.dark-mode) [class*="sidebar-light-"] .modern-user-avatar {
             border-color: rgba(0, 0, 0, 0.12);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
         .modern-avatar-status {
             position: absolute;
@@ -2346,28 +2351,215 @@
         html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-link {
             color: #334155 !important;
         }
+        /* ══════════════════════════════════════════════════════════════════
+           3D MODERN SIDEBAR ICONS SYSTEM (Executive SaaS)
+        ══════════════════════════════════════════════════════════════════ */
         .nav-sidebar .nav-link > .nav-icon {
-            width: 32px !important;
-            height: 32px !important;
-            min-width: 32px !important;
-            max-width: 32px !important;
-            border-radius: 8px !important;
+            width: 34px !important;
+            height: 34px !important;
+            min-width: 34px !important;
+            max-width: 34px !important;
+            border-radius: 10px !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
             margin-right: 0.75rem !important;
-            font-size: 0.92rem !important;
-            background: rgba(255, 255, 255, 0.05) !important;
-            color: rgba(255, 255, 255, 0.7) !important;
-            border: 1px solid rgba(255, 255, 255, 0.06) !important;
-            transition: all 0.2s ease !important;
+            font-size: 0.95rem !important;
+            position: relative !important;
             flex-shrink: 0 !important;
+            transition: all 0.26s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            transform: translateZ(0) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            box-shadow: 
+                0 4px 10px -1px rgba(0, 0, 0, 0.4),
+                0 2px 4px -1px rgba(0, 0, 0, 0.25),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1.5px 1px 0 rgba(0, 0, 0, 0.3) !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+            background: linear-gradient(145deg, #475569 0%, #1e293b 100%) !important;
         }
-        html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-link > .nav-icon {
-            background: rgba(0, 0, 0, 0.04) !important;
-            color: #475569 !important;
-            border-color: rgba(0, 0, 0, 0.05) !important;
+
+        /* 3D Modern Gradient Color Coding by Module */
+        /* 1. Dashboard */
+        .nav-sidebar .nav-link > .nav-icon.fa-tachometer-alt,
+        .nav-sidebar .nav-link > .nav-icon.fa-gauge,
+        .nav-sidebar .nav-link > .nav-icon.fa-home {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
+            border-color: rgba(165, 180, 252, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
         }
+
+        /* 2. Class & Sections */
+        .nav-sidebar .nav-link > .nav-icon.fa-university,
+        .nav-sidebar .nav-link > .nav-icon.fa-school {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            border-color: rgba(147, 197, 253, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 3. Subjects */
+        .nav-sidebar .nav-link > .nav-icon.fa-book-open,
+        .nav-sidebar .nav-link > .nav-icon.fa-book,
+        .nav-sidebar .nav-link > .nav-icon.fa-atlas {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+            border-color: rgba(165, 243, 252, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 4. Class Routine */
+        .nav-sidebar .nav-link > .nav-icon.fa-calendar-alt,
+        .nav-sidebar .nav-link > .nav-icon.fa-calendar {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            border-color: rgba(253, 230, 138, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 5. Class Materials (Cubes) */
+        .nav-sidebar .nav-link > .nav-icon.fa-cubes,
+        .nav-sidebar .nav-link > .nav-icon.fa-cube {
+            background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%) !important;
+            border-color: rgba(233, 213, 255, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 6. Department & Staff */
+        .nav-sidebar .nav-link > .nav-icon.fa-building,
+        .nav-sidebar .nav-link > .nav-icon.fa-sitemap,
+        .nav-sidebar .nav-link > .nav-icon.fa-user-tie {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+            border-color: rgba(186, 230, 253, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 7. Accounting & Financial Section */
+        .nav-sidebar .nav-link > .nav-icon.fa-file-invoice-dollar,
+        .nav-sidebar .nav-link > .nav-icon.fa-receipt,
+        .nav-sidebar .nav-link > .nav-icon.fa-coins,
+        .nav-sidebar .nav-link > .nav-icon.fa-wallet,
+        .nav-sidebar .nav-link > .nav-icon.fa-cash-register,
+        .nav-sidebar .nav-link > .nav-icon.fa-calculator {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+            border-color: rgba(167, 243, 208, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 8. Students & Admissions */
+        .nav-sidebar .nav-link > .nav-icon.fa-user-graduate,
+        .nav-sidebar .nav-link > .nav-icon.fa-graduation-cap,
+        .nav-sidebar .nav-link > .nav-icon.fa-id-card,
+        .nav-sidebar .nav-link > .nav-icon.fa-user-plus {
+            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%) !important;
+            border-color: rgba(254, 205, 211, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 9. Teachers & Faculty */
+        .nav-sidebar .nav-link > .nav-icon.fa-chalkboard-teacher,
+        .nav-sidebar .nav-link > .nav-icon.fa-chalkboard {
+            background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%) !important;
+            border-color: rgba(191, 219, 254, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 10. Parents & Guardians */
+        .nav-sidebar .nav-link > .nav-icon.fa-user-friends,
+        .nav-sidebar .nav-link > .nav-icon.fa-users-cog {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+            border-color: rgba(221, 214, 254, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 11. Attendance Tracking */
+        .nav-sidebar .nav-link > .nav-icon.fa-calendar-check,
+        .nav-sidebar .nav-link > .nav-icon.fa-user-check,
+        .nav-sidebar .nav-link > .nav-icon.fa-clipboard-check {
+            background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%) !important;
+            border-color: rgba(153, 246, 228, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 12. Exams, Marks & Grades */
+        .nav-sidebar .nav-link > .nav-icon.fa-award,
+        .nav-sidebar .nav-link > .nav-icon.fa-medal,
+        .nav-sidebar .nav-link > .nav-icon.fa-star,
+        .nav-sidebar .nav-link > .nav-icon.fa-pencil-alt {
+            background: linear-gradient(135deg, #eab308 0%, #a16207 100%) !important;
+            border-color: rgba(254, 240, 138, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(234, 179, 8, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 13. Messages & Inbox */
+        .nav-sidebar .nav-link > .nav-icon.fa-envelope,
+        .nav-sidebar .nav-link > .nav-icon.fa-comments,
+        .nav-sidebar .nav-link > .nav-icon.fa-paper-plane {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+            border-color: rgba(186, 230, 253, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 14. Settings, System & Customization */
+        .nav-sidebar .nav-link > .nav-icon.fa-cog,
+        .nav-sidebar .nav-link > .nav-icon.fa-cogs,
+        .nav-sidebar .nav-link > .nav-icon.fa-puzzle-piece {
+            background: linear-gradient(135deg, #64748b 0%, #334155 100%) !important;
+            border-color: rgba(203, 213, 225, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 15. User Management */
+        .nav-sidebar .nav-link > .nav-icon.fa-users,
+        .nav-sidebar .nav-link > .nav-icon.fa-user-shield {
+            background: linear-gradient(135deg, #ec4899 0%, #9d174d 100%) !important;
+            border-color: rgba(251, 207, 232, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 16. Activity Logs */
+        .nav-sidebar .nav-link > .nav-icon.fa-podcast,
+        .nav-sidebar .nav-link > .nav-icon.fa-history {
+            background: linear-gradient(135deg, #475569 0%, #1e293b 100%) !important;
+            border-color: rgba(203, 213, 225, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(71, 85, 105, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 17. User Profile & Account */
+        .nav-sidebar .nav-link > .nav-icon.fa-user-circle {
+            background: linear-gradient(135deg, #8b5cf6 0%, #4f46e5 100%) !important;
+            border-color: rgba(221, 214, 254, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 18. Logout */
+        .nav-sidebar .nav-link > .nav-icon.fa-sign-out-alt {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
+            border-color: rgba(254, 202, 202, 0.35) !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -1.5px 1px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* 3D Hover Spring Effect */
+        .nav-sidebar .nav-link:hover > .nav-icon {
+            transform: translateY(-2px) scale(1.1) !important;
+            filter: brightness(1.15) !important;
+            box-shadow: 
+                0 6px 16px -2px rgba(0, 0, 0, 0.5),
+                0 0 14px rgba(255, 255, 255, 0.28),
+                inset 0 1px 2px rgba(255, 255, 255, 0.7),
+                inset 0 -1.5px 1px rgba(0, 0, 0, 0.4) !important;
+            border-color: rgba(255, 255, 255, 0.45) !important;
+        }
+
+        /* Active Nav item 3D state */
+        .nav-sidebar .nav-link.active > .nav-icon {
+            transform: scale(1.08) translateY(-1px) !important;
+            border-color: #ffffff !important;
+            box-shadow: 
+                0 6px 18px rgba(0, 0, 0, 0.45),
+                0 0 14px rgba(255, 255, 255, 0.45),
+                inset 0 1px 2px rgba(255, 255, 255, 0.8),
+                inset 0 -1.5px 1px rgba(0, 0, 0, 0.4) !important;
+        }
+
         .nav-sidebar .nav-link p {
             margin-bottom: 0 !important;
             display: flex !important;
@@ -2385,15 +2577,7 @@
             background-color: rgba(0, 0, 0, 0.045) !important;
             color: #0f172a !important;
         }
-        .nav-sidebar .nav-link:hover > .nav-icon {
-            background: rgba(255, 255, 255, 0.12) !important;
-            color: #ffffff !important;
-            border-color: rgba(255, 255, 255, 0.15) !important;
-        }
-        html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-link:hover > .nav-icon {
-            background: rgba(0, 0, 0, 0.07) !important;
-            color: #0f172a !important;
-        }
+
         /* Active state */
         .nav-sidebar .nav-link.active {
             background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
@@ -2406,16 +2590,11 @@
             outline: none !important;
             overflow: hidden !important;
         }
-        .nav-sidebar .nav-link.active > .nav-icon {
-            background: rgba(255, 255, 255, 0.22) !important;
-            color: #ffffff !important;
-            border-color: rgba(255, 255, 255, 0.28) !important;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-        }
         .nav-sidebar .nav-link.active p,
         .nav-sidebar .nav-link.active .right {
             color: #ffffff !important;
         }
+
         /* Open treeview parent */
         .nav-sidebar .menu-open > .nav-link:not(.active),
         .nav-sidebar .menu-is-opening > .nav-link:not(.active) {
@@ -2427,12 +2606,7 @@
             background: rgba(0, 0, 0, 0.03) !important;
             color: #0f172a !important;
         }
-        .nav-sidebar .menu-open > .nav-link:not(.active) > .nav-icon,
-        .nav-sidebar .menu-is-opening > .nav-link:not(.active) > .nav-icon {
-            background: rgba(99, 102, 241, 0.16) !important;
-            color: #818cf8 !important;
-            border-color: rgba(99, 102, 241, 0.25) !important;
-        }
+
         .nav-sidebar .nav-link .right.fas.fa-angle-left {
             font-size: 0.72rem !important;
             transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -2470,20 +2644,27 @@
         html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-treeview .nav-link {
             color: #475569 !important;
         }
+        /* Treeview 3D Glowing Orbs / Beads */
         .nav-sidebar .nav-treeview .nav-link > .nav-icon {
-            width: 14px !important;
-            height: 14px !important;
-            min-width: 14px !important;
-            max-width: 14px !important;
-            background: transparent !important;
-            border: none !important;
-            margin-right: 0.55rem !important;
-            font-size: 0.38rem !important;
-            opacity: 0.55 !important;
-            box-shadow: none !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            width: 10px !important;
+            height: 10px !important;
+            min-width: 10px !important;
+            max-width: 10px !important;
+            border-radius: 50% !important;
+            background: radial-gradient(circle at 35% 35%, #cbd5e1 0%, #64748b 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.45) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.7) !important;
+            margin-right: 0.65rem !important;
+            display: inline-block !important;
+            flex-shrink: 0 !important;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            font-size: 0 !important;
+            opacity: 0.75 !important;
+        }
+        html:not(.dark-mode) [class*="sidebar-light-"] .nav-sidebar .nav-treeview .nav-link > .nav-icon {
+            background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #475569 100%) !important;
+            border-color: rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
         }
         .nav-sidebar .nav-treeview .nav-link:hover {
             background-color: rgba(255, 255, 255, 0.06) !important;
@@ -2496,7 +2677,10 @@
         }
         .nav-sidebar .nav-treeview .nav-link:hover > .nav-icon {
             opacity: 1 !important;
-            color: #818cf8 !important;
+            transform: scale(1.3) !important;
+            background: radial-gradient(circle at 35% 35%, #60a5fa 0%, #3b82f6 100%) !important;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+            border-color: #ffffff !important;
         }
         .nav-sidebar .nav-treeview .nav-link.active {
             background: rgba(99, 102, 241, 0.18) !important;
@@ -2513,11 +2697,26 @@
             border-color: rgba(99, 102, 241, 0.25) !important;
         }
         .nav-sidebar .nav-treeview .nav-link.active > .nav-icon {
-            color: #818cf8 !important;
             opacity: 1 !important;
-            transform: scale(1.3) !important;
-            background: transparent !important;
-            box-shadow: none !important;
+            transform: scale(1.4) !important;
+            background: radial-gradient(circle at 35% 35%, #818cf8 0%, #4f46e5 100%) !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.9), 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+        }
+
+        /* Named 3D Icons inside treeview (e.g., Setting submenus like Customizes, User Management, Activity Logs) */
+        .nav-sidebar .nav-treeview .nav-link > .nav-icon:not(.fa-circle) {
+            width: 26px !important;
+            height: 26px !important;
+            min-width: 26px !important;
+            max-width: 26px !important;
+            border-radius: 8px !important;
+            font-size: 0.78rem !important;
+            opacity: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
         }
 
         .nav-sidebar .nav-treeview .nav-item {

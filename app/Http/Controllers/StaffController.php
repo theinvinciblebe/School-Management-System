@@ -14,16 +14,34 @@ class StaffController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $staffs = DB::table('staff')
+        $query = DB::table('staff')
             ->leftJoin('department', 'department.id', '=', 'staff.department_id')
-            ->select('staff.*', 'department.name as department_name')
-            ->get();
+            ->select('staff.*', 'department.name as department_name');
 
-        $departments = DB::table('department')->get();
+        if ($request->filled('department_id')) {
+            $query->where('staff.department_id', $request->department_id);
+        }
 
-        return view('staff.index', compact('staffs', 'departments'));
+        $staffs = $query->orderBy('staff.name')->get();
+
+        $departments = DB::table('department')->orderBy('name')->get();
+        foreach ($departments as $d) {
+            $d->staff_count = DB::table('staff')->where('department_id', $d->id)->count();
+        }
+
+        $allStaff = DB::table('staff')->get();
+        $metrics = [
+            'total_staff'       => $allStaff->count(),
+            'total_departments' => $departments->count(),
+            'male_count'        => $allStaff->where('sex', 'Male')->count(),
+            'female_count'      => $allStaff->where('sex', 'Female')->count(),
+        ];
+
+        $selectedDepartmentId = $request->input('department_id', '');
+
+        return view('staff.index', compact('staffs', 'departments', 'metrics', 'selectedDepartmentId'));
     }
 
     /**

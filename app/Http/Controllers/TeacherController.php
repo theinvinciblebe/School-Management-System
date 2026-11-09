@@ -12,10 +12,47 @@ class TeacherController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $teachers = DB::table('teacher')->get();
-        return view('teacher.index', compact('teachers'));
+        $query = DB::table('teacher');
+
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('phone', 'like', "%{$s}%")
+                  ->orWhere('address', 'like', "%{$s}%");
+            });
+        }
+
+        $teachers = $query->orderBy('name')->get();
+
+        // Attach assigned subjects
+        foreach ($teachers as $t) {
+            $t->subjects = DB::table('subject')
+                ->where('teacher_id', $t->teacher_id)
+                ->select('subject_id', 'name', 'class_id')
+                ->get();
+            $t->subjects_count = $t->subjects->count();
+        }
+
+        $allTeachers = DB::table('teacher')->get();
+        $assignedCount = 0;
+        foreach ($allTeachers as $at) {
+            if (DB::table('subject')->where('teacher_id', $at->teacher_id)->exists()) {
+                $assignedCount++;
+            }
+        }
+
+        $metrics = [
+            'total_teachers'    => $allTeachers->count(),
+            'assigned_teachers' => $assignedCount,
+            'male_teachers'     => $allTeachers->where('sex', 1)->count(),
+            'female_teachers'   => $allTeachers->where('sex', 0)->count(),
+        ];
+
+        return view('teacher.index', compact('teachers', 'metrics'));
     }
 
     /**
@@ -33,43 +70,45 @@ class TeacherController extends Controller
     {
         // Validate the incoming data
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'     => 'required|string|max:255',
             'birthday' => 'required|date',
-            'sex' => 'required|boolean',
-            'address' => 'required|string|max:255',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico|max:2048',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
+            'sex'      => 'required|boolean',
+            'address'  => 'required|string|max:255',
+            'file'     => 'nullable|image|mimes:jpeg,png,jpg,gif,ico|max:2048',
+            'phone'    => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
         ]);
 
-        // **Handle File Upload**
+        // Handle File Upload
         if ($request->hasFile('file')) {
-
             $fileName = time() . '.' . $request->file->extension();
             $request->file->move(public_path('teachers_image'), $fileName);
-        }else{
+        } else {
             $fileName = 'noimg.jpg';
         }
 
         // Step 1: Create the user in the `users` table
         $userId = DB::table('users')->insertGetId([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make('123456'), // Default password
-            'role' => 1, // Role = Teacher
+            'name'       => $request->name,
+            'email'      => $request->email,
+            'password'   => Hash::make('123456'), // Default password
+            'role'       => 1, // Role = Teacher
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
+        // Step 2: Create teacher record
         DB::table('teacher')->insert([
-            'user_id' => $userId, // Foreign key
-            'name' => $request->input('name'),
-            'birthday' => $request->input('birthday'),
-            'sex' => $request->input('sex'),
-            'address' => $request->input('address'),
-            'photo' => $fileName,  // Save uploaded file name
-            'phone' => $request->input('phone'),
-            'email' => $request->input('email'),
+            'user_id'    => $userId,
+            'name'       => $request->input('name'),
+            'birthday'   => $request->input('birthday'),
+            'sex'        => $request->input('sex'),
+            'address'    => $request->input('address'),
+            'photo'      => $fileName,
+            'phone'      => $request->input('phone'),
+            'email'      => $request->input('email'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('teachers.index')->with('success', 'Teacher added successfully with default password "123456".');
@@ -94,8 +133,8 @@ class TeacherController extends Controller
     public function syncUserEmail($userId, $name, $email)
     {
         DB::table('users')->where('id', $userId)->update([
-            'name' => $name,
-            'email' => $email,
+            'name'       => $name,
+            'email'      => $email,
             'updated_at' => now(),
         ]);
     }
@@ -107,28 +146,27 @@ class TeacherController extends Controller
     {
         // Validate input data
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'     => 'required|string|max:255',
             'birthday' => 'required|date',
-            'sex' => 'required|boolean',
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,ico|max:2048',
+            'sex'      => 'required|boolean',
+            'address'  => 'required|string|max:255',
+            'phone'    => 'required|string|max:255',
+            'email'    => 'required|string|max:255',
+            'file'     => 'nullable|image|mimes:jpeg,png,jpg,gif,ico|max:2048',
         ]);
 
         // Find the teacher
         $teacher = DB::table('teacher')->where('teacher_id', $id)->first();
-        if (!$teacher || !$teacher->user_id) {
-            return redirect()->back()->with('error', 'Teacher or associated user not found.');
+        if (!$teacher) {
+            return redirect()->back()->with('error', 'Teacher not found.');
         }
 
-        //$teacher = DB::table('teacher')->where('teacher_id', $id)->first();
-        $fileName = $teacher->photo; // Keep old image by default
+        $fileName = $teacher->photo ?: 'noimg.jpg'; // Keep old image by default
+
         // Handle new image upload
         if ($request->hasFile('file')) {
-
-            // Delete old image (if it's not the default)
-            if ($teacher->photo && $teacher->photo !== 'noimg.jpg') {
+            // Delete old image (if not default)
+            if (!empty($teacher->photo) && $teacher->photo !== 'noimg.jpg') {
                 $oldImagePath = public_path("teachers_image/" . $teacher->photo);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
@@ -144,15 +182,19 @@ class TeacherController extends Controller
         DB::table('teacher')
             ->where('teacher_id', $id)
             ->update([
-                'name' => $request->input('name'),
-                'birthday' => $request->input('birthday'),
-                'sex' => $request->input('sex'),
-                'address' => $request->input('address'),
-                'photo' => $fileName,  // Save uploaded file name
-                'phone' => $request->input('phone'),
-                'email' => $request->input('email'),
+                'name'       => $request->input('name'),
+                'birthday'   => $request->input('birthday'),
+                'sex'        => $request->input('sex'),
+                'address'    => $request->input('address'),
+                'photo'      => $fileName,
+                'phone'      => $request->input('phone'),
+                'email'      => $request->input('email'),
+                'updated_at' => now(),
             ]);
-        $this->syncUserEmail($teacher->user_id, $request->name, $request->email);
+
+        if ($teacher->user_id) {
+            $this->syncUserEmail($teacher->user_id, $request->name, $request->email);
+        }
 
         return redirect()->back()->with('success', 'Teacher updated successfully!');
     }
@@ -169,10 +211,23 @@ class TeacherController extends Controller
             return redirect()->back()->with('error', 'Teacher not found.');
         }
 
-        // Delete the teacher
-        DB::table('teacher')->where('teacher_id', $id)->delete();
-        DB::table('users')->where('id', $teacher->user_id)->delete();
+        // Unlink any subjects taught by this teacher
+        DB::table('subject')->where('teacher_id', $id)->update(['teacher_id' => null]);
 
-        return redirect()->back()->with('success', 'Teacher and teachers user are deleted successfully!');
+        // Delete photo if not default
+        if (!empty($teacher->photo) && $teacher->photo !== 'noimg.jpg') {
+            $imagePath = public_path("teachers_image/" . $teacher->photo);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Delete the teacher and associated user account
+        DB::table('teacher')->where('teacher_id', $id)->delete();
+        if ($teacher->user_id) {
+            DB::table('users')->where('id', $teacher->user_id)->delete();
+        }
+
+        return redirect()->back()->with('success', 'Teacher and user account deleted successfully!');
     }
 }

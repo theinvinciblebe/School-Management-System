@@ -109,8 +109,19 @@ class ClassController extends Controller
     }
     public function getMaterials($subject_id)
     {
-        // Fetch the class details
-        $subject = DB::table('subject')->where('subject_id', $subject_id)->first();
+        // Fetch the subject details along with class and teacher info
+        $subject = DB::table('subject')
+            ->leftJoin('class', 'subject.class_id', '=', 'class.class_id')
+            ->leftJoin('teacher', 'subject.teacher_id', '=', 'teacher.teacher_id')
+            ->where('subject.subject_id', $subject_id)
+            ->select(
+                'subject.*',
+                'class.name as class_name',
+                'class.class_code',
+                'class.class_room',
+                'teacher.name as teacher_name'
+            )
+            ->first();
 
         if (!$subject) {
             return redirect()->back()->with('error', 'Subject not found.');
@@ -122,43 +133,198 @@ class ClassController extends Controller
             ->orderBy('created_at', 'desc') // Order by newest first
             ->get();
 
-        // Convert all YouTube links to embed format
-        foreach ($materials as $material) {
-            if (!empty($material->url_vdo)) {
-                $videoUrl = $material->url_vdo;
+        $stats = [
+            'total_materials' => $materials->count(),
+            'total_files'     => 0,
+            'total_videos'    => 0,
+            'total_photos'    => 0,
+        ];
 
-                // If URL is a short link (youtu.be)
-                if (strpos($videoUrl, 'youtu.be/') !== false) {
-                    $videoId = explode('youtu.be/', $videoUrl)[1];
-                    $material->url_vdo = "https://www.youtube.com/embed/{$videoId}";
+        // Process embed formats and count totals
+        foreach ($materials as $material) {
+            // Document count
+            if (!empty($material->file_path)) {
+                $docs = json_decode($material->file_path, true);
+                if (is_array($docs)) {
+                    $stats['total_files'] += count($docs);
                 }
-                // If URL is a standard YouTube link (watch?v= format)
-                elseif (strpos($videoUrl, 'watch?v=') !== false) {
-                    $videoId = explode('watch?v=', $videoUrl)[1];
-                    $videoId = explode('&', $videoId)[0]; // Remove extra parameters
-                    $material->url_vdo = "https://www.youtube.com/embed/{$videoId}";
+            }
+            // Photos count
+            if (!empty($material->gallery_path)) {
+                $imgs = json_decode($material->gallery_path, true);
+                if (is_array($imgs)) {
+                    $stats['total_photos'] += count($imgs);
                 }
-                // If the video is stored locally
-                elseif (preg_match('/\.(mp4|avi|mov|mkv)$/i', $videoUrl)) {
-                    $material->video_url = asset('upload_materials/' . $videoUrl);
+            }
+            // Videos processing & count
+            if (!empty($material->url_vdo)) {
+                $vids = json_decode($material->url_vdo, true);
+                if (is_array($vids)) {
+                    $stats['total_videos'] += count($vids);
+                    $convertedVids = [];
+                    foreach ($vids as $videoUrl) {
+                        if (strpos($videoUrl, 'youtu.be/') !== false) {
+                            $videoId = explode('youtu.be/', $videoUrl)[1];
+                            $convertedVids[] = "https://www.youtube.com/embed/{$videoId}";
+                        } elseif (strpos($videoUrl, 'watch?v=') !== false) {
+                            $parts = explode('watch?v=', $videoUrl);
+                            $videoId = explode('&', $parts[1])[0];
+                            $convertedVids[] = "https://www.youtube.com/embed/{$videoId}";
+                        } else {
+                            $convertedVids[] = $videoUrl;
+                        }
+                    }
+                    $material->url_vdo = json_encode($convertedVids);
+                } else {
+                    $stats['total_videos'] += 1;
                 }
             }
         }
 
-        return view('myClass.material_list', compact('subject', 'materials'));
+        return view('myClass.material_list', compact('subject', 'materials', 'stats'));
     }
 
     // Display the form for creating a new material
     public function createMaterial($subject_id)
     {
-        // Fetch the subject details
-        $subject = DB::table('subject')->where('subject_id', $subject_id)->first();
+        // Fetch the subject details with class and teacher info
+        $subject = DB::table('subject')
+            ->leftJoin('class', 'subject.class_id', '=', 'class.class_id')
+            ->leftJoin('teacher', 'subject.teacher_id', '=', 'teacher.teacher_id')
+            ->where('subject.subject_id', $subject_id)
+            ->select(
+                'subject.*',
+                'class.name as class_name',
+                'class.class_code',
+                'class.class_room',
+                'teacher.name as teacher_name'
+            )
+            ->first();
 
         if (!$subject) {
             return redirect()->back()->with('error', 'Subject not found.');
         }
 
         return view('myClass.add_material', compact('subject'));
+    }
+
+    // Display the form for editing an existing material
+    public function editMaterial($id)
+    {
+        $this->authorizeTeacherAccess();
+
+        $material = DB::table('class_materials')->where('id', $id)->first();
+        if (!$material) {
+            return redirect()->back()->with('error', 'Material not found.');
+        }
+
+        $subject = DB::table('subject')
+            ->leftJoin('class', 'subject.class_id', '=', 'class.class_id')
+            ->leftJoin('teacher', 'subject.teacher_id', '=', 'teacher.teacher_id')
+            ->where('subject.subject_id', $material->subject_id)
+            ->select(
+                'subject.*',
+                'class.name as class_name',
+                'class.class_code',
+                'class.class_room',
+                'teacher.name as teacher_name'
+            )
+            ->first();
+
+        return view('myClass.add_material', compact('subject', 'material'));
+    }
+
+    // Update full material
+    public function updateFullMaterial(Request $request, $id)
+    {
+        $this->authorizeTeacherAccess();
+
+        $material = DB::table('class_materials')->where('id', $id)->first();
+        if (!$material) {
+            return redirect()->back()->with('error', 'Material not found.');
+        }
+
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'gallery_path.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'file_path.*' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,txt,zip,rar|max:20480',
+            'url_vdo' => 'nullable|string',
+            'video_file.*' => 'nullable|mimes:mp4,avi,mov,mkv|max:1024000',
+        ]);
+
+        $destinationPath = public_path('upload_materials');
+
+        // Gallery
+        $existingGallery = !empty($request->existing_gallery) ? json_decode($request->existing_gallery, true) : (json_decode($material->gallery_path, true) ?? []);
+        if (!is_array($existingGallery)) $existingGallery = [];
+        if ($request->hasFile('gallery_path')) {
+            foreach ($request->file('gallery_path') as $image) {
+                $imageName = time() . '_gallery_' . $image->getClientOriginalName();
+                $image->move($destinationPath, $imageName);
+                $existingGallery[] = $imageName;
+            }
+        }
+
+        // Documents
+        $existingFiles = !empty($request->existing_files) ? json_decode($request->existing_files, true) : (json_decode($material->file_path, true) ?? []);
+        if (!is_array($existingFiles)) $existingFiles = [];
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $document) {
+                $documentName = time() . '_doc_' . $document->getClientOriginalName();
+                $document->move($destinationPath, $documentName);
+                $existingFiles[] = $documentName;
+            }
+        }
+
+        // Videos
+        $videoPaths = [];
+        if ($request->filled('url_vdo')) {
+            $videoLinks = explode(',', $request->url_vdo);
+            foreach ($videoLinks as $link) {
+                $link = trim($link);
+                if (empty($link)) continue;
+                if (strpos($link, 'youtu.be/') !== false) {
+                    $videoId = explode('youtu.be/', $link)[1];
+                    $videoPaths[] = "https://www.youtube.com/embed/{$videoId}";
+                } elseif (strpos($link, 'watch?v=') !== false) {
+                    $parts = explode('watch?v=', $link);
+                    $videoId = explode('&', $parts[1])[0];
+                    $videoPaths[] = "https://www.youtube.com/embed/{$videoId}";
+                } else {
+                    $videoPaths[] = $link;
+                }
+            }
+        }
+        if ($request->hasFile('video_file')) {
+            foreach ($request->file('video_file') as $video) {
+                $videoName = time() . '_video_' . $video->getClientOriginalName();
+                $video->move($destinationPath, $videoName);
+                $videoPaths[] = $videoName;
+            }
+        }
+        if ($request->has('existing_videos')) {
+            $existingVideos = json_decode($request->existing_videos, true);
+            if (is_array($existingVideos)) {
+                $videoPaths = array_merge($existingVideos, $videoPaths);
+            }
+        }
+
+        DB::table('class_materials')->where('id', $id)->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'gallery_path' => count($existingGallery) > 0 ? json_encode(array_values(array_unique($existingGallery))) : null,
+            'file_path' => count($existingFiles) > 0 ? json_encode(array_values(array_unique($existingFiles))) : null,
+            'url_vdo' => count($videoPaths) > 0 ? json_encode(array_values(array_unique($videoPaths))) : null,
+            'updated_at' => now(),
+        ]);
+
+        if ($request->wantsJson() || $request->ajax() || strpos($request->header('Accept', ''), 'application/json') !== false) {
+            return response()->json(['success' => true, 'message' => 'Material updated successfully!']);
+        }
+
+        return redirect()->route('class.materials', ['subject_id' => $material->subject_id])
+            ->with('success', 'Material updated successfully!');
     }
 
     // Store the submitted material data
@@ -357,6 +523,10 @@ class ClassController extends Controller
             'updated_at' => now()
         ]);
 
+        if ($request->wantsJson() || $request->ajax() || strpos($request->header('Accept', ''), 'application/json') !== false) {
+            return response()->json(['success' => true, 'message' => 'Videos updated successfully!']);
+        }
+
         return redirect()->back()->with('success', 'Videos updated successfully!');
     }
     public function deleteVideos($id)
@@ -493,8 +663,21 @@ class ClassController extends Controller
             ->select('class.*', 'teacher.name as teacher_name')
             ->get();
 
-        $teachers = DB::table('teacher')->get(); // Fetch all teachers
-        return view("class.index", ['tbl' => $tbl, 'teachers' => $teachers, 'i' => 1]);
+        foreach ($tbl as $c) {
+            $c->sections_count = DB::table('section')->where('class_id', $c->class_id)->count();
+            $c->students_count = DB::table('student_classes')->where('class_id', $c->class_id)->count();
+        }
+
+        $teachers = DB::table('teacher')->orderBy('name')->get();
+
+        $metrics = [
+            'total_classes'     => $tbl->count(),
+            'total_sections'    => DB::table('section')->count(),
+            'total_students'    => DB::table('student_classes')->distinct('student_id')->count('student_id'),
+            'assigned_teachers' => $tbl->whereNotNull('teacher_id')->unique('teacher_id')->count(),
+        ];
+
+        return view("class.index", ['tbl' => $tbl, 'teachers' => $teachers, 'metrics' => $metrics, 'i' => 1]);
     }
 
     /**

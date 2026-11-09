@@ -419,9 +419,9 @@
 
                         <!-- Action Button -->
                         <a href="{{ route('class.materials', ['subject_id' => $item->subject_id]) }}" class="btn-open-materials">
-                            <i class="fas fa-folder-open"></i>
-                            <span>View Materials</span>
-                            <i class="fas fa-arrow-right ml-auto" style="font-size: 0.8rem;"></i>
+                            <i class="fas fa-folder-open" style="color: #fff;"></i>
+                            <span style="color: #fff;">View Materials</span>
+                            <i class="fas fa-arrow-right ml-auto" style="color: #fff;font-size: 0.8rem;"></i>
                         </a>
                     </div>
                 </div>

@@ -335,7 +335,9 @@ Route::middleware(['auth', 'role:0,1', 'log.activity'])->group(function () {
 
     // Class Materials Management
     Route::get('/materials/create/{subject_id}', [ClassController::class, 'createMaterial'])->name('materials.create');
+    Route::get('/materials/edit/{id}', [ClassController::class, 'editMaterial'])->name('materials.edit');
     Route::post('/materials/store', [ClassController::class, 'createMaterials'])->name('materials.store');
+    Route::post('/materials/update/{id}', [ClassController::class, 'updateFullMaterial'])->name('materials.updateFull');
     Route::post('/materials/update-description/{id}', [ClassController::class, 'updateDescription'])->name('materials.updateDescription');
     Route::delete('/materials/delete-description/{id}', [ClassController::class, 'deleteDescription'])->name('materials.deleteDescription');
     Route::post('/materials/update-video/{id}', [ClassController::class, 'updateVideos'])->name('materials.update-video');

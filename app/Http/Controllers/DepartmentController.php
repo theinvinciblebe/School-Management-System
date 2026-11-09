@@ -13,8 +13,20 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = DB::table('department')->get();
-        return view('department.index', compact('departments'));
+        $departments = DB::table('department')->orderBy('name')->get();
+
+        foreach ($departments as $d) {
+            $d->staff_count = DB::table('staff')->where('department_id', $d->id)->count();
+        }
+
+        $metrics = [
+            'total_departments' => $departments->count(),
+            'total_staff'       => DB::table('staff')->count(),
+            'staffed_depts'     => $departments->where('staff_count', '>', 0)->count(),
+            'vacant_depts'      => $departments->where('staff_count', 0)->count(),
+        ];
+
+        return view('department.index', compact('departments', 'metrics'));
     }
 
     /**

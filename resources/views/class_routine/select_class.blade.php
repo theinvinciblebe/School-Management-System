@@ -480,9 +480,9 @@
                         <!-- Action Buttons -->
                         <div class="class-card-actions">
                             <a href="{{ route('class_routines.index', $class->class_id) }}" class="btn-view-routine">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>View Timetable</span>
-                                <i class="fas fa-arrow-right ml-auto" style="font-size: 0.8rem;"></i>
+                                <i class="fas fa-calendar-alt" style="color: #fff;"></i>
+                                <span style="color: #fff;">View Timetable</span>
+                                <i class="fas fa-arrow-right ml-auto" style="color: #fff;font-size: 0.8rem;"></i>
                             </a>
                             @if (Auth::user()->role == 0 || Auth::user()->role == 4)
                                 <button type="button" class="btn-quick-add"

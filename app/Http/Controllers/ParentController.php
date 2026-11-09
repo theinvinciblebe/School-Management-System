@@ -4,17 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\ParentModel;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ParentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $parents = DB::table('parent')->get(); // Fetch all parents
-        return view("parent.index", ['parents' => $parents, 'i' => 1]);
+        $query = DB::table('parent');
+
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('phone', 'like', "%{$s}%")
+                  ->orWhere('profession', 'like', "%{$s}%")
+                  ->orWhere('address', 'like', "%{$s}%");
+            });
+        }
+
+        $parents = $query->orderBy('name')->get();
+
+        // Attach student children info to each parent
+        foreach ($parents as $p) {
+            $p->children = DB::table('student')
+                ->where('parent_id', $p->parent_id)
+                ->select('student_id', 'name', 'photo')
+                ->get();
+            $p->children_count = $p->children->count();
+        }
+
+        $allParents = DB::table('parent')->get();
+        $totalChildrenLinked = DB::table('student')->whereNotNull('parent_id')->count();
+        $professions = DB::table('parent')
+            ->whereNotNull('profession')
+            ->where('profession', '!=', '')
+            ->distinct()
+            ->orderBy('profession')
+            ->pluck('profession');
+        $withContacts = DB::table('parent')->whereNotNull('phone')->where('phone', '!=', '')->count();
+
+        $metrics = [
+            'total_parents'         => $allParents->count(),
+            'total_children_linked' => $totalChildrenLinked,
+            'professions_count'     => $professions->count(),
+            'with_contacts'         => $withContacts,
+        ];
+
+        return view("parent.index", compact('parents', 'metrics', 'professions'));
     }
 
     /**
@@ -31,24 +71,25 @@ class ParentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:parent,email',
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:15',
-            'profession' => 'nullable|string|max:15',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|max:255|unique:parent,email',
+            'phone'      => 'required|string|max:25',
+            'address'    => 'nullable|string|max:500',
+            'profession' => 'nullable|string|max:100',
         ]);
 
         DB::table('parent')->insert([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'address' => $request->input('address'),
+            'name'       => $request->input('name'),
+            'email'      => $request->input('email'),
+            'phone'      => $request->input('phone'),
+            'address'    => $request->input('address'),
             'profession' => $request->input('profession'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        return redirect()->route('parents.index')->with('success', 'Parent added successfully!');
+        return redirect()->route('parents.index')->with('success', 'Parent registered successfully!');
     }
-
 
     /**
      * Display the specified resource.
@@ -63,15 +104,7 @@ class ParentController extends Controller
      */
     public function edit($id)
     {
-//        // Fetch the parent record by ID
-//        $parent = DB::table('parent')->where('parent_id', $id)->first();
-//
-//        if (!$parent) {
-//            return redirect()->route('parents.index')->with('error', 'Parent not found.');
-//        }
-//
-//        // Pass the parent data to the edit view
-//        return view('parents.index', compact('parent'));
+        //
     }
 
     /**
@@ -80,22 +113,23 @@ class ParentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:15',
-            'profession' => 'nullable|string|max:15',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|max:255|unique:parent,email,' . $id . ',parent_id',
+            'phone'      => 'required|string|max:25',
+            'address'    => 'nullable|string|max:500',
+            'profession' => 'nullable|string|max:100',
         ]);
 
         // Update the parent record in the database
         DB::table('parent')
             ->where('parent_id', $id)
             ->update([
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'phone' => $request->input('phone'),
-                'address' => $request->input('address'),
+                'name'       => $request->input('name'),
+                'email'      => $request->input('email'),
+                'phone'      => $request->input('phone'),
+                'address'    => $request->input('address'),
                 'profession' => $request->input('profession'),
+                'updated_at' => now(),
             ]);
 
         return redirect()->route('parents.index')->with('success', 'Parent updated successfully.');
@@ -112,10 +146,12 @@ class ParentController extends Controller
             return redirect()->route('parents.index')->with('error', 'Parent not found.');
         }
 
+        // Safely detach any associated students
+        DB::table('student')->where('parent_id', $id)->update(['parent_id' => null]);
+
         // Delete the parent
         DB::table('parent')->where('parent_id', $id)->delete();
 
         return redirect()->route('parents.index')->with('success', 'Parent deleted successfully.');
     }
-
 }

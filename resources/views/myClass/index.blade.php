@@ -491,9 +491,9 @@
                         <!-- Action Buttons -->
                         <div class="class-card-actions">
                             <a href="{{ route('getSubject.index', ['class_id' => $item->class_id]) }}" class="btn-explore-class">
-                                <i class="fas fa-book-reader"></i>
-                                <span>View Subjects</span>
-                                <i class="fas fa-arrow-right ml-auto" style="font-size: 0.8rem;"></i>
+                                <i class="fas fa-book-reader"style="color: #fff;"></i>
+                                <span style="color: #fff;">View Subjects</span>
+                                <i class="fas fa-arrow-right ml-auto" style="color: #fff; font-size: 0.8rem;"></i>
                             </a>
                             <a href="{{ route('class_routines.index', $item->class_id) }}" class="btn-timetable-shortcut" title="View Weekly Timetable">
                                 <i class="fas fa-calendar-alt"></i>

@@ -16,7 +16,14 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('user.index', compact('users'));
+        $metrics = [
+            'total_users'   => $users->count(),
+            'admin_count'   => $users->where('role', 0)->count(),
+            'faculty_count' => $users->where('role', 1)->count(),
+            'student_count' => $users->where('role', 2)->count(),
+            'staff_count'   => $users->whereIn('role', [3, 4])->count(),
+        ];
+        return view('user.index', compact('users', 'metrics'));
     }
 
     /**
