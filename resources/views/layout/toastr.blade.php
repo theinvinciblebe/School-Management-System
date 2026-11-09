@@ -1,7 +1,7 @@
 @if(session('success'))
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            toastr.success("{{ session('success') }}");
+            toastr.success("{{ __(session('success')) }}");
         });
     </script>
 @endif
@@ -9,7 +9,7 @@
 @if(session('error'))
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            toastr.error("{{ session('error') }}");
+            toastr.error("{{ __(session('error')) }}");
         });
     </script>
 @endif
@@ -17,7 +17,7 @@
 @if(session('info'))
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            toastr.info("{{ session('info') }}");
+            toastr.info("{{ __(session('info')) }}");
         });
     </script>
 @endif
@@ -25,7 +25,7 @@
 @if(session('warning'))
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            toastr.warning("{{ session('warning') }}");
+            toastr.warning("{{ __(session('warning')) }}");
         });
     </script>
 @endif

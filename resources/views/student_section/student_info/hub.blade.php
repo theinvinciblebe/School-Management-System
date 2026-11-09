@@ -234,27 +234,27 @@
                         <i class="fas fa-user-graduate text-purple mr-2" style="color: #8b5cf6;"></i>{{ __('Student Information') }}
                     </h1>
                     <span class="badge badge-light border text-muted px-2 py-1 text-xs" style="border-radius: 12px;">
-                        <i class="fas fa-layer-group mr-1 text-primary"></i> Academic Hub
+                        <i class="fas fa-layer-group mr-1 text-primary"></i> {{ __('Academic Hub') }}
                     </span>
                 </div>
                 <p class="text-muted text-sm mb-0 mt-1">
-                    Select a class roster below to manage students, or search directly across the institutional directory.
+                    {{ __('Select a class roster below to manage students, or search directly across the institutional directory.') }}
                 </p>
             </div>
             <div class="col-sm-5 text-sm-right mt-3 mt-sm-0">
                 @if (in_array(Auth::user()->role, [0, 3, 4]))
                     <a href="{{ route('students.index') }}" class="btn btn-primary btn-sm px-3 shadow-sm mr-2" style="border-radius: 20px;">
-                        <i class="fas fa-user-plus mr-1"></i> Admit Student
+                        <i class="fas fa-user-plus mr-1"></i> {{ __('Admit Student') }}
                     </a>
                 @endif
                 @if (in_array(Auth::user()->role, [0, 4]))
                     <a href="{{ route('admissions.list') }}" class="btn btn-outline-secondary btn-sm px-3 shadow-sm mr-2" style="border-radius: 20px;">
-                        <i class="fas fa-list-alt mr-1"></i> Admission List
+                        <i class="fas fa-list-alt mr-1"></i> {{ __('Admission List') }}
                     </a>
                 @endif
                 <ol class="breadcrumb float-sm-right bg-transparent p-0 d-inline-block align-middle mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item active">Student Information</li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> {{ __('Home') }}</a></li>
+                    <li class="breadcrumb-item active">{{ __('Student Information') }}</li>
                 </ol>
             </div>
         </div>
@@ -269,10 +269,10 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-primary text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Enrolled Students</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Enrolled Students') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($enrolledStudentsCount) }}</h2>
                         <span class="text-xs opacity-75">
-                            {{ $totalStudents > 0 ? round(($enrolledStudentsCount / $totalStudents) * 100) : 0 }}% of total admitted ({{ $totalStudents }})
+                            {{ $totalStudents > 0 ? round(($enrolledStudentsCount / $totalStudents) * 100) : 0 }}% {{ __('of total admitted') }} ({{ $totalStudents }})
                         </span>
                         <i class="fas fa-user-graduate icon-bg text-white"></i>
                     </div>
@@ -282,9 +282,9 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-info text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Active Classes</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Active Classes') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($totalClasses) }}</h2>
-                        <span class="text-xs opacity-75">With {{ $totalSections }} total class sections</span>
+                        <span class="text-xs opacity-75">{{ __('With') }} {{ $totalSections }} {{ __('total class sections') }}</span>
                         <i class="fas fa-chalkboard icon-bg text-white"></i>
                     </div>
                 </div>
@@ -293,7 +293,7 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-success text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Gender Breakdown</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Gender Breakdown') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">
                             {{ $totalMale }} <span class="text-xs font-weight-normal opacity-75">M</span> / {{ $totalFemale }} <span class="text-xs font-weight-normal opacity-75">F</span>
                         </h2>
@@ -302,7 +302,7 @@
                             $femalePercent = ($totalStudents > 0) ? (100 - $malePercent) : 0;
                         @endphp
                         <span class="text-xs opacity-75">
-                            <i class="fas fa-mars mr-1"></i>{{ $malePercent }}% Male &bull; <i class="fas fa-venus mr-1"></i>{{ $femalePercent }}% Female
+                            <i class="fas fa-mars mr-1"></i>{{ $malePercent }}% {{ __('Male') }} &bull; <i class="fas fa-venus mr-1"></i>{{ $femalePercent }}% {{ __('Female') }}
                         </span>
                         <i class="fas fa-restroom icon-bg text-white"></i>
                     </div>
@@ -312,13 +312,13 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-warning text-dark h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Unassigned Students</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Unassigned Students') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($unenrolledCount) }}</h2>
                         <span class="text-xs opacity-75">
                             @if($unenrolledCount > 0)
-                                <a href="#global-directory" class="text-dark font-weight-bold" onclick="filterUnassigned()">Needs Class Placement &rarr;</a>
+                                <a href="#global-directory" class="text-dark font-weight-bold" onclick="filterUnassigned()">{{ __('Needs Class Placement &rarr;') }}</a>
                             @else
-                                All students placed in classes
+                                {{ __('All students placed in classes') }}
                             @endif
                         </span>
                         <i class="fas fa-user-clock icon-bg text-dark"></i>
@@ -337,8 +337,8 @@
                                 <div class="process-step-card d-flex align-items-center">
                                     <div class="step-number-badge mr-3">1</div>
                                     <div>
-                                        <h6 class="font-weight-bold mb-0 text-sm">Select Class or Search</h6>
-                                        <span class="text-xs text-muted">Click a class card below or use the Global Directory.</span>
+                                        <h6 class="font-weight-bold mb-0 text-sm">{{ __('Select Class or Search') }}</h6>
+                                        <span class="text-xs text-muted">{{ __('Click a class card below or use the Global Directory.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -346,8 +346,8 @@
                                 <div class="process-step-card d-flex align-items-center">
                                     <div class="step-number-badge mr-3" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">2</div>
                                     <div>
-                                        <h6 class="font-weight-bold mb-0 text-sm">Inspect Class Roster</h6>
-                                        <span class="text-xs text-muted">Filter by sections, toggle Grid or Table layout modes.</span>
+                                        <h6 class="font-weight-bold mb-0 text-sm">{{ __('Inspect Class Roster') }}</h6>
+                                        <span class="text-xs text-muted">{{ __('Filter by sections, toggle Grid or Table layout modes.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -355,8 +355,8 @@
                                 <div class="process-step-card d-flex align-items-center">
                                     <div class="step-number-badge mr-3" style="background: linear-gradient(135deg, #10b981, #059669);">3</div>
                                     <div>
-                                        <h6 class="font-weight-bold mb-0 text-sm">Manage & Reassign</h6>
-                                        <span class="text-xs text-muted">Update sections, roll numbers, or view profile dossiers.</span>
+                                        <h6 class="font-weight-bold mb-0 text-sm">{{ __('Manage & Reassign') }}</h6>
+                                        <span class="text-xs text-muted">{{ __('Update sections, roll numbers, or view profile dossiers.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -374,12 +374,12 @@
                         <ul class="nav nav-pills" id="processTabs" role="tablist">
                             <li class="nav-item mr-2">
                                 <a class="nav-link active" id="classes-tab" data-toggle="pill" href="#classes-panel" role="tab">
-                                    <i class="fas fa-th-large mr-1"></i> Class Rosters ({{ $totalClasses }})
+                                    <i class="fas fa-th-large mr-1"></i> {{ __('Class Rosters') }} ({{ $totalClasses }})
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="directory-tab" data-toggle="pill" href="#directory-panel" role="tab">
-                                    <i class="fas fa-users mr-1"></i> Global Student Directory ({{ $totalStudents }})
+                                    <i class="fas fa-users mr-1"></i> {{ __('Global Student Directory') }} ({{ $totalStudents }})
                                 </a>
                             </li>
                         </ul>
@@ -393,14 +393,14 @@
                                     <i class="fas fa-search text-muted"></i>
                                 </span>
                             </div>
-                            <input type="text" id="unifiedSearchInput" class="form-control border-left-0" placeholder="Search class or student..." style="border-radius: 0 20px 20px 0;">
+                            <input type="text" id="unifiedSearchInput" class="form-control border-left-0" placeholder="{{ __('Search class or student...') }}" style="border-radius: 0 20px 20px 0;">
                         </div>
 
                         <!-- Class Filter Status Buttons (Visible on Classes Tab) -->
                         <div class="btn-group btn-group-sm" id="classFilterGroup" role="group">
-                            <button type="button" class="btn btn-primary active class-filter-btn" data-filter="all" style="border-radius: 20px 0 0 20px;">All</button>
-                            <button type="button" class="btn btn-outline-secondary class-filter-btn" data-filter="active">With Students</button>
-                            <button type="button" class="btn btn-outline-secondary class-filter-btn" data-filter="empty" style="border-radius: 0 20px 20px 0;">Empty</button>
+                            <button type="button" class="btn btn-primary active class-filter-btn" data-filter="all" style="border-radius: 20px 0 0 20px;">{{ __('All') }}</button>
+                            <button type="button" class="btn btn-outline-secondary class-filter-btn" data-filter="active">{{ __('With Students') }}</button>
+                            <button type="button" class="btn btn-outline-secondary class-filter-btn" data-filter="empty" style="border-radius: 0 20px 20px 0;">{{ __('Empty') }}</button>
                         </div>
                     </div>
                 </div>
@@ -459,15 +459,15 @@
                                                             </a>
                                                         </h5>
                                                         <span class="text-xs text-muted">
-                                                            <i class="fas fa-barcode mr-1"></i>Code: <b>{{ $c->class_code ?? 'N/A' }}</b> &bull;
-                                                            <i class="fas fa-door-open mr-1"></i>Room: <b>{{ $c->class_room ?? 'N/A' }}</b>
+                                                            <i class="fas fa-barcode mr-1"></i>{{ __('Code') }}: <b>{{ $c->class_code ?? 'N/A' }}</b> &bull;
+                                                            <i class="fas fa-door-open mr-1"></i>{{ __('Room') }}: <b>{{ $c->class_room ?? 'N/A' }}</b>
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <span class="badge {{ $palette['badge'] }} px-2 py-1 text-xs" style="border-radius: 8px;">
-                                                {{ $cStudentCount }} {{ Str::plural('Student', $cStudentCount) }}
+                                                {{ $cStudentCount }} {{ __('Students') }}
                                             </span>
                                         </div>
 
@@ -477,9 +477,9 @@
                                             <div class="d-flex align-items-center bg-light p-2 rounded mb-3" style="font-size: 12px; border-radius: 8px;">
                                                 <i class="fas fa-chalkboard-teacher mr-2 text-muted" style="font-size: 16px;"></i>
                                                 <div class="text-truncate">
-                                                    <span class="text-muted d-block text-xs">Class Teacher / Incharge</span>
+                                                    <span class="text-muted d-block text-xs">{{ __('Class Teacher / Incharge') }}</span>
                                                     <span class="font-weight-bold text-dark text-truncate">
-                                                        {{ $c->teacher_name ?? 'Not Assigned' }}
+                                                        {{ $c->teacher_name ?? __('Not Assigned') }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -487,7 +487,7 @@
                                             <!-- Active Sections -->
                                             <div class="mb-3">
                                                 <span class="text-xs text-uppercase font-weight-bold text-muted d-block mb-1" style="letter-spacing: 0.5px;">
-                                                    Active Sections ({{ $cSections->count() }}):
+                                                    {{ __('Active Sections') }} ({{ $cSections->count() }}):
                                                 </span>
                                                 <div class="d-flex flex-wrap" style="gap: 4px;">
                                                     @forelse($cSections as $sec)
@@ -495,7 +495,7 @@
                                                             {{ $sec->name }}
                                                         </span>
                                                     @empty
-                                                        <span class="text-xs text-muted font-italic">No sections configured</span>
+                                                        <span class="text-xs text-muted font-italic">{{ __('No sections configured') }}</span>
                                                     @endforelse
                                                 </div>
                                             </div>
@@ -504,8 +504,8 @@
                                             @if($cStudentCount > 0)
                                                 <div class="mb-2">
                                                     <div class="d-flex justify-content-between text-xs text-muted mb-1">
-                                                        <span><i class="fas fa-mars mr-1 text-primary"></i> {{ $cMale }} Male</span>
-                                                        <span><i class="fas fa-venus mr-1 text-danger"></i> {{ $cFemale }} Female</span>
+                                                        <span><i class="fas fa-mars mr-1 text-primary"></i> {{ $cMale }} {{ __('Male') }}</span>
+                                                        <span><i class="fas fa-venus mr-1 text-danger"></i> {{ $cFemale }} {{ __('Female') }}</span>
                                                     </div>
                                                     @php
                                                         $maleRatio = round(($cMale / $cStudentCount) * 100);
@@ -520,12 +520,12 @@
 
                                         <!-- Card Footer: Flow Action Buttons -->
                                         <div class="card-footer bg-transparent border-top p-3 d-flex justify-content-between align-items-center">
-                                            <a href="{{ route('attendance.show', $c->class_id) }}" class="btn btn-outline-secondary btn-xs px-2 shadow-sm" style="border-radius: 6px;" title="Attendance">
-                                                <i class="fas fa-calendar-check mr-1"></i> Attendance
+                                            <a href="{{ route('attendance.show', $c->class_id) }}" class="btn btn-outline-secondary btn-xs px-2 shadow-sm" style="border-radius: 6px;" title="{{ __('Attendance') }}">
+                                                <i class="fas fa-calendar-check mr-1"></i> {{ __('Attendance') }}
                                             </a>
 
                                             <a href="{{ route('students.byClass', $c->class_id) }}" class="btn btn-primary btn-sm px-3 shadow-sm font-weight-bold" style="border-radius: 20px;">
-                                                <span>View Roster</span>
+                                                <span>{{ __('View Roster') }}</span>
                                                 <i class="fas fa-arrow-right ml-1 text-xs"></i>
                                             </a>
                                         </div>
@@ -535,11 +535,11 @@
                             @empty
                                 <div class="col-12 text-center py-5">
                                     <i class="fas fa-school fa-3x text-muted opacity-50 mb-3"></i>
-                                    <h5>No classes found</h5>
-                                    <p class="text-muted text-sm">Please create a class in Class Management first.</p>
+                                    <h5>{{ __('No classes found') }}</h5>
+                                    <p class="text-muted text-sm">{{ __('Please create a class in Class Management first.') }}</p>
                                     @if(Auth::user()->role == 0)
                                         <a href="{{ route('class.create') }}" class="btn btn-primary btn-sm" style="border-radius: 20px;">
-                                            <i class="fas fa-plus mr-1"></i> Create Class
+                                            <i class="fas fa-plus mr-1"></i> {{ __('Create Class') }}
                                         </a>
                                     @endif
                                 </div>
@@ -549,9 +549,9 @@
                         <!-- No Class Match Alert -->
                         <div id="noClassMatch" class="text-center py-5" style="display: none;">
                             <i class="fas fa-search fa-3x text-muted opacity-50 mb-2"></i>
-                            <h6 class="font-weight-bold">No classes match your filter</h6>
-                            <p class="text-muted text-sm">Try adjusting your search query or status filter.</p>
-                            <button type="button" class="btn btn-xs btn-outline-primary" id="resetClassFilterBtn">Reset Filter</button>
+                            <h6 class="font-weight-bold">{{ __('No classes match your filter') }}</h6>
+                            <p class="text-muted text-sm">{{ __('Try adjusting your search query or status filter.') }}</p>
+                            <button type="button" class="btn btn-xs btn-outline-primary" id="resetClassFilterBtn">{{ __('Reset Filter') }}</button>
                         </div>
 
                     </div>
@@ -566,13 +566,13 @@
                                 <thead>
                                     <tr class="bg-light">
                                         <th style="width: 50px;">#</th>
-                                        <th>Student</th>
-                                        <th>Class & Section</th>
-                                        <th>Roll Number</th>
-                                        <th>Gender</th>
-                                        <th>Parent / Guardian</th>
-                                        <th>Contact</th>
-                                        <th class="text-right" style="width: 130px;">Action</th>
+                                        <th>{{ __('Student') }}</th>
+                                        <th>{{ __('Class & Section') }}</th>
+                                        <th>{{ __('Roll Number') }}</th>
+                                        <th>{{ __('Gender') }}</th>
+                                        <th>{{ __('Parent / Guardian') }}</th>
+                                        <th>{{ __('Contact') }}</th>
+                                        <th class="text-right" style="width: 130px;">{{ __('Action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -588,7 +588,7 @@
                                             };
                                             $hasPhoto = (!empty($s->photo) && $s->photo !== 'noimg.jpg');
                                             $photoUrl = asset('students_image/' . ($s->photo ?? 'noimg.jpg'));
-                                            $genderText = ($s->sex == 0) ? 'Male' : 'Female';
+                                            $genderText = ($s->sex == 0) ? __('Male') : __('Female');
                                             $genderBadge = ($s->sex == 0) ? 'badge-primary' : 'badge-danger';
                                             $genderIcon = ($s->sex == 0) ? 'fa-mars' : 'fa-venus';
                                             $isEnrolled = !empty($s->class_id);
@@ -640,7 +640,7 @@
                                                     </span>
                                                 @else
                                                     <span class="badge badge-warning text-dark py-1 px-2 text-xs" style="border-radius: 6px;">
-                                                        <i class="fas fa-exclamation-triangle mr-1"></i> Not Enrolled
+                                                        <i class="fas fa-exclamation-triangle mr-1"></i> {{ __('Not Enrolled') }}
                                                     </span>
                                                 @endif
                                             </td>
@@ -683,11 +683,11 @@
                                             <td class="text-right">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-xs btn-outline-primary view-hub-profile-btn shadow-sm mr-1"
-                                                            data-student='@json($s)' title="View Profile Dossier">
+                                                            data-student='@json($s)' title="{{ __('View Profile Dossier') }}">
                                                         <i class="fas fa-id-card"></i>
                                                     </button>
                                                     @if($isEnrolled)
-                                                        <a href="{{ route('students.byClass', $s->class_id) }}" class="btn btn-xs btn-outline-info shadow-sm" title="Go to Class Roster">
+                                                        <a href="{{ route('students.byClass', $s->class_id) }}" class="btn btn-xs btn-outline-info shadow-sm" title="{{ __('Go to Class Roster') }}">
                                                             <i class="fas fa-arrow-right"></i>
                                                         </a>
                                                     @endif
@@ -698,7 +698,7 @@
                                     @empty
                                         <tr>
                                             <td colspan="8" class="text-center py-4 text-muted">
-                                                No students found in the database.
+                                                {{ __('No students found in the database.') }}
                                             </td>
                                         </tr>
                                     @endforelse
@@ -709,9 +709,9 @@
                         <!-- No Match in Global Directory -->
                         <div id="noDirectoryMatch" class="text-center py-5" style="display: none;">
                             <i class="fas fa-user-slash fa-3x text-muted opacity-50 mb-2"></i>
-                            <h6 class="font-weight-bold">No students match your search</h6>
-                            <p class="text-muted text-sm">Try searching by student name, roll number, or class.</p>
-                            <button type="button" class="btn btn-xs btn-outline-primary" id="resetDirectoryFilterBtn">Reset Search</button>
+                            <h6 class="font-weight-bold">{{ __('No students match your search') }}</h6>
+                            <p class="text-muted text-sm">{{ __('Try searching by student name, roll number, or class.') }}</p>
+                            <button type="button" class="btn btn-xs btn-outline-primary" id="resetDirectoryFilterBtn">{{ __('Reset Search') }}</button>
                         </div>
 
                     </div>
@@ -722,10 +722,10 @@
             <!-- Footer Meta -->
             <div class="card-footer border-top p-3 d-flex justify-content-between align-items-center flex-wrap">
                 <span class="text-xs text-muted">
-                    <i class="fas fa-info-circle mr-1"></i> Institutional Student Management System &bull; Total records: <b>{{ $totalStudents }}</b>
+                    <i class="fas fa-info-circle mr-1"></i> {{ __('Institutional Student Management System') }} &bull; {{ __('Total records') }}: <b>{{ $totalStudents }}</b>
                 </span>
                 <span class="text-xs text-muted">
-                    Updated {{ now()->format('M d, Y') }}
+                    {{ __('Updated') }} {{ now()->format('M d, Y') }}
                 </span>
             </div>
 
@@ -748,7 +748,7 @@
                         <span id="hubModalInitials">ST</span>
                     </div>
                     <div>
-                        <h4 class="font-weight-bold mb-1" id="hubModalName">Student Name</h4>
+                        <h4 class="font-weight-bold mb-1" id="hubModalName">{{ __('Student Name') }}</h4>
                         <span class="text-xs opacity-75" id="hubModalEmail">student@mail.com</span>
                         <div class="mt-1">
                             <span class="badge badge-warning text-dark font-weight-bold mr-1" id="hubModalRoll">Roll: #0001</span>
@@ -771,23 +771,23 @@
                         <div class="card bg-light border-0 h-100" style="border-radius: 10px;">
                             <div class="card-body p-3">
                                 <h6 class="font-weight-bold text-xs text-uppercase text-muted mb-3" style="letter-spacing: 0.8px;">
-                                    <i class="fas fa-user mr-1 text-primary"></i> Personal Details
+                                    <i class="fas fa-user mr-1 text-primary"></i> {{ __('Personal Details') }}
                                 </h6>
                                 <table class="table table-sm table-borderless mb-0" style="font-size: 13px;">
                                     <tr>
-                                        <td class="text-muted" width="110">Gender</td>
+                                        <td class="text-muted" width="110">{{ __('Gender') }}</td>
                                         <td class="font-weight-bold" id="hubModalGender">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Birthday</td>
+                                        <td class="text-muted">{{ __('Birthday') }}</td>
                                         <td class="font-weight-bold" id="hubModalDob">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Phone</td>
+                                        <td class="text-muted">{{ __('Phone') }}</td>
                                         <td class="font-weight-bold" id="hubModalPhone">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Address</td>
+                                        <td class="text-muted">{{ __('Address') }}</td>
                                         <td class="font-weight-bold" id="hubModalAddress">-</td>
                                     </tr>
                                 </table>
@@ -800,23 +800,23 @@
                         <div class="card bg-light border-0 h-100" style="border-radius: 10px;">
                             <div class="card-body p-3">
                                 <h6 class="font-weight-bold text-xs text-uppercase text-muted mb-3" style="letter-spacing: 0.8px;">
-                                    <i class="fas fa-user-shield mr-1 text-info"></i> Guardian & Parent Info
+                                    <i class="fas fa-user-shield mr-1 text-info"></i> {{ __('Guardian & Parent Info') }}
                                 </h6>
                                 <table class="table table-sm table-borderless mb-0" style="font-size: 13px;">
                                     <tr>
-                                        <td class="text-muted" width="110">Parent Name</td>
+                                        <td class="text-muted" width="110">{{ __('Parent Name') }}</td>
                                         <td class="font-weight-bold" id="hubModalParentName">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Parent Phone</td>
+                                        <td class="text-muted">{{ __('Parent Phone') }}</td>
                                         <td class="font-weight-bold" id="hubModalParentPhone">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Parent Email</td>
+                                        <td class="text-muted">{{ __('Parent Email') }}</td>
                                         <td class="font-weight-bold" id="hubModalParentEmail">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Student ID</td>
+                                        <td class="text-muted">{{ __('Student ID') }}</td>
                                         <td class="font-weight-bold text-primary" id="hubModalStudentId">-</td>
                                     </tr>
                                 </table>
@@ -831,18 +831,18 @@
             <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between align-items-center">
                 <div>
                     <a href="#" id="hubModalCallLink" class="btn btn-outline-secondary btn-sm mr-1" style="border-radius: 8px;">
-                        <i class="fas fa-phone mr-1"></i> Call
+                        <i class="fas fa-phone mr-1"></i> {{ __('Call') }}
                     </a>
                     <a href="#" id="hubModalMailLink" class="btn btn-outline-secondary btn-sm" style="border-radius: 8px;">
-                        <i class="fas fa-envelope mr-1"></i> Email
+                        <i class="fas fa-envelope mr-1"></i> {{ __('Email') }}
                     </a>
                 </div>
                 <div>
                     <a href="#" id="hubModalRosterLink" class="btn btn-primary btn-sm px-3 mr-2" style="border-radius: 8px; display: none;">
-                        <i class="fas fa-arrow-right mr-1"></i> Open Class Roster
+                        <i class="fas fa-arrow-right mr-1"></i> {{ __('Open Class Roster') }}
                     </a>
                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">
-                        Close
+                        {{ __('Close') }}
                     </button>
                 </div>
             </div>

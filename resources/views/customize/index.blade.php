@@ -880,11 +880,11 @@
         <div class="studio-header-content">
             <div class="studio-badge">
                 <span class="status-dot"></span>
-                Theme Studio & Branding
+                {{ __('Theme Studio & Branding') }}
             </div>
-            <h1 class="font-weight-bold mb-2" style="font-size: 2.15rem; letter-spacing: -0.02em;">Customize Appearance</h1>
+            <h1 class="font-weight-bold mb-2" style="font-size: 2.15rem; letter-spacing: -0.02em;">{{ __('Customize Appearance') }}</h1>
             <p class="text-white-50 mb-0" style="max-width: 650px; font-size: 1rem; line-height: 1.5;">
-                Personalize your school brand, browser tab identity, and AdminLTE navigation themes. Test changes in the real-time interactive preview before saving.
+                {{ __('Personalize your school brand, browser tab identity, and AdminLTE navigation themes. Test changes in the real-time interactive preview before saving.') }}
             </p>
         </div>
         <div class="studio-header-theme-toggle mt-3 mt-lg-0" style="position: relative; z-index: 2;">
@@ -901,13 +901,13 @@
             <!-- Studio Tabs Navigation -->
             <div class="studio-tabs">
                 <button class="studio-tab-btn active" data-tab="brand">
-                    <i class="fas fa-graduation-cap"></i> Brand Identity
+                    <i class="fas fa-graduation-cap"></i> {{ __('Brand Identity') }}
                 </button>
                 <button class="studio-tab-btn" data-tab="browser">
-                    <i class="fas fa-globe"></i> Browser & SEO
+                    <i class="fas fa-globe"></i> {{ __('Browser & SEO') }}
                 </button>
                 <button class="studio-tab-btn" data-tab="theme">
-                    <i class="fas fa-palette"></i> Themes & Colors
+                    <i class="fas fa-palette"></i> {{ __('Themes & Colors') }}
                 </button>
             </div>
 
@@ -917,9 +917,9 @@
                     <div class="studio-card-header">
                         <h4 class="studio-card-title">
                             <span class="studio-card-icon icon-brand"><i class="fas fa-school"></i></span>
-                            School Brand Logo & Title
+                            {{ __('School Brand Logo & Title') }}
                         </h4>
-                        <span class="badge badge-light border">Sidebar & Header Identity</span>
+                        <span class="badge badge-light border">{{ __('Sidebar & Header Identity') }}</span>
                     </div>
                     <div class="studio-card-body">
                         <div class="row align-items-center mb-4">
@@ -931,7 +931,7 @@
                                              src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}"
                                              alt="School Brand Logo">
                                     </div>
-                                    <div class="font-weight-bold text-dark small mb-1">Active Logo</div>
+                                    <div class="font-weight-bold text-dark small mb-1">{{ __('Active Logo') }}</div>
                                     <span class="text-muted small">JPG, PNG, GIF, ICO</span>
                                 </div>
                             </div>
@@ -939,18 +939,18 @@
                             <!-- Logo Drag and Drop Box -->
                             <div class="col-sm-8">
                                 <input type="file" id="logoFileInput" accept="image/jpeg,image/png,image/jpg,image/gif,image/x-icon,image/webp,image/svg+xml" style="display: none;">
-                                <div class="upload-box" id="logoUploadBox" title="Click or drag and drop to change logo">
+                                <div class="upload-box" id="logoUploadBox" title="{{ __('Click or drag and drop to change logo') }}">
                                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                                    <div class="upload-text-main" id="logoUploadText">Choose an image or drag & drop here</div>
-                                    <div class="upload-text-sub">Maximum file size: 4MB. Square 1:1 recommended (PNG, JPG, SVG, WEBP, ICO)</div>
+                                    <div class="upload-text-main" id="logoUploadText">{{ __('Choose an image or drag & drop here') }}</div>
+                                    <div class="upload-text-sub">{{ __('Maximum file size: 4MB. Square 1:1 recommended (PNG, JPG, SVG, WEBP, ICO)') }}</div>
                                     <div id="logoUploadProgress" class="progress mt-3 d-none" style="height: 6px;">
                                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 100%"></div>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="small text-muted" id="logoUploadStatusText"><i class="fas fa-info-circle mr-1"></i>Select an image to automatically update logo</span>
+                                    <span class="small text-muted" id="logoUploadStatusText"><i class="fas fa-info-circle mr-1"></i>{{ __('Select an image to automatically update logo') }}</span>
                                     <button id="btnSaveLogo" class="btn btn-sm btn-studio-primary d-none">
-                                        <i class="fas fa-upload mr-1"></i> Upload Selected Logo
+                                        <i class="fas fa-upload mr-1"></i> {{ __('Upload Selected Logo') }}
                                     </button>
                                 </div>
                             </div>
@@ -961,9 +961,9 @@
                         <!-- Brand Title Input -->
                         <div class="form-group mb-0">
                             <label for="brandTitleInput" class="font-weight-bold text-dark mb-1">
-                                Brand Title (School Name)
+                                {{ __('Brand Title (School Name)') }}
                             </label>
-                            <p class="text-muted small mb-2">This name appears alongside the logo in the sidebar header and top menus.</p>
+                            <p class="text-muted small mb-2">{{ __('This name appears alongside the logo in the sidebar header and top menus.') }}</p>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text bg-light"><i class="fas fa-heading text-muted"></i></span>
@@ -973,7 +973,7 @@
                                        placeholder="e.g. Mawarid Academy" maxlength="255">
                                 <div class="input-group-append">
                                     <button id="updateBrandTitleBtn" class="btn btn-studio-primary">
-                                        <i class="fas fa-save"></i> Save Title
+                                        <i class="fas fa-save"></i> {{ __('Save Title') }}
                                     </button>
                                 </div>
                             </div>
@@ -988,9 +988,9 @@
                     <div class="studio-card-header">
                         <h4 class="studio-card-title">
                             <span class="studio-card-icon icon-browser"><i class="fas fa-window-maximize"></i></span>
-                            Browser Tab Icon & Title
+                            {{ __('Browser Tab Icon & Title') }}
                         </h4>
-                        <span class="badge badge-light border">Favicon & SEO Heading</span>
+                        <span class="badge badge-light border">{{ __('Favicon & SEO Heading') }}</span>
                     </div>
                     <div class="studio-card-body">
                         <div class="row align-items-center mb-4">
@@ -1002,7 +1002,7 @@
                                              src="{{ asset($customizes->url_icon ?? 'favicon.ico') }}"
                                              alt="Favicon">
                                     </div>
-                                    <div class="font-weight-bold text-dark small mb-1">Active Favicon</div>
+                                    <div class="font-weight-bold text-dark small mb-1">{{ __('Active Favicon') }}</div>
                                     <span class="text-muted small">favicon.ico / PNG</span>
                                 </div>
                             </div>
@@ -1010,18 +1010,18 @@
                             <!-- Favicon Upload Box -->
                             <div class="col-sm-8">
                                 <input type="file" id="iconFileInput" accept="image/x-icon,image/png,image/jpeg,image/jpg,image/gif,image/webp,image/svg+xml" style="display: none;">
-                                <div class="upload-box" id="iconUploadBox" title="Click or drag and drop to change favicon">
+                                <div class="upload-box" id="iconUploadBox" title="{{ __('Click or drag and drop to change favicon') }}">
                                     <div class="upload-icon text-info"><i class="fas fa-file-image"></i></div>
-                                    <div class="upload-text-main" id="iconUploadText">Upload New Browser Favicon</div>
-                                    <div class="upload-text-sub">Recommended: .ico, transparent PNG or SVG (max 4MB)</div>
+                                    <div class="upload-text-main" id="iconUploadText">{{ __('Upload New Browser Favicon') }}</div>
+                                    <div class="upload-text-sub">{{ __('Recommended: .ico, transparent PNG or SVG (max 4MB)') }}</div>
                                     <div id="iconUploadProgress" class="progress mt-3 d-none" style="height: 6px;">
                                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 100%"></div>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="small text-muted" id="iconUploadStatusText"><i class="fas fa-info-circle mr-1"></i>Select an icon to automatically update browser tab</span>
+                                    <span class="small text-muted" id="iconUploadStatusText"><i class="fas fa-info-circle mr-1"></i>{{ __('Select an icon to automatically update browser tab') }}</span>
                                     <button id="btnSaveIcon" class="btn btn-sm btn-studio-primary d-none">
-                                        <i class="fas fa-upload mr-1"></i> Upload Selected Icon
+                                        <i class="fas fa-upload mr-1"></i> {{ __('Upload Selected Icon') }}
                                     </button>
                                 </div>
                             </div>
@@ -1032,9 +1032,9 @@
                         <!-- URL Title Input -->
                         <div class="form-group mb-0">
                             <label for="urlTitleInput" class="font-weight-bold text-dark mb-1">
-                                Browser Page Title
+                                {{ __('Browser Page Title') }}
                             </label>
-                            <p class="text-muted small mb-2">The title displayed on browser tabs, bookmarks, and search results.</p>
+                            <p class="text-muted small mb-2">{{ __('The title displayed on browser tabs, bookmarks, and search results.') }}</p>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text bg-light"><i class="fas fa-globe text-muted"></i></span>
@@ -1044,7 +1044,7 @@
                                        placeholder="e.g. Mawarid Academy - School Portal" maxlength="255">
                                 <div class="input-group-append">
                                     <button id="updateURLTitleBtn" class="btn btn-studio-primary">
-                                        <i class="fas fa-save"></i> Save Page Title
+                                        <i class="fas fa-save"></i> {{ __('Save Page Title') }}
                                     </button>
                                 </div>
                             </div>
@@ -1059,9 +1059,9 @@
                     <div class="studio-card-header">
                         <h4 class="studio-card-title">
                             <span class="studio-card-icon icon-theme"><i class="fas fa-paint-brush"></i></span>
-                            Theme Studio & Color Palette
+                            {{ __('Theme Studio & Color Palette') }}
                         </h4>
-                        <span class="badge badge-light border">Live UI Synchronization</span>
+                        <span class="badge badge-light border">{{ __('Live UI Synchronization') }}</span>
                     </div>
                     <div class="studio-card-body">
                         <!-- Theme Mode (Dark / Light) Control Panel -->
@@ -1105,7 +1105,7 @@
                         <!-- Preset Color Themes -->
                         <div class="mb-4">
                             <div class="swatch-group-label">
-                                <i class="fas fa-magic text-primary"></i> One-Click Curated Presets
+                                <i class="fas fa-magic text-primary"></i> {{ __('One-Click Curated Presets') }}
                             </div>
                             <div class="preset-theme-grid">
                                 <div class="preset-card" data-preset="indigo">
@@ -1114,7 +1114,7 @@
                                         <span class="preset-bar" style="background: #6610f2;"></span>
                                         <span class="preset-bar" style="background: #6610f2;"></span>
                                     </div>
-                                    <div class="preset-name">Indigo Royal</div>
+                                    <div class="preset-name">{{ __('Indigo Royal') }}</div>
                                 </div>
 
                                 <div class="preset-card" data-preset="emerald">
@@ -1123,7 +1123,7 @@
                                         <span class="preset-bar" style="background: #20c997;"></span>
                                         <span class="preset-bar" style="background: #20c997;"></span>
                                     </div>
-                                    <div class="preset-name">Emerald Campus</div>
+                                    <div class="preset-name">{{ __('Emerald Campus') }}</div>
                                 </div>
 
                                 <div class="preset-card" data-preset="crimson">
@@ -1132,7 +1132,7 @@
                                         <span class="preset-bar" style="background: #dc3545;"></span>
                                         <span class="preset-bar" style="background: #dc3545;"></span>
                                     </div>
-                                    <div class="preset-name">Crimson Academy</div>
+                                    <div class="preset-name">{{ __('Crimson Academy') }}</div>
                                 </div>
 
                                 <div class="preset-card" data-preset="midnight">
@@ -1141,7 +1141,7 @@
                                         <span class="preset-bar" style="background: #343a40;"></span>
                                         <span class="preset-bar" style="background: #3c8dbc;"></span>
                                     </div>
-                                    <div class="preset-name">Midnight Slate</div>
+                                    <div class="preset-name">{{ __('Midnight Slate') }}</div>
                                 </div>
 
                                 <div class="preset-card" data-preset="oceanic">
@@ -1150,7 +1150,7 @@
                                         <span class="preset-bar" style="background: #17a2b8;"></span>
                                         <span class="preset-bar" style="background: #17a2b8;"></span>
                                     </div>
-                                    <div class="preset-name">Oceanic Cyan</div>
+                                    <div class="preset-name">{{ __('Oceanic Cyan') }}</div>
                                 </div>
 
                                 <div class="preset-card" data-preset="classic">
@@ -1159,7 +1159,7 @@
                                         <span class="preset-bar" style="background: #007bff;"></span>
                                         <span class="preset-bar" style="background: #007bff;"></span>
                                     </div>
-                                    <div class="preset-name">Classic Blue</div>
+                                    <div class="preset-name">{{ __('Classic Blue') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -1169,7 +1169,7 @@
                         <!-- 1. Navbar Theme Color Swatches -->
                         <div class="swatch-group">
                             <div class="swatch-group-label">
-                                <i class="fas fa-window-minimize"></i> Top Navbar Background Color
+                                <i class="fas fa-window-minimize"></i> {{ __('Top Navbar Background Color') }}
                             </div>
                             <div class="swatch-grid" id="navbarSwatches">
                                 <div class="color-swatch-item c-primary" data-val="bg-primary" title="Primary Blue"><i class="fas fa-check check-icon"></i></div>
@@ -1195,7 +1195,7 @@
                         <!-- 2. Sidebar Background Color Swatches -->
                         <div class="swatch-group">
                             <div class="swatch-group-label">
-                                <i class="fas fa-columns"></i> Sidebar Background Base
+                                <i class="fas fa-columns"></i> {{ __('Sidebar Background Base') }}
                             </div>
                             <div class="swatch-grid" id="sidebarSwatches">
                                 <div class="color-swatch-item c-dark" data-val="bg-dark" title="Dark"><i class="fas fa-check check-icon"></i></div>
@@ -1211,7 +1211,7 @@
                         <!-- 3. Dark Sidebar Variants -->
                         <div class="swatch-group">
                             <div class="swatch-group-label">
-                                <i class="fas fa-bars"></i> Sidebar Navigation Highlight Variant
+                                <i class="fas fa-bars"></i> {{ __('Sidebar Navigation Highlight Variant') }}
                             </div>
                             <div class="swatch-grid" id="variantSwatches">
                                 <div class="color-swatch-item c-primary" data-val="sidebar-dark-primary" title="Dark Primary"><i class="fas fa-check check-icon"></i></div>
@@ -1230,7 +1230,7 @@
                         <!-- 4. Global Accent Highlights -->
                         <div class="swatch-group mb-4">
                             <div class="swatch-group-label">
-                                <i class="fas fa-highlighter"></i> Global Accent Highlights
+                                <i class="fas fa-highlighter"></i> {{ __('Global Accent Highlights') }}
                             </div>
                             <div class="swatch-grid" id="accentSwatches">
                                 <div class="color-swatch-item c-light light-bg" data-val="" title="Default"><i class="fas fa-ban check-icon"></i></div>
@@ -1251,10 +1251,10 @@
                         <!-- Save Theme Action -->
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <button id="btnResetTheme" class="btn btn-studio-secondary">
-                                <i class="fas fa-undo"></i> Reset to Defaults
+                                <i class="fas fa-undo"></i> {{ __('Reset to Defaults') }}
                             </button>
                             <button id="saveThemeBtn" class="btn btn-studio-primary">
-                                <i class="fas fa-save"></i> Save Theme Settings
+                                <i class="fas fa-save"></i> {{ __('Save Theme Settings') }}
                             </button>
                         </div>
                     </div>
@@ -1332,18 +1332,18 @@
                             <div class="mockup-canvas">
                                 <div class="mockup-card-dummy d-flex justify-content-between align-items-center">
                                     <div>
-                                        <div style="font-size: 0.7rem; font-weight: 700; color: #1e293b;">Active Enrollment</div>
-                                        <div style="font-size: 0.6rem; color: #64748b;">1,420 Students</div>
+                                        <div style="font-size: 0.7rem; font-weight: 700; color: #1e293b;">{{ __('Active Enrollment') }}</div>
+                                        <div style="font-size: 0.6rem; color: #64748b;">1,420 {{ __('Students') }}</div>
                                     </div>
-                                    <button class="mockup-btn" id="mockupAccentBtn">View</button>
+                                    <button class="mockup-btn" id="mockupAccentBtn">{{ __('View') }}</button>
                                 </div>
 
                                 <div class="mockup-card-dummy">
-                                    <div style="font-size: 0.65rem; font-weight: 700; color: #1e293b; margin-bottom: 0.3rem;">Campus Activity</div>
+                                    <div style="font-size: 0.65rem; font-weight: 700; color: #1e293b; margin-bottom: 0.3rem;">{{ __('Campus Activity') }}</div>
                                     <div class="progress" style="height: 4px; margin-bottom: 0.3rem;">
                                         <div class="progress-bar bg-success" style="width: 78%"></div>
                                     </div>
-                                    <span class="badge badge-primary" style="font-size: 0.55rem;">Live Sync</span>
+                                    <span class="badge badge-primary" style="font-size: 0.55rem;">{{ __('Live Sync') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1355,7 +1355,7 @@
                         <div class="d-flex align-items-center text-muted small">
                             <i class="fas fa-info-circle text-primary mr-2" style="font-size: 1.1rem;"></i>
                             <span>
-                                Live preview reflects your changes instantly. Click <strong>Save Settings</strong> to apply your custom design across the entire application.
+                                {{ __('Live preview reflects your changes instantly. Click Save Settings to apply your custom design across the entire application.') }}
                             </span>
                         </div>
                     </div>
@@ -1369,11 +1369,11 @@
 <div class="floating-save-bar" id="floatingSaveBar">
     <div class="d-flex align-items-center">
         <i class="fas fa-pen-nib text-warning mr-2"></i>
-        <span class="small font-weight-bold">Unsaved theme customizations</span>
+        <span class="small font-weight-bold">{{ __('Unsaved theme customizations') }}</span>
     </div>
     <div class="d-flex" style="gap: 0.5rem;">
-        <button id="btnFloatingDiscard" class="btn btn-sm btn-outline-light rounded-pill px-3">Discard</button>
-        <button id="btnFloatingSave" class="btn btn-sm btn-primary rounded-pill px-3">Save All</button>
+        <button id="btnFloatingDiscard" class="btn btn-sm btn-outline-light rounded-pill px-3">{{ __('Discard') }}</button>
+        <button id="btnFloatingSave" class="btn btn-sm btn-primary rounded-pill px-3">{{ __('Save All') }}</button>
     </div>
 </div>
 

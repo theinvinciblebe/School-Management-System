@@ -271,20 +271,20 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h2 class="m-0 font-weight-bold text-dark">
-                    <i class="fas fa-id-card text-primary mr-2"></i> User Profile
+                    <i class="fas fa-id-card text-primary mr-2"></i> {{ __('User Profile') }}
                 </h2>
-                <small class="text-muted">Manage your personal information, profile photo, and account security</small>
+                <small class="text-muted">{{ __('Manage your personal information, profile photo, and account security') }}</small>
             </div>
             <ol class="breadcrumb m-0 bg-transparent p-0">
-                <li class="breadcrumb-item"><a href="/"><i class="fas fa-home mr-1"></i> Home</a></li>
-                <li class="breadcrumb-item active">Profile</li>
+                <li class="breadcrumb-item"><a href="/"><i class="fas fa-home mr-1"></i> {{ __('Home') }}</a></li>
+                <li class="breadcrumb-item active">{{ __('Profile') }}</li>
             </ol>
         </div>
     </div>
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 10px;">
-            <i class="fas fa-check-circle mr-2"></i> <strong>Success!</strong> {{ session('success') }}
+            <i class="fas fa-check-circle mr-2"></i> <strong>{{ __('Success!') }}</strong> {{ __(session('success')) }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -293,7 +293,7 @@
 
     @if (isset($errors) && $errors->any())
         <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 10px;">
-            <i class="fas fa-exclamation-triangle mr-2"></i> <strong>Please fix the errors below:</strong>
+            <i class="fas fa-exclamation-triangle mr-2"></i> <strong>{{ __('Please fix the errors below:') }}</strong>
             <ul class="mb-0 mt-1 pl-3">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -317,7 +317,7 @@
                              alt="{{ $user->name }}"
                              class="profile-avatar-img"
                              onerror="this.src='{{ asset('user-profile-default.png') }}';">
-                        <label for="form-photo-input" class="profile-avatar-badge" title="Change profile photo">
+                        <label for="form-photo-input" class="profile-avatar-badge" title="{{ __('Change profile photo') }}">
                             <i class="fas fa-camera" style="font-size: 13px;"></i>
                         </label>
                     </div>
@@ -328,51 +328,51 @@
                     <div class="mb-3">
                         @if($user->role == 0)
                             <span class="badge badge-danger px-3 py-2" style="font-size: 13px; border-radius: 20px;">
-                                <i class="fas fa-user-shield mr-1"></i> Administrator
+                                <i class="fas fa-user-shield mr-1"></i> {{ __('Administrator') }}
                             </span>
                         @elseif($user->role == 1)
                             <span class="badge badge-info px-3 py-2" style="font-size: 13px; border-radius: 20px;">
-                                <i class="fas fa-chalkboard-teacher mr-1"></i> Teacher
+                                <i class="fas fa-chalkboard-teacher mr-1"></i> {{ __('Teacher') }}
                             </span>
                         @elseif($user->role == 2)
                             <span class="badge badge-success px-3 py-2" style="font-size: 13px; border-radius: 20px;">
-                                <i class="fas fa-user-graduate mr-1"></i> Student
+                                <i class="fas fa-user-graduate mr-1"></i> {{ __('Student') }}
                             </span>
                         @elseif($user->role == 3)
                             <span class="badge badge-warning px-3 py-2" style="font-size: 13px; border-radius: 20px;">
-                                <i class="fas fa-calculator mr-1"></i> Accountant
+                                <i class="fas fa-calculator mr-1"></i> {{ __('Accountant') }}
                             </span>
                         @elseif($user->role == 4)
                             <span class="badge badge-secondary px-3 py-2" style="font-size: 13px; border-radius: 20px;">
-                                <i class="fas fa-headset mr-1"></i> Receptionist
+                                <i class="fas fa-headset mr-1"></i> {{ __('Receptionist') }}
                             </span>
                         @endif
                     </div>
 
                     <ul class="list-group list-group-flush text-left border-top border-bottom mb-3" style="font-size: 14px;">
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                            <span class="text-muted"><i class="fas fa-hashtag mr-2 text-primary"></i> Account ID</span>
+                            <span class="text-muted"><i class="fas fa-hashtag mr-2 text-primary"></i> {{ __('Account ID') }}</span>
                             <span class="font-weight-bold text-dark">#{{ $user->id }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                            <span class="text-muted"><i class="fas fa-check-circle mr-2 text-success"></i> Status</span>
-                            <span class="badge badge-light text-success font-weight-bold border border-success px-2 py-1">Active</span>
+                            <span class="text-muted"><i class="fas fa-check-circle mr-2 text-success"></i> {{ __('Status') }}</span>
+                            <span class="badge badge-light text-success font-weight-bold border border-success px-2 py-1">{{ __('Active') }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                            <span class="text-muted"><i class="far fa-calendar-alt mr-2 text-info"></i> Member Since</span>
+                            <span class="text-muted"><i class="far fa-calendar-alt mr-2 text-info"></i> {{ __('Member Since') }}</span>
                             <span class="font-weight-bold text-dark">
                                 {{ $user->created_at ? $user->created_at->format('M d, Y') : 'N/A' }}
                             </span>
                         </li>
                         @if($additionalData && !empty($additionalData->phone))
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                                <span class="text-muted"><i class="fas fa-phone mr-2 text-warning"></i> Phone</span>
+                                <span class="text-muted"><i class="fas fa-phone mr-2 text-warning"></i> {{ __('Phone') }}</span>
                                 <span class="font-weight-bold text-dark">{{ $additionalData->phone }}</span>
                             </li>
                         @endif
                         @if($additionalData && !empty($additionalData->address))
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                                <span class="text-muted"><i class="fas fa-map-marker-alt mr-2 text-danger"></i> Address</span>
+                                <span class="text-muted"><i class="fas fa-map-marker-alt mr-2 text-danger"></i> {{ __('Address') }}</span>
                                 <span class="font-weight-bold text-dark text-right" style="max-width: 60%;">{{ $additionalData->address }}</span>
                             </li>
                         @endif
@@ -380,10 +380,10 @@
 
                     <div class="d-flex justify-content-center">
                         <button type="button" class="btn btn-outline-primary btn-sm px-3 mr-2" onclick="switchToTab('settings-tab')">
-                            <i class="fas fa-user-edit mr-1"></i> Edit Info
+                            <i class="fas fa-user-edit mr-1"></i> {{ __('Edit Info') }}
                         </button>
                         <button type="button" class="btn btn-outline-secondary btn-sm px-3" onclick="switchToTab('security-tab')">
-                            <i class="fas fa-key mr-1"></i> Password
+                            <i class="fas fa-key mr-1"></i> {{ __('Password') }}
                         </button>
                     </div>
                 </div>
@@ -397,17 +397,17 @@
                     <ul class="nav nav-pills profile-nav-pills" id="profileTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="settings-tab" data-toggle="pill" href="#settings" role="tab" aria-controls="settings" aria-selected="true">
-                                <i class="fas fa-user-cog mr-1"></i> Edit Profile
+                                <i class="fas fa-user-cog mr-1"></i> {{ __('Edit Profile') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="security-tab" data-toggle="pill" href="#security" role="tab" aria-controls="security" aria-selected="false">
-                                <i class="fas fa-lock mr-1"></i> Change Password
+                                <i class="fas fa-lock mr-1"></i> {{ __('Change Password') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="details-tab" data-toggle="pill" href="#details" role="tab" aria-controls="details" aria-selected="false">
-                                <i class="fas fa-info-circle mr-1"></i> Account Details
+                                <i class="fas fa-info-circle mr-1"></i> {{ __('Account Details') }}
                             </a>
                         </li>
                     </ul>
@@ -434,18 +434,18 @@
                                                  onerror="this.src='{{ asset('user-profile-default.png') }}';">
                                         </div>
                                         <div class="flex-grow-1 text-center text-sm-left">
-                                            <h6 class="font-weight-bold mb-1 text-dark">Profile Photo</h6>
-                                            <p class="text-muted small mb-2">Upload a crisp photo for your avatar (Max: 3MB). Supported: JPG, PNG, WEBP, GIF.</p>
+                                            <h6 class="font-weight-bold mb-1 text-dark">{{ __('Profile Photo') }}</h6>
+                                            <p class="text-muted small mb-2">{{ __('Upload a crisp photo for your avatar (Max: 3MB). Supported: JPG, PNG, WEBP, GIF.') }}</p>
                                             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start">
                                                 <label for="form-photo-input" class="btn btn-sm btn-primary mb-1 mr-2 px-3" style="cursor: pointer;">
-                                                    <i class="fas fa-upload mr-1"></i> Choose New Photo
+                                                    <i class="fas fa-upload mr-1"></i> {{ __('Choose New Photo') }}
                                                 </label>
                                                 <input type="file" id="form-photo-input" name="photo" accept="image/jpeg,image/png,image/webp,image/gif" style="display: none;" onchange="handleFormPhotoSelect(this)">
                                                 <button type="button" id="form-photo-remove-btn" class="btn btn-sm btn-outline-danger mb-1 mr-2" onclick="handleFormPhotoRemove()">
-                                                    <i class="fas fa-trash-alt mr-1"></i> Remove Photo
+                                                    <i class="fas fa-trash-alt mr-1"></i> {{ __('Remove Photo') }}
                                                 </button>
                                                 <button type="button" id="form-photo-reset-btn" class="btn btn-sm btn-outline-secondary mb-1" style="display: none;" onclick="handleFormPhotoReset()">
-                                                    <i class="fas fa-undo mr-1"></i> Revert
+                                                    <i class="fas fa-undo mr-1"></i> {{ __('Revert') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -455,50 +455,50 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="profile-name" class="font-weight-bold text-dark">
-                                            Full Name <span class="text-danger">*</span>
+                                            {{ __('Full Name') }} <span class="text-danger">*</span>
                                         </label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-user text-primary"></i></span>
                                             </div>
-                                            <input type="text" class="form-control" id="profile-name" name="name" value="{{ old('name', $user->name) }}" required placeholder="Enter full name">
+                                            <input type="text" class="form-control" id="profile-name" name="name" value="{{ old('name', $user->name) }}" required placeholder="{{ __('Enter full name') }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label for="profile-email" class="font-weight-bold text-dark">
-                                            Email Address <span class="text-danger">*</span>
+                                            {{ __('Email Address') }} <span class="text-danger">*</span>
                                         </label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-envelope text-primary"></i></span>
                                             </div>
-                                            <input type="email" class="form-control" id="profile-email" name="email" value="{{ old('email', $user->email) }}" required placeholder="Enter email address">
+                                            <input type="email" class="form-control" id="profile-email" name="email" value="{{ old('email', $user->email) }}" required placeholder="{{ __('Enter email address') }}">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="font-weight-bold text-dark">Assigned Role</label>
+                                        <label class="font-weight-bold text-dark">{{ __('Assigned Role') }}</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-shield-alt text-muted"></i></span>
                                             </div>
                                             <input type="text" class="form-control bg-light font-weight-bold" readonly
-                                                   value="@if($user->role == 0)Administrator @elseif($user->role == 1)Teacher @elseif($user->role == 2)Student @elseif($user->role == 3)Accountant @elseif($user->role == 4)Receptionist @else User @endif">
+                                                   value="@if($user->role == 0){{ __('Administrator') }} @elseif($user->role == 1){{ __('Teacher') }} @elseif($user->role == 2){{ __('Student') }} @elseif($user->role == 3){{ __('Accountant') }} @elseif($user->role == 4){{ __('Receptionist') }} @else {{ __('User') }} @endif">
                                         </div>
-                                        <small class="form-text text-muted">Role permissions are managed by system administrators.</small>
+                                        <small class="form-text text-muted">{{ __('Role permissions are managed by system administrators.') }}</small>
                                     </div>
 
                                     @if($additionalData)
                                         <div class="col-md-6 mb-3">
-                                            <label for="profile-phone" class="font-weight-bold text-dark">Phone Number</label>
+                                            <label for="profile-phone" class="font-weight-bold text-dark">{{ __('Phone Number') }}</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-phone text-primary"></i></span>
                                                 </div>
-                                                <input type="text" class="form-control" id="profile-phone" name="phone" value="{{ old('phone', $additionalData->phone ?? '') }}" placeholder="Enter phone number">
+                                                <input type="text" class="form-control" id="profile-phone" name="phone" value="{{ old('phone', $additionalData->phone ?? '') }}" placeholder="{{ __('Enter phone number') }}">
                                             </div>
                                         </div>
                                     @endif
@@ -506,22 +506,22 @@
 
                                 @if($additionalData && isset($additionalData->address))
                                     <div class="form-group mb-3">
-                                        <label for="profile-address" class="font-weight-bold text-dark">Location / Address</label>
+                                        <label for="profile-address" class="font-weight-bold text-dark">{{ __('Location / Address') }}</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-map-marker-alt text-primary"></i></span>
                                             </div>
-                                            <textarea class="form-control" id="profile-address" name="address" rows="2" placeholder="Enter physical address">{{ old('address', $additionalData->address ?? '') }}</textarea>
+                                            <textarea class="form-control" id="profile-address" name="address" rows="2" placeholder="{{ __('Enter physical address') }}">{{ old('address', $additionalData->address ?? '') }}</textarea>
                                         </div>
                                     </div>
                                 @endif
 
                                 <div class="d-flex justify-content-end align-items-center pt-3 border-top mt-4">
                                     <button type="reset" class="btn btn-light text-muted mr-3 px-4 font-weight-bold" onclick="handleFormPhotoReset()">
-                                        <i class="fas fa-undo mr-1"></i> Reset
+                                        <i class="fas fa-undo mr-1"></i> {{ __('Reset') }}
                                     </button>
                                     <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold shadow-sm">
-                                        <i class="fas fa-save mr-1"></i> Save Profile Changes
+                                        <i class="fas fa-save mr-1"></i> {{ __('Save Profile Changes') }}
                                     </button>
                                 </div>
                             </form>
@@ -537,36 +537,36 @@
                                 <input type="hidden" name="email" value="{{ $user->email }}">
 
                                 <div class="alert alert-info border-0 mb-4" style="border-radius: 8px;">
-                                    <i class="fas fa-info-circle mr-1"></i> Use a strong password containing at least 6 characters with a combination of letters and numbers.
+                                    <i class="fas fa-info-circle mr-1"></i> {{ __('Use a strong password containing at least 6 characters with a combination of letters and numbers.') }}
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="new_password" class="font-weight-bold text-dark">
-                                        New Password <span class="text-danger">*</span>
+                                        {{ __('New Password') }} <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-key text-primary"></i></span>
                                         </div>
-                                        <input type="password" class="form-control" id="new_password" name="password" required minlength="6" placeholder="Enter new password">
+                                        <input type="password" class="form-control" id="new_password" name="password" required minlength="6" placeholder="{{ __('Enter new password') }}">
                                         <div class="input-group-append">
                                             <span class="input-group-text toggle-password" onclick="togglePasswordVisibility('new_password', this)">
                                                 <i class="fas fa-eye"></i>
                                             </span>
                                         </div>
                                     </div>
-                                    <small class="form-text text-muted">Must be at least 6 characters long.</small>
+                                    <small class="form-text text-muted">{{ __('Must be at least 6 characters long.') }}</small>
                                 </div>
 
                                 <div class="form-group mb-4">
                                     <label for="password_confirmation" class="font-weight-bold text-dark">
-                                        Confirm New Password <span class="text-danger">*</span>
+                                        {{ __('Confirm New Password') }} <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-check-double text-primary"></i></span>
                                         </div>
-                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required minlength="6" placeholder="Repeat new password">
+                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required minlength="6" placeholder="{{ __('Repeat new password') }}">
                                         <div class="input-group-append">
                                             <span class="input-group-text toggle-password" onclick="togglePasswordVisibility('password_confirmation', this)">
                                                 <i class="fas fa-eye"></i>
@@ -578,7 +578,7 @@
 
                                 <div class="d-flex justify-content-end align-items-center pt-3 border-top">
                                     <button type="submit" class="btn btn-warning px-4 py-2 font-weight-bold shadow-sm text-dark">
-                                        <i class="fas fa-lock mr-1"></i> Update Password
+                                        <i class="fas fa-lock mr-1"></i> {{ __('Update Password') }}
                                     </button>
                                 </div>
                             </form>
@@ -586,49 +586,49 @@
 
                         <!-- TAB 3: Account Details -->
                         <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
-                            <h5 class="font-weight-bold text-dark mb-3"><i class="fas fa-clipboard-check text-primary mr-1"></i> Account Overview</h5>
+                            <h5 class="font-weight-bold text-dark mb-3"><i class="fas fa-clipboard-check text-primary mr-1"></i> {{ __('Account Overview') }}</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
                                     <tbody>
                                         <tr>
-                                            <th style="width: 35%;" class="bg-light">User ID</th>
+                                            <th style="width: 35%;" class="bg-light">{{ __('User ID') }}</th>
                                             <td>#{{ $user->id }}</td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-light">Full Name</th>
+                                            <th class="bg-light">{{ __('Full Name') }}</th>
                                             <td>{{ $user->name }}</td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-light">Registered Email</th>
+                                            <th class="bg-light">{{ __('Registered Email') }}</th>
                                             <td>{{ $user->email }}</td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-light">Current Role</th>
+                                            <th class="bg-light">{{ __('Current Role') }}</th>
                                             <td>
-                                                @if($user->role == 0) Admin
-                                                @elseif($user->role == 1) Teacher
-                                                @elseif($user->role == 2) Student
-                                                @elseif($user->role == 3) Accountant
-                                                @elseif($user->role == 4) Receptionist
+                                                @if($user->role == 0) {{ __('Administrator') }}
+                                                @elseif($user->role == 1) {{ __('Teacher') }}
+                                                @elseif($user->role == 2) {{ __('Student') }}
+                                                @elseif($user->role == 3) {{ __('Accountant') }}
+                                                @elseif($user->role == 4) {{ __('Receptionist') }}
                                                 @endif
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-light">Email Verified</th>
+                                            <th class="bg-light">{{ __('Email Verified') }}</th>
                                             <td>
                                                 @if($user->email_verified_at)
-                                                    <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Verified on {{ $user->email_verified_at->format('M d, Y') }}</span>
+                                                    <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> {{ __('Verified on') }} {{ $user->email_verified_at->format('M d, Y') }}</span>
                                                 @else
-                                                    <span class="badge badge-secondary"><i class="fas fa-clock mr-1"></i> Not Verified</span>
+                                                    <span class="badge badge-secondary"><i class="fas fa-clock mr-1"></i> {{ __('Not Verified') }}</span>
                                                 @endif
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-light">Account Created</th>
+                                            <th class="bg-light">{{ __('Account Created') }}</th>
                                             <td>{{ $user->created_at ? $user->created_at->format('M d, Y - h:i A') : 'N/A' }}</td>
                                         </tr>
                                         <tr>
-                                            <th class="bg-light">Last Updated</th>
+                                            <th class="bg-light">{{ __('Last Updated') }}</th>
                                             <td>{{ $user->updated_at ? $user->updated_at->format('M d, Y - h:i A') : 'N/A' }}</td>
                                         </tr>
                                     </tbody>
@@ -647,7 +647,7 @@
             <div class="modal-content shadow-lg border-0" style="border-radius: 12px; overflow: hidden;">
                 <div class="modal-header bg-primary text-white py-3">
                     <h5 class="modal-title font-weight-bold" id="editProfileModalLabel">
-                        <i class="fas fa-user-edit mr-1"></i> Quick Edit Profile
+                        <i class="fas fa-user-edit mr-1"></i> {{ __('Quick Edit Profile') }}
                     </h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -662,53 +662,53 @@
                     <div class="modal-body p-4">
                         <!-- Profile Picture Upload -->
                         <div class="form-group text-center mb-4">
-                            <label class="d-block font-weight-bold text-dark mb-2">Profile Photo</label>
+                            <label class="d-block font-weight-bold text-dark mb-2">{{ __('Profile Photo') }}</label>
                             <div class="position-relative d-inline-block" style="width: 105px; height: 105px;">
                                 <img id="modal-profile-photo-preview" src="{{ $user->photo_url }}" alt="Profile Photo"
                                      class="rounded-circle shadow-sm profile-preview-img"
                                      style="width: 100%; height: 100%; object-fit: cover;">
                                 <label for="modal-profile-photo-input" class="btn btn-sm btn-primary rounded-circle shadow position-absolute"
                                        style="bottom: 2px; right: 2px; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer;"
-                                       title="Change profile picture">
+                                       title="{{ __('Change profile picture') }}">
                                     <i class="fas fa-camera text-white" style="font-size: 13px;"></i>
                                 </label>
                                 <input type="file" id="modal-profile-photo-input" name="photo" accept="image/jpeg,image/png,image/webp,image/gif" style="display: none;" onchange="previewModalPhoto(this)">
                             </div>
                             <div class="mt-2">
                                 <button type="button" id="modal-photo-remove-btn" class="btn btn-xs btn-outline-danger" onclick="removeModalPhoto()">
-                                    <i class="fas fa-trash-alt mr-1"></i> Remove Photo
+                                    <i class="fas fa-trash-alt mr-1"></i> {{ __('Remove Photo') }}
                                 </button>
                                 <button type="button" id="modal-photo-reset-btn" class="btn btn-xs btn-outline-secondary" style="display: none;" onclick="resetModalPhoto()">
-                                    <i class="fas fa-undo mr-1"></i> Revert
+                                    <i class="fas fa-undo mr-1"></i> {{ __('Revert') }}
                                 </button>
                             </div>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="modal-edit-user-name" class="font-weight-bold text-dark">Full Name <span class="text-danger">*</span></label>
+                            <label for="modal-edit-user-name" class="font-weight-bold text-dark">{{ __('Full Name') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="modal-edit-user-name" name="name" value="{{ $user->name }}" required>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="modal-edit-user-email" class="font-weight-bold text-dark">Email Address <span class="text-danger">*</span></label>
+                            <label for="modal-edit-user-email" class="font-weight-bold text-dark">{{ __('Email Address') }} <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="modal-edit-user-email" name="email" value="{{ $user->email }}" required>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label class="font-weight-bold text-dark">Role</label>
+                            <label class="font-weight-bold text-dark">{{ __('Role') }}</label>
                             <input type="text" class="form-control bg-light" readonly
-                                   value="@if($user->role == 0)Admin @elseif($user->role == 1)Teacher @elseif($user->role == 2)Student @elseif($user->role == 3)Accountant @elseif($user->role == 4)Receptionist @endif">
+                                   value="@if($user->role == 0){{ __('Administrator') }} @elseif($user->role == 1){{ __('Teacher') }} @elseif($user->role == 2){{ __('Student') }} @elseif($user->role == 3){{ __('Accountant') }} @elseif($user->role == 4){{ __('Receptionist') }} @endif">
                         </div>
 
                         <div class="form-group mb-2">
-                            <label for="modal-edit-user-password" class="font-weight-bold text-dark">Password (Optional)</label>
-                            <input type="password" class="form-control" id="modal-edit-user-password" name="password" placeholder="Leave empty to keep unchanged">
+                            <label for="modal-edit-user-password" class="font-weight-bold text-dark">{{ __('Password (Optional)') }}</label>
+                            <input type="password" class="form-control" id="modal-edit-user-password" name="password" placeholder="{{ __('Leave empty to keep unchanged') }}">
                         </div>
                     </div>
                     <div class="modal-footer bg-light px-4 py-3">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cancel') }}</button>
                         <button type="submit" class="btn btn-primary font-weight-bold px-4">
-                            <i class="fas fa-save mr-1"></i> Save Changes
+                            <i class="fas fa-save mr-1"></i> {{ __('Save Changes') }}
                         </button>
                     </div>
                 </form>

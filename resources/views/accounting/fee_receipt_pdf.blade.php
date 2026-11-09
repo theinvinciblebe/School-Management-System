@@ -207,9 +207,9 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th style="width: 55%;">Description</th>
-                <th style="width: 20%; text-align: center;">Duration</th>
-                <th style="width: 25%; text-align: right;">Amount (USD)</th>
+                <th style="width: 55%;">{{ __('Description') }}</th>
+                <th style="width: 20%; text-align: center;">{{ __('Duration') }}</th>
+                <th style="width: 25%; text-align: right;">{{ __('Amount (USD)') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -312,9 +312,9 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th style="width: 55%;">Description</th>
-                <th style="width: 20%; text-align: center;">Duration</th>
-                <th style="width: 25%; text-align: right;">Amount (USD)</th>
+                <th style="width: 55%;">{{ __('Description') }}</th>
+                <th style="width: 20%; text-align: center;">{{ __('Duration') }}</th>
+                <th style="width: 25%; text-align: right;">{{ __('Amount (USD)') }}</th>
             </tr>
         </thead>
         <tbody>

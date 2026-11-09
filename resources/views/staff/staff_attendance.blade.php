@@ -352,14 +352,14 @@
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
             <div>
                 <h2 class="m-0 font-weight-bold text-dark">
-                    <i class="fas fa-user-clock text-primary mr-2"></i> Staff Attendance Management & Reporting
+                    <i class="fas fa-user-clock text-primary mr-2"></i> {{ __('Staff Attendance Management & Reporting') }}
                 </h2>
-                <small class="text-muted">Record employee daily shifts, monitor attendance analytics, and generate institutional audit reports</small>
+                <small class="text-muted">{{ __('Record employee daily shifts, monitor attendance analytics, and generate institutional audit reports') }}</small>
             </div>
             <div class="d-flex align-items-center mt-2 mt-md-0">
                 <ol class="breadcrumb m-0 bg-transparent p-0 mr-3 d-none d-lg-flex">
-                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home mr-1"></i> Home</a></li>
-                    <li class="breadcrumb-item active">Staff Attendance</li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home mr-1"></i> {{ __('Home') }}</a></li>
+                    <li class="breadcrumb-item active">{{ __('Staff Attendance') }}</li>
                 </ol>
             </div>
         </div>
@@ -369,7 +369,7 @@
     <div id="ajax-alert-container" class="no-print"></div>
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm no-print" role="alert" style="border-radius: 10px;">
-            <i class="fas fa-check-circle mr-2"></i> <strong>Success!</strong> {{ session('success') }}
+            <i class="fas fa-check-circle mr-2"></i> <strong>{{ __('Success!') }}</strong> {{ __(session('success')) }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -377,7 +377,7 @@
     @endif
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show shadow-sm no-print" role="alert" style="border-radius: 10px;">
-            <i class="fas fa-exclamation-triangle mr-2"></i> <strong>Notice:</strong> {{ session('error') }}
+            <i class="fas fa-exclamation-triangle mr-2"></i> <strong>{{ __('Notice:') }}</strong> {{ __(session('error')) }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -391,10 +391,10 @@
                 <!-- Department Selection -->
                 <div class="col-lg-5 col-md-6 mb-3 mb-md-0">
                     <label for="department_picker" class="font-weight-bold text-dark mb-1">
-                        <i class="fas fa-sitemap text-primary mr-1"></i> Staff Department
+                        <i class="fas fa-sitemap text-primary mr-1"></i> {{ __('Staff Department') }}
                     </label>
                     <select id="department_picker" class="form-control font-weight-bold shadow-sm" style="border-radius: 8px;">
-                        <option value="all" selected>All Departments</option>
+                        <option value="all" selected>{{ __('All Departments') }}</option>
                         @foreach($departments as $department)
                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
@@ -404,22 +404,22 @@
                 <!-- Date Navigation & Picker -->
                 <div class="col-lg-5 col-md-6 mb-3 mb-md-0">
                     <label for="date_picker" class="font-weight-bold text-dark mb-1">
-                        <i class="far fa-calendar-alt text-primary mr-1"></i> Attendance Date
+                        <i class="far fa-calendar-alt text-primary mr-1"></i> {{ __('Attendance Date') }}
                     </label>
                     <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
                         <div class="input-group-prepend">
-                            <button type="button" class="btn date-nav-btn" id="prev-date-btn" title="Previous Day">
+                            <button type="button" class="btn date-nav-btn" id="prev-date-btn" title="{{ __('Previous Day') }}">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                         </div>
                         <input type="date" id="date_picker" name="date" class="form-control text-center font-weight-bold"
                                value="{{ request('date', \Carbon\Carbon::now()->format('Y-m-d')) }}" required>
                         <div class="input-group-append">
-                            <button type="button" class="btn date-nav-btn" id="next-date-btn" title="Next Day">
+                            <button type="button" class="btn date-nav-btn" id="next-date-btn" title="{{ __('Next Day') }}">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
-                            <button type="button" class="btn btn-primary" id="today-btn" title="Set to Today" style="font-size: 0.85rem; font-weight: bold;">
-                                Today
+                            <button type="button" class="btn btn-primary" id="today-btn" title="{{ __('Set to Today') }}" style="font-size: 0.85rem; font-weight: bold;">
+                                {{ __('Today') }}
                             </button>
                         </div>
                     </div>
@@ -427,9 +427,9 @@
 
                 <!-- Live Status Indicator -->
                 <div class="col-lg-2 col-md-12 text-center text-lg-right mt-2 mt-lg-0">
-                    <div class="small font-weight-bold text-muted mb-1">Status on Date</div>
+                    <div class="small font-weight-bold text-muted mb-1">{{ __('Status on Date') }}</div>
                     <span id="global-attendance-badge" class="badge badge-secondary px-3 py-2" style="border-radius: 20px; font-size: 0.85rem;">
-                        <i class="fas fa-circle-notch fa-spin mr-1"></i> Checking...
+                        <i class="fas fa-circle-notch fa-spin mr-1"></i> {{ __('Checking...') }}
                     </span>
                 </div>
             </div>
@@ -442,7 +442,7 @@
             <div class="metric-card">
                 <div>
                     <div class="metric-value text-primary" id="kpi-total">0</div>
-                    <div class="metric-label">Total Staff</div>
+                    <div class="metric-label">{{ __('Total Staff') }}</div>
                 </div>
                 <div class="metric-icon-wrap bg-light text-primary">
                     <i class="fas fa-users-cog"></i>
@@ -453,7 +453,7 @@
             <div class="metric-card">
                 <div>
                     <div class="metric-value text-success" id="kpi-present">0</div>
-                    <div class="metric-label">Present</div>
+                    <div class="metric-label">{{ __('Present') }}</div>
                 </div>
                 <div class="metric-icon-wrap" style="background-color: #dcfce7; color: #16a34a;">
                     <i class="fas fa-user-check"></i>
@@ -464,7 +464,7 @@
             <div class="metric-card">
                 <div>
                     <div class="metric-value text-danger" id="kpi-absent">0</div>
-                    <div class="metric-label">Absent</div>
+                    <div class="metric-label">{{ __('Absent') }}</div>
                 </div>
                 <div class="metric-icon-wrap" style="background-color: #fee2e2; color: #dc2626;">
                     <i class="fas fa-user-times"></i>
@@ -475,7 +475,7 @@
             <div class="metric-card">
                 <div>
                     <div class="metric-value text-warning" id="kpi-late">0</div>
-                    <div class="metric-label">Late</div>
+                    <div class="metric-label">{{ __('Late') }}</div>
                 </div>
                 <div class="metric-icon-wrap" style="background-color: #fef3c7; color: #d97706;">
                     <i class="fas fa-clock"></i>
@@ -486,7 +486,7 @@
             <div class="metric-card">
                 <div>
                     <div class="metric-value text-secondary" id="kpi-undefined">0</div>
-                    <div class="metric-label">Unmarked</div>
+                    <div class="metric-label">{{ __('Unmarked') }}</div>
                 </div>
                 <div class="metric-icon-wrap" style="background-color: #f1f5f9; color: #64748b;">
                     <i class="fas fa-question"></i>
@@ -497,7 +497,7 @@
             <div class="metric-card">
                 <div>
                     <div class="metric-value text-purple" id="kpi-rate" style="color: #7c3aed;">0%</div>
-                    <div class="metric-label">Attendance Rate</div>
+                    <div class="metric-label">{{ __('Attendance Rate') }}</div>
                 </div>
                 <div class="metric-icon-wrap" style="background-color: #f3e8ff; color: #7c3aed;">
                     <i class="fas fa-percentage"></i>
@@ -515,12 +515,12 @@
                 <ul class="nav nav-pills view-mode-tabs mb-2 mb-md-0" id="mainAttendanceTabs" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="mode-marking-tab" data-toggle="pill" href="#tab-marking" role="tab">
-                            <i class="fas fa-edit mr-1"></i> Live Staff Attendance Marking
+                            <i class="fas fa-edit mr-1"></i> {{ __('Live Staff Attendance Marking') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="mode-report-tab" data-toggle="pill" href="#tab-report" role="tab" onclick="loadReportingPreview()">
-                            <i class="fas fa-file-invoice mr-1"></i> Daily Preview & Official Report
+                            <i class="fas fa-file-invoice mr-1"></i> {{ __('Daily Preview & Official Report') }}
                         </a>
                     </li>
                 </ul>
@@ -528,13 +528,13 @@
                 <!-- Export & Print Action Toolbar -->
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <button type="button" class="btn btn-outline-primary btn-sm px-3 mr-2 font-weight-bold" onclick="printStaffReport()">
-                        <i class="fas fa-print mr-1"></i> Print Sheet
+                        <i class="fas fa-print mr-1"></i> {{ __('Print Sheet') }}
                     </button>
                     <button type="button" class="btn btn-outline-success btn-sm px-3 mr-2 font-weight-bold" onclick="exportStaffCSV()">
-                        <i class="fas fa-file-csv mr-1"></i> Export CSV
+                        <i class="fas fa-file-csv mr-1"></i> {{ __('Export CSV') }}
                     </button>
                     <a id="btn-download-pdf" href="#" class="btn btn-outline-danger btn-sm px-3 font-weight-bold">
-                        <i class="fas fa-file-pdf mr-1"></i> Download PDF
+                        <i class="fas fa-file-pdf mr-1"></i> {{ __('Download PDF') }}
                     </a>
                 </div>
             </div>
@@ -545,7 +545,7 @@
             <div id="atd-spinner" class="atd-loading-overlay" style="display: none;">
                 <div class="text-center">
                     <div class="spinner-border text-primary mb-2" style="width: 3rem; height: 3rem;" role="status"></div>
-                    <div class="font-weight-bold text-dark">Updating Attendance Data...</div>
+                    <div class="font-weight-bold text-dark">{{ __('Updating Attendance Data...') }}</div>
                 </div>
             </div>
 
@@ -562,21 +562,21 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input type="text" id="staff-search-input" class="form-control" placeholder="Search employee, position...">
+                                <input type="text" id="staff-search-input" class="form-control" placeholder="{{ __('Search employee, position...') }}">
                             </div>
                         </div>
 
                         <!-- Bulk Actions -->
                         <div class="d-flex align-items-center flex-wrap">
-                            <span class="small font-weight-bold text-muted mr-2">Quick Batch:</span>
-                            <button type="button" class="btn btn-sm btn-outline-success mr-1 font-weight-bold" onclick="bulkSetStatus('Present')" title="Set all to Present (08:00 - 17:00)">
-                                <i class="fas fa-check-double mr-1"></i> All Present
+                            <span class="small font-weight-bold text-muted mr-2">{{ __('Quick Batch:') }}</span>
+                            <button type="button" class="btn btn-sm btn-outline-success mr-1 font-weight-bold" onclick="bulkSetStatus('Present')" title="{{ __('Set all to Present (08:00 - 17:00)') }}">
+                                <i class="fas fa-check-double mr-1"></i> {{ __('All Present') }}
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger mr-1 font-weight-bold" onclick="bulkSetStatus('Absent')" title="Set all to Absent">
-                                <i class="fas fa-times-circle mr-1"></i> All Absent
+                            <button type="button" class="btn btn-sm btn-outline-danger mr-1 font-weight-bold" onclick="bulkSetStatus('Absent')" title="{{ __('Set all to Absent') }}">
+                                <i class="fas fa-times-circle mr-1"></i> {{ __('All Absent') }}
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary font-weight-bold" onclick="bulkSetStatus('Undefined')" title="Reset all statuses">
-                                <i class="fas fa-undo mr-1"></i> Reset
+                            <button type="button" class="btn btn-sm btn-outline-secondary font-weight-bold" onclick="bulkSetStatus('Undefined')" title="{{ __('Reset all statuses') }}">
+                                <i class="fas fa-undo mr-1"></i> {{ __('Reset') }}
                             </button>
                         </div>
                     </div>
@@ -590,10 +590,10 @@
                             <table class="table staff-table table-hover mb-3">
                                 <thead>
                                     <tr>
-                                        <th width="32%">Staff Member</th>
-                                        <th width="32%">Attendance Status</th>
-                                        <th width="18%">Time In</th>
-                                        <th width="18%">Time Out</th>
+                                        <th width="32%">{{ __('Staff Member') }}</th>
+                                        <th width="32%">{{ __('Attendance Status') }}</th>
+                                        <th width="18%">{{ __('Time In') }}</th>
+                                        <th width="18%">{{ __('Time Out') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="staff-tbody">
@@ -604,10 +604,10 @@
 
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <small class="text-muted">
-                                <i class="fas fa-info-circle mr-1"></i> Click status buttons to toggle. Don't forget to save changes when finished.
+                                <i class="fas fa-info-circle mr-1"></i> {{ __('Click status buttons to toggle. Don\'t forget to save changes when finished.') }}
                             </small>
                             <button type="submit" id="save-attendance-btn" class="btn btn-success px-4 py-2 font-weight-bold shadow-sm">
-                                <i class="fas fa-save mr-1"></i> Save Staff Attendance
+                                <i class="fas fa-save mr-1"></i> {{ __('Save Staff Attendance') }}
                             </button>
                         </div>
                     </form>
@@ -620,8 +620,8 @@
                         <!-- Formal Print/Preview School Header -->
                         <div class="text-center mb-3">
                             <h3 class="font-weight-bold text-dark m-0" id="rep-school-name">{{ config('app.name', 'School Management System') }}</h3>
-                            <h5 class="text-primary font-weight-bold text-uppercase mt-1" style="letter-spacing: 0.5px;">Official Staff Daily Attendance Report</h5>
-                            <p class="text-muted small m-0">Institutional Staff Audit & Verification Summary</p>
+                            <h5 class="text-primary font-weight-bold text-uppercase mt-1" style="letter-spacing: 0.5px;">{{ __('Official Staff Daily Attendance Report') }}</h5>
+                            <p class="text-muted small m-0">{{ __('Institutional Staff Audit & Verification Summary') }}</p>
                             <div class="report-header-divider"></div>
                         </div>
 
@@ -630,19 +630,19 @@
                             <div class="card-body p-3">
                                 <div class="row text-center text-md-left">
                                     <div class="col-md-3 col-6 mb-2 mb-md-0">
-                                        <small class="text-muted text-uppercase font-weight-bold">Department Scope</small>
-                                        <div class="font-weight-bold text-dark h6 m-0" id="rep-department-name">All Departments</div>
+                                        <small class="text-muted text-uppercase font-weight-bold">{{ __('Department Scope') }}</small>
+                                        <div class="font-weight-bold text-dark h6 m-0" id="rep-department-name">{{ __('All Departments') }}</div>
                                     </div>
                                     <div class="col-md-3 col-6 mb-2 mb-md-0">
-                                        <small class="text-muted text-uppercase font-weight-bold">Attendance Date</small>
+                                        <small class="text-muted text-uppercase font-weight-bold">{{ __('Attendance Date') }}</small>
                                         <div class="font-weight-bold text-dark h6 m-0" id="rep-date-display">-</div>
                                     </div>
                                     <div class="col-md-3 col-6 mb-2 mb-md-0">
-                                        <small class="text-muted text-uppercase font-weight-bold">Staff Enrolled</small>
+                                        <small class="text-muted text-uppercase font-weight-bold">{{ __('Staff Enrolled') }}</small>
                                         <div class="font-weight-bold text-primary h6 m-0" id="rep-enrolled-display">0</div>
                                     </div>
                                     <div class="col-md-3 col-6 mb-2 mb-md-0">
-                                        <small class="text-muted text-uppercase font-weight-bold">Overall Attendance Rate</small>
+                                        <small class="text-muted text-uppercase font-weight-bold">{{ __('Overall Attendance Rate') }}</small>
                                         <div class="font-weight-bold text-success h6 m-0" id="rep-rate-display">0%</div>
                                     </div>
                                 </div>
@@ -653,31 +653,31 @@
                         <div class="row mb-4 text-center">
                             <div class="col">
                                 <div class="border rounded p-2 bg-light">
-                                    <small class="text-muted text-uppercase font-weight-bold">Total Staff</small>
+                                    <small class="text-muted text-uppercase font-weight-bold">{{ __('Total Staff') }}</small>
                                     <h4 class="font-weight-bold text-primary m-0" id="rep-stat-total">0</h4>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="border rounded p-2 bg-light">
-                                    <small class="text-muted text-uppercase font-weight-bold">Present</small>
+                                    <small class="text-muted text-uppercase font-weight-bold">{{ __('Present') }}</small>
                                     <h4 class="font-weight-bold text-success m-0" id="rep-stat-present">0</h4>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="border rounded p-2 bg-light">
-                                    <small class="text-muted text-uppercase font-weight-bold">Absent</small>
+                                    <small class="text-muted text-uppercase font-weight-bold">{{ __('Absent') }}</small>
                                     <h4 class="font-weight-bold text-danger m-0" id="rep-stat-absent">0</h4>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="border rounded p-2 bg-light">
-                                    <small class="text-muted text-uppercase font-weight-bold">Late</small>
+                                    <small class="text-muted text-uppercase font-weight-bold">{{ __('Late') }}</small>
                                     <h4 class="font-weight-bold text-warning m-0" id="rep-stat-late">0</h4>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="border rounded p-2 bg-light">
-                                    <small class="text-muted text-uppercase font-weight-bold">Unmarked</small>
+                                    <small class="text-muted text-uppercase font-weight-bold">{{ __('Unmarked') }}</small>
                                     <h4 class="font-weight-bold text-secondary m-0" id="rep-stat-undefined">0</h4>
                                 </div>
                             </div>
@@ -685,13 +685,13 @@
 
                         <!-- Filter Toolbar in Report -->
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 no-print">
-                            <h6 class="font-weight-bold text-dark m-0 mb-2 mb-md-0">Employee Attendance Audit Records</h6>
+                            <h6 class="font-weight-bold text-dark m-0 mb-2 mb-md-0">{{ __('Employee Attendance Audit Records') }}</h6>
                             <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-secondary active" onclick="filterReportTable('all', this)">All</button>
-                                <button type="button" class="btn btn-outline-success" onclick="filterReportTable('Present', this)">Present</button>
-                                <button type="button" class="btn btn-outline-danger" onclick="filterReportTable('Absent', this)">Absent</button>
-                                <button type="button" class="btn btn-outline-warning" onclick="filterReportTable('Late', this)">Late</button>
-                                <button type="button" class="btn btn-outline-secondary" onclick="filterReportTable('Undefined', this)">Unmarked</button>
+                                <button type="button" class="btn btn-outline-secondary active" onclick="filterReportTable('all', this)">{{ __('All') }}</button>
+                                <button type="button" class="btn btn-outline-success" onclick="filterReportTable('Present', this)">{{ __('Present') }}</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="filterReportTable('Absent', this)">{{ __('Absent') }}</button>
+                                <button type="button" class="btn btn-outline-warning" onclick="filterReportTable('Late', this)">{{ __('Late') }}</button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="filterReportTable('Undefined', this)">{{ __('Unmarked') }}</button>
                             </div>
                         </div>
 
@@ -701,11 +701,11 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <th width="6%" class="text-center">#</th>
-                                        <th width="30%">Employee Name</th>
-                                        <th width="20%">Position</th>
-                                        <th width="18%">Department</th>
-                                        <th width="14%">Shift Hours</th>
-                                        <th width="12%" class="text-center">Status</th>
+                                        <th width="30%">{{ __('Employee Name') }}</th>
+                                        <th width="20%">{{ __('Position') }}</th>
+                                        <th width="18%">{{ __('Department') }}</th>
+                                        <th width="14%">{{ __('Shift Hours') }}</th>
+                                        <th width="12%" class="text-center">{{ __('Status') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="report-table-body">
@@ -720,15 +720,15 @@
                         <div class="row mt-5 pt-4 print-only">
                             <div class="col-6 text-center">
                                 <div style="border-top: 1px solid #333; width: 80%; margin: 0 auto; padding-top: 5px;" class="font-weight-bold">
-                                    HR Manager / Supervisor Signature
+                                    {{ __('HR Manager / Supervisor Signature') }}
                                 </div>
-                                <small class="text-muted">Date: ________________________</small>
+                                <small class="text-muted">{{ __('Date') }}: ________________________</small>
                             </div>
                             <div class="col-6 text-center">
                                 <div style="border-top: 1px solid #333; width: 80%; margin: 0 auto; padding-top: 5px;" class="font-weight-bold">
-                                    School Principal / Administrator
+                                    {{ __('School Principal / Administrator') }}
                                 </div>
-                                <small class="text-muted">Verified & Approved</small>
+                                <small class="text-muted">{{ __('Verified & Approved') }}</small>
                             </div>
                         </div>
                     </div>

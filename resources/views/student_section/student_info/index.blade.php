@@ -103,15 +103,15 @@
                         <i class="fas fa-user-graduate text-purple mr-2" style="color: #8b5cf6;"></i>{{ $class->name }}
                     </h1>
                     <!-- Class Hub Back & Class Switcher Dropdown -->
-                    <a href="{{ route('students.info') }}" class="btn btn-outline-secondary btn-sm shadow-sm mr-2" style="border-radius: 20px;" title="Back to Student Information Hub">
-                        <i class="fas fa-arrow-left mr-1"></i> All Classes
+                    <a href="{{ route('students.info') }}" class="btn btn-outline-secondary btn-sm shadow-sm mr-2" style="border-radius: 20px;" title="{{ __('Back to Student Information Hub') }}">
+                        <i class="fas fa-arrow-left mr-1"></i> {{ __('All Classes') }}
                     </a>
                     <div class="dropdown d-inline-block">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle shadow-sm" type="button" id="classSwitchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-radius: 20px;">
-                            <i class="fas fa-exchange-alt mr-1"></i> Switch Class
+                            <i class="fas fa-exchange-alt mr-1"></i> {{ __('Switch Class') }}
                         </button>
                         <div class="dropdown-menu shadow-lg" aria-labelledby="classSwitchDropdown" style="border-radius: 12px; max-height: 280px; overflow-y: auto;">
-                            <h6 class="dropdown-header text-uppercase text-xs">Select Class Roster</h6>
+                            <h6 class="dropdown-header text-uppercase text-xs">{{ __('Select Class Roster') }}</h6>
                             @foreach($allClasses as $c)
                                 <a class="dropdown-item d-flex justify-content-between align-items-center {{ $c->class_id == $class->class_id ? 'active font-weight-bold' : '' }}" href="{{ route('students.byClass', $c->class_id) }}">
                                     <span>{{ $c->name }}</span>
@@ -124,23 +124,23 @@
                     </div>
                 </div>
                 <p class="text-muted text-sm mb-0 mt-1">
-                    <span class="mr-3"><i class="fas fa-barcode text-xs mr-1"></i> Code: <b>{{ $class->class_code ?? 'N/A' }}</b></span>
-                    <span class="mr-3"><i class="fas fa-door-open text-xs mr-1"></i> Room: <b>{{ $class->class_room ?? 'N/A' }}</b></span>
-                    <span><i class="fas fa-chalkboard-teacher text-xs mr-1"></i> Teacher: <b>{{ $class->teacher_name ?? 'Not Assigned' }}</b></span>
+                    <span class="mr-3"><i class="fas fa-barcode text-xs mr-1"></i> {{ __('Code') }}: <b>{{ $class->class_code ?? 'N/A' }}</b></span>
+                    <span class="mr-3"><i class="fas fa-door-open text-xs mr-1"></i> {{ __('Room') }}: <b>{{ $class->class_room ?? 'N/A' }}</b></span>
+                    <span><i class="fas fa-chalkboard-teacher text-xs mr-1"></i> {{ __('Teacher') }}: <b>{{ $class->teacher_name ?? __('Not Assigned') }}</b></span>
                 </p>
             </div>
             <div class="col-sm-5 text-sm-right mt-3 mt-sm-0">
                 @if (Auth::user()->role == 0)
                     <button type="button" class="btn btn-primary btn-sm px-3 shadow-sm mr-2" data-toggle="modal" data-target="#addStudentModal" style="border-radius: 20px;">
-                        <i class="fas fa-plus-circle mr-1"></i> Add Student
+                        <i class="fas fa-plus-circle mr-1"></i> {{ __('Add Student') }}
                     </button>
                 @endif
-                <a href="{{ route('attendance.show', $class->class_id) }}" class="btn btn-outline-info btn-sm px-3 shadow-sm mr-2" style="border-radius: 20px;" title="Take or View Class Attendance">
-                    <i class="fas fa-calendar-check mr-1"></i> Attendance
+                <a href="{{ route('attendance.show', $class->class_id) }}" class="btn btn-outline-info btn-sm px-3 shadow-sm mr-2" style="border-radius: 20px;" title="{{ __('Take or View Class Attendance') }}">
+                    <i class="fas fa-calendar-check mr-1"></i> {{ __('Attendance') }}
                 </a>
                 <ol class="breadcrumb float-sm-right bg-transparent p-0 d-inline-block align-middle mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('students.info') }}">Student Information</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> {{ __('Home') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('students.info') }}">{{ __('Student Information') }}</a></li>
                     <li class="breadcrumb-item active">{{ $class->name }}</li>
                 </ol>
             </div>
@@ -163,9 +163,9 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-primary text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Enrolled Students</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Enrolled Students') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($totalStudents) }}</h2>
-                        <span class="text-xs opacity-75">Active in {{ $class->name }}</span>
+                        <span class="text-xs opacity-75">{{ __('Active in') }} {{ $class->name }}</span>
                         <i class="fas fa-user-graduate icon-bg text-white"></i>
                     </div>
                 </div>
@@ -174,7 +174,7 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-info text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Active Sections</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Active Sections') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($totalSections) }}</h2>
                         <span class="text-xs opacity-75">
                             @foreach($sections->take(2) as $s)
@@ -190,15 +190,15 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-success text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Gender Breakdown</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Gender Breakdown') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">
                             {{ $maleCount }} <span class="text-xs opacity-75 font-weight-normal">M</span> /
                             {{ $femaleCount }} <span class="text-xs opacity-75 font-weight-normal">F</span>
                         </h2>
                         <span class="text-xs opacity-75">
-                            <i class="fas fa-mars mr-1"></i>{{ $totalStudents > 0 ? round(($maleCount/$totalStudents)*100) : 0 }}% Male
+                            <i class="fas fa-mars mr-1"></i>{{ $totalStudents > 0 ? round(($maleCount/$totalStudents)*100) : 0 }}% {{ __('Male') }}
                             &bull;
-                            <i class="fas fa-venus mr-1"></i>{{ $totalStudents > 0 ? round(($femaleCount/$totalStudents)*100) : 0 }}% Female
+                            <i class="fas fa-venus mr-1"></i>{{ $totalStudents > 0 ? round(($femaleCount/$totalStudents)*100) : 0 }}% {{ __('Female') }}
                         </span>
                         <i class="fas fa-restroom icon-bg text-white"></i>
                     </div>
@@ -208,11 +208,11 @@
             <div class="col-xl-3 col-sm-6">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-warning text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Class Incharge</span>
-                        <h4 class="font-weight-bold mt-1 mb-0 text-truncate" title="{{ $class->teacher_name ?? 'Not Assigned' }}">
-                            {{ $class->teacher_name ?? 'Not Assigned' }}
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Class Incharge') }}</span>
+                        <h4 class="font-weight-bold mt-1 mb-0 text-truncate" title="{{ $class->teacher_name ?? __('Not Assigned') }}">
+                            {{ $class->teacher_name ?? __('Not Assigned') }}
                         </h4>
-                        <span class="text-xs opacity-75"><i class="fas fa-map-marker-alt mr-1"></i>Room {{ $class->class_room ?? 'TBD' }}</span>
+                        <span class="text-xs opacity-75"><i class="fas fa-map-marker-alt mr-1"></i>{{ __('Room') }} {{ $class->class_room ?? 'TBD' }}</span>
                         <i class="fas fa-id-badge icon-bg text-white"></i>
                     </div>
                 </div>
@@ -229,10 +229,10 @@
                     <!-- Section Filters -->
                     <div class="col-lg-6 col-md-12 mb-2 mb-lg-0">
                         <div class="d-flex align-items-center flex-wrap">
-                            <span class="text-xs font-weight-bold text-muted text-uppercase mr-2">Section:</span>
+                            <span class="text-xs font-weight-bold text-muted text-uppercase mr-2">{{ __('Section') }}:</span>
                             <div class="btn-group btn-group-sm flex-wrap" role="group" id="sectionFilterGroup">
                                 <button type="button" class="btn btn-primary active section-filter-btn" data-section="all" style="border-radius: 20px 0 0 20px;">
-                                    All <span class="badge badge-light ml-1">{{ $totalStudents }}</span>
+                                    {{ __('All') }} <span class="badge badge-light ml-1">{{ $totalStudents }}</span>
                                 </button>
                                 @foreach($sections as $index => $sec)
                                     @php
@@ -258,15 +258,15 @@
                                     <i class="fas fa-search text-muted"></i>
                                 </span>
                             </div>
-                            <input type="text" id="studentSearchInput" class="form-control border-left-0" placeholder="Search name, roll, parent..." style="border-radius: 0 20px 20px 0;">
+                            <input type="text" id="studentSearchInput" class="form-control border-left-0" placeholder="{{ __('Search name, roll, parent...') }}" style="border-radius: 0 20px 20px 0;">
                         </div>
 
                         <!-- View Toggle -->
                         <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-outline-secondary active" id="viewTableBtn" title="Table View">
+                            <button type="button" class="btn btn-outline-secondary active" id="viewTableBtn" title="{{ __('Table View') }}">
                                 <i class="fas fa-list"></i>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary" id="viewGridBtn" title="Cards Grid View">
+                            <button type="button" class="btn btn-outline-secondary" id="viewGridBtn" title="{{ __('Cards Grid View') }}">
                                 <i class="fas fa-th-large"></i>
                             </button>
                         </div>
@@ -286,13 +286,13 @@
                                 <i class="fas fa-user-graduate fa-3x text-primary opacity-50"></i>
                             </span>
                         </div>
-                        <h5 class="font-weight-bold mb-1">No students enrolled yet</h5>
+                        <h5 class="font-weight-bold mb-1">{{ __('No students enrolled yet') }}</h5>
                         <p class="text-muted text-sm mb-3">
-                            There are currently no students assigned to <b>{{ $class->name }}</b>.
+                            {{ __('There are currently no students assigned to') }} <b>{{ $class->name }}</b>.
                         </p>
                         @if (Auth::user()->role == 0)
                             <button type="button" class="btn btn-primary btn-sm px-3 shadow-sm" data-toggle="modal" data-target="#addStudentModal" style="border-radius: 20px;">
-                                <i class="fas fa-plus-circle mr-1"></i> Enroll First Student
+                                <i class="fas fa-plus-circle mr-1"></i> {{ __('Enroll First Student') }}
                             </button>
                         @endif
                     </div>
@@ -304,13 +304,13 @@
                             <thead>
                                 <tr class="bg-light">
                                     <th style="width: 50px;">#</th>
-                                    <th>Student</th>
-                                    <th>Roll Number</th>
-                                    <th>Section</th>
-                                    <th>Gender & Age</th>
-                                    <th>Parent / Guardian</th>
-                                    <th>Contact</th>
-                                    <th class="text-right" style="width: 140px;">Actions</th>
+                                    <th>{{ __('Student') }}</th>
+                                    <th>{{ __('Roll Number') }}</th>
+                                    <th>{{ __('Section') }}</th>
+                                    <th>{{ __('Gender & Age') }}</th>
+                                    <th>{{ __('Parent / Guardian') }}</th>
+                                    <th>{{ __('Contact') }}</th>
+                                    <th class="text-right" style="width: 140px;">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -384,7 +384,7 @@
                                         <!-- Gender & Birthday -->
                                         <td>
                                             <span class="badge {{ $genderBadge }} px-2 py-1 mr-1" style="border-radius: 10px;">
-                                                <i class="fas {{ $genderIcon }} mr-1"></i> {{ $genderText }}
+                                                <i class="fas {{ $genderIcon }} mr-1"></i> {{ $genderText == 'Male' ? __('Male') : __('Female') }}
                                             </span>
                                             @if($age)
                                                 <span class="text-xs text-muted">({{ $age }} yrs)</span>
@@ -395,9 +395,9 @@
                                         <td>
                                             @if(!empty($student->parent_name))
                                                 <div class="font-weight-bold text-dark" style="font-size: 13.5px;">{{ $student->parent_name }}</div>
-                                                <span class="text-xs text-muted">{{ $student->parent_phone ?? 'Guardian' }}</span>
+                                                <span class="text-xs text-muted">{{ $student->parent_phone ?? __('Guardian') }}</span>
                                             @else
-                                                <span class="text-muted text-xs font-italic">No guardian linked</span>
+                                                <span class="text-muted text-xs font-italic">{{ __('No guardian linked') }}</span>
                                             @endif
                                         </td>
 
@@ -415,7 +415,7 @@
                                         <td class="text-right">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-xs btn-outline-primary view-profile-btn mr-1 shadow-sm"
-                                                        data-student='@json($student)' title="View Student Profile">
+                                                        data-student='@json($student)' title="{{ __('View Student Profile') }}">
                                                     <i class="fas fa-id-card"></i>
                                                 </button>
 
@@ -425,14 +425,14 @@
                                                             data-name="{{ $student->name }}"
                                                             data-section-id="{{ $student->section_id }}"
                                                             data-roll="{{ $student->roll }}"
-                                                            title="Edit Class Assignment">
+                                                            title="{{ __('Edit Class Assignment') }}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
                                                     <button type="button" class="btn btn-xs btn-outline-danger remove-student-btn shadow-sm"
                                                             data-student-id="{{ $student->student_id }}"
                                                             data-name="{{ $student->name }}"
-                                                            title="Remove from Class">
+                                                            title="{{ __('Remove from Class') }}">
                                                         <i class="fas fa-user-minus"></i>
                                                     </button>
                                                 @endif
@@ -513,11 +513,11 @@
 
                                             <div class="text-left bg-light p-2 rounded mb-3" style="font-size: 12px; border-radius: 8px;">
                                                 <div class="d-flex justify-content-between text-truncate mb-1">
-                                                    <span class="text-muted"><i class="fas fa-user-shield mr-1"></i> Guardian:</span>
+                                                    <span class="text-muted"><i class="fas fa-user-shield mr-1"></i> {{ __('Guardian') }}:</span>
                                                     <span class="font-weight-bold text-dark text-truncate ml-1" title="{{ $student->parent_name ?? 'N/A' }}">{{ $student->parent_name ?? 'N/A' }}</span>
                                                 </div>
                                                 <div class="d-flex justify-content-between text-truncate">
-                                                    <span class="text-muted"><i class="fas fa-phone mr-1"></i> Phone:</span>
+                                                    <span class="text-muted"><i class="fas fa-phone mr-1"></i> {{ __('Phone') }}:</span>
                                                     <span class="font-weight-500 text-dark ml-1">{{ $student->phone ?? 'N/A' }}</span>
                                                 </div>
                                             </div>
@@ -526,7 +526,7 @@
                                             <div class="d-flex justify-content-between align-items-center border-top pt-2">
                                                 <button type="button" class="btn btn-xs btn-outline-primary view-profile-btn flex-grow-1 mr-1"
                                                         data-student='@json($student)' style="border-radius: 6px;">
-                                                    <i class="fas fa-id-card mr-1"></i> Profile
+                                                    <i class="fas fa-id-card mr-1"></i> {{ __('Profile') }}
                                                 </button>
 
                                                 @if (Auth::user()->role == 0)
@@ -557,9 +557,9 @@
                     <!-- No Results Match State (for search/filtering) -->
                     <div id="noMatchState" class="text-center py-5 px-3" style="display: none;">
                         <i class="fas fa-search fa-3x text-muted opacity-50 mb-2"></i>
-                        <h6 class="font-weight-bold">No students match your filter</h6>
-                        <p class="text-muted text-sm">Try adjusting your section tab or search term.</p>
-                        <button type="button" class="btn btn-xs btn-outline-primary" id="resetFiltersBtn">Reset Filters</button>
+                        <h6 class="font-weight-bold">{{ __('No students match your filter') }}</h6>
+                        <p class="text-muted text-sm">{{ __('Try adjusting your section tab or search term.') }}</p>
+                        <button type="button" class="btn btn-xs btn-outline-primary" id="resetFiltersBtn">{{ __('Reset Filters') }}</button>
                     </div>
 
                 @endif
@@ -569,10 +569,10 @@
             <!-- Footer: Showing count -->
             <div class="card-footer border-top py-2 px-3 bg-light d-flex justify-content-between align-items-center">
                 <span class="text-xs text-muted">
-                    Total: <b id="visibleCount">{{ $totalStudents }}</b> student(s) in <b>{{ $class->name }}</b>
+                    {{ __('Total') }}: <b id="visibleCount">{{ $totalStudents }}</b> {{ __('student(s) in') }} <b>{{ $class->name }}</b>
                 </span>
                 <span class="text-xs text-muted">
-                    Updated {{ now()->format('M d, Y') }}
+                    {{ __('Updated') }} {{ now()->format('M d, Y') }}
                 </span>
             </div>
 
@@ -595,12 +595,12 @@
                         <span id="profileModalInitials">ST</span>
                     </div>
                     <div>
-                        <h4 class="font-weight-bold mb-1" id="profileModalName">Student Name</h4>
+                        <h4 class="font-weight-bold mb-1" id="profileModalName">{{ __('Student Name') }}</h4>
                         <span class="text-xs opacity-75" id="profileModalEmail">student@mail.com</span>
                         <div class="mt-1">
-                            <span class="badge badge-warning text-dark font-weight-bold mr-1" id="profileModalRoll">Roll: #0001</span>
+                            <span class="badge badge-warning text-dark font-weight-bold mr-1" id="profileModalRoll">{{ __('Roll') }}: #0001</span>
                             <span class="badge badge-light" id="profileModalClass">{{ $class->name }}</span>
-                            <span class="badge badge-light" id="profileModalSection">Section</span>
+                            <span class="badge badge-light" id="profileModalSection">{{ __('Section') }}</span>
                         </div>
                     </div>
                 </div>
@@ -618,23 +618,23 @@
                         <div class="card bg-light border-0 h-100" style="border-radius: 10px;">
                             <div class="card-body p-3">
                                 <h6 class="font-weight-bold text-xs text-uppercase text-muted mb-3" style="letter-spacing: 0.8px;">
-                                    <i class="fas fa-user mr-1 text-primary"></i> Personal Details
+                                    <i class="fas fa-user mr-1 text-primary"></i> {{ __('Personal Details') }}
                                 </h6>
                                 <table class="table table-sm table-borderless mb-0" style="font-size: 13px;">
                                     <tr>
-                                        <td class="text-muted" width="110">Gender</td>
+                                        <td class="text-muted" width="110">{{ __('Gender') }}</td>
                                         <td class="font-weight-bold" id="profileModalGender">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Birthday</td>
+                                        <td class="text-muted">{{ __('Birthday') }}</td>
                                         <td class="font-weight-bold" id="profileModalDob">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Phone</td>
+                                        <td class="text-muted">{{ __('Phone') }}</td>
                                         <td class="font-weight-bold" id="profileModalPhone">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Address</td>
+                                        <td class="text-muted">{{ __('Address') }}</td>
                                         <td class="font-weight-bold" id="profileModalAddress">-</td>
                                     </tr>
                                 </table>
@@ -647,23 +647,23 @@
                         <div class="card bg-light border-0 h-100" style="border-radius: 10px;">
                             <div class="card-body p-3">
                                 <h6 class="font-weight-bold text-xs text-uppercase text-muted mb-3" style="letter-spacing: 0.8px;">
-                                    <i class="fas fa-user-shield mr-1 text-info"></i> Guardian & Parent Info
+                                    <i class="fas fa-user-shield mr-1 text-info"></i> {{ __('Guardian & Parent Info') }}
                                 </h6>
                                 <table class="table table-sm table-borderless mb-0" style="font-size: 13px;">
                                     <tr>
-                                        <td class="text-muted" width="110">Parent Name</td>
+                                        <td class="text-muted" width="110">{{ __('Parent Name') }}</td>
                                         <td class="font-weight-bold" id="profileModalParentName">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Parent Phone</td>
+                                        <td class="text-muted">{{ __('Parent Phone') }}</td>
                                         <td class="font-weight-bold" id="profileModalParentPhone">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Parent Email</td>
+                                        <td class="text-muted">{{ __('Parent Email') }}</td>
                                         <td class="font-weight-bold" id="profileModalParentEmail">-</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted">Student ID</td>
+                                        <td class="text-muted">{{ __('Student ID') }}</td>
                                         <td class="font-weight-bold text-primary" id="profileModalStudentId">-</td>
                                     </tr>
                                 </table>
@@ -678,14 +678,14 @@
             <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between align-items-center">
                 <div>
                     <a href="#" id="profileModalCallLink" class="btn btn-outline-secondary btn-sm mr-1" style="border-radius: 8px;">
-                        <i class="fas fa-phone mr-1"></i> Call Student
+                        <i class="fas fa-phone mr-1"></i> {{ __('Call Student') }}
                     </a>
                     <a href="#" id="profileModalMailLink" class="btn btn-outline-secondary btn-sm" style="border-radius: 8px;">
-                        <i class="fas fa-envelope mr-1"></i> Email
+                        <i class="fas fa-envelope mr-1"></i> {{ __('Email') }}
                     </a>
                 </div>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">
-                    Close
+                    {{ __('Close') }}
                 </button>
             </div>
 
@@ -706,9 +706,9 @@
                 <div class="modal-hero d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="modal-title font-weight-bold mb-1">
-                            <i class="fas fa-user-edit mr-2 text-info"></i> Edit Class Assignment
+                            <i class="fas fa-user-edit mr-2 text-info"></i> {{ __('Edit Class Assignment') }}
                         </h5>
-                        <span class="text-xs opacity-75" id="editModalSubtitle">Update section or roll number</span>
+                        <span class="text-xs opacity-75" id="editModalSubtitle">{{ __('Update section or roll number') }}</span>
                     </div>
                     <button type="button" class="close text-white opacity-75" data-dismiss="modal" aria-label="Close" style="outline: none;">
                         <span aria-hidden="true">&times;</span>
@@ -716,11 +716,11 @@
                 </div>
                 <div class="modal-body p-4">
                     <div class="form-group mb-3">
-                        <label class="text-xs font-weight-bold text-uppercase text-muted">Student Name</label>
+                        <label class="text-xs font-weight-bold text-uppercase text-muted">{{ __('Student Name') }}</label>
                         <input type="text" id="editModalStudentName" class="form-control" readonly style="border-radius: 8px;">
                     </div>
                     <div class="form-group mb-3">
-                        <label class="text-xs font-weight-bold text-uppercase text-muted">Section</label>
+                        <label class="text-xs font-weight-bold text-uppercase text-muted">{{ __('Section') }}</label>
                         <select name="section_id" id="editModalSectionSelect" class="form-control" required style="border-radius: 8px;">
                             @foreach($sections as $sec)
                                 <option value="{{ $sec->section_id }}">{{ $sec->name }}</option>
@@ -728,14 +728,14 @@
                         </select>
                     </div>
                     <div class="form-group mb-0">
-                        <label class="text-xs font-weight-bold text-uppercase text-muted">Roll Number</label>
+                        <label class="text-xs font-weight-bold text-uppercase text-muted">{{ __('Roll Number') }}</label>
                         <input type="text" name="roll" id="editModalRollInput" class="form-control" required placeholder="e.g. 0001" style="border-radius: 8px;">
                     </div>
                 </div>
                 <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between">
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">{{ __('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary btn-sm px-3" style="border-radius: 8px;">
-                        <i class="fas fa-save mr-1"></i> Save Changes
+                        <i class="fas fa-save mr-1"></i> {{ __('Save Changes') }}
                     </button>
                 </div>
             </form>
@@ -756,9 +756,9 @@
                 <div class="modal-hero d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="modal-title font-weight-bold mb-1">
-                            <i class="fas fa-user-plus mr-2 text-success"></i> Add Student to Class
+                            <i class="fas fa-user-plus mr-2 text-success"></i> {{ __('Add Student to Class') }}
                         </h5>
-                        <span class="text-xs opacity-75">Assign an existing student to {{ $class->name }}</span>
+                        <span class="text-xs opacity-75">{{ __('Assign an existing student to') }} {{ $class->name }}</span>
                     </div>
                     <button type="button" class="close text-white opacity-75" data-dismiss="modal" aria-label="Close" style="outline: none;">
                         <span aria-hidden="true">&times;</span>
@@ -768,13 +768,13 @@
                 <div class="modal-body p-4">
                     @if($availableStudents->isEmpty())
                         <div class="alert alert-info mb-0 text-sm" style="border-radius: 8px;">
-                            <i class="fas fa-info-circle mr-1"></i> All registered students are already enrolled in this class!
+                            <i class="fas fa-info-circle mr-1"></i> {{ __('All registered students are already enrolled in this class!') }}
                         </div>
                     @else
                         <div class="form-group mb-3">
-                            <label class="text-xs font-weight-bold text-uppercase text-muted">Select Student</label>
+                            <label class="text-xs font-weight-bold text-uppercase text-muted">{{ __('Select Student') }}</label>
                             <select name="student_id" class="form-control" required style="border-radius: 8px;">
-                                <option value="" disabled selected>-- Choose Student --</option>
+                                <option value="" disabled selected>-- {{ __('Choose Student') }} --</option>
                                 @foreach($availableStudents as $avail)
                                     <option value="{{ $avail->student_id }}">
                                         {{ $avail->name }} ({{ $avail->email }})
@@ -784,7 +784,7 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label class="text-xs font-weight-bold text-uppercase text-muted">Assign Section</label>
+                            <label class="text-xs font-weight-bold text-uppercase text-muted">{{ __('Assign Section') }}</label>
                             <select name="section_id" class="form-control" required style="border-radius: 8px;">
                                 @foreach($sections as $sec)
                                     <option value="{{ $sec->section_id }}">{{ $sec->name }}</option>
@@ -793,18 +793,18 @@
                         </div>
 
                         <div class="form-group mb-0">
-                            <label class="text-xs font-weight-bold text-uppercase text-muted">Roll Number</label>
+                            <label class="text-xs font-weight-bold text-uppercase text-muted">{{ __('Roll Number') }}</label>
                             <input type="text" name="roll" class="form-control" value="{{ $suggestedRoll }}" required placeholder="e.g. 0002" style="border-radius: 8px;">
-                            <small class="text-muted">Auto-suggested based on current max roll number.</small>
+                            <small class="text-muted">{{ __('Auto-suggested based on current max roll number.') }}</small>
                         </div>
                     @endif
                 </div>
 
                 <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between">
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">{{ __('Cancel') }}</button>
                     @if(!$availableStudents->isEmpty())
                         <button type="submit" class="btn btn-success btn-sm px-3" style="border-radius: 8px;">
-                            <i class="fas fa-check mr-1"></i> Enroll Student
+                            <i class="fas fa-check mr-1"></i> {{ __('Enroll Student') }}
                         </button>
                     @endif
                 </div>
@@ -997,13 +997,14 @@
                 const name = this.dataset.name;
 
                 Swal.fire({
-                    title: `Remove ${name}?`,
-                    text: `Are you sure you want to remove this student from {{ $class->name }}?`,
+                    title: `{{ __('Remove') }} ${name}?`,
+                    text: `{{ __('Are you sure you want to remove this student from') }} {{ $class->name }}?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#ef4444',
                     cancelButtonColor: '#6b7280',
-                    confirmButtonText: 'Yes, Remove'
+                    confirmButtonText: '{{ __('Yes, Remove') }}',
+                    cancelButtonText: '{{ __('Cancel') }}'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         const form = document.getElementById('removeStudentForm');

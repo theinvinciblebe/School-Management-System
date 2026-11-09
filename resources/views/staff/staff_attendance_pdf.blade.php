@@ -188,11 +188,11 @@
         <thead>
             <tr>
                 <th width="5%" style="text-align: center;">#</th>
-                <th width="30%">Employee Name</th>
-                <th width="20%">Position</th>
-                <th width="20%">Department</th>
-                <th width="12%">Time In</th>
-                <th width="13%" style="text-align: center;">Status</th>
+                <th width="30%">{{ __('Employee Name') }}</th>
+                <th width="20%">{{ __('Position') }}</th>
+                <th width="20%">{{ __('Department') }}</th>
+                <th width="12%">{{ __('Time In') }}</th>
+                <th width="13%" style="text-align: center;">{{ __('Status') }}</th>
             </tr>
         </thead>
         <tbody>

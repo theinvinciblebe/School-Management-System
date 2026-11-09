@@ -254,15 +254,15 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between">
                 <div class="mb-2 mb-md-0">
                     <a href="{{ route('class_routines.show_classes') }}" class="btn btn-outline-light btn-sm mb-2" style="border-radius: 8px;">
-                        <i class="fas fa-arrow-left mr-1"></i> Back to All Classes
+                        <i class="fas fa-arrow-left mr-1"></i> {{ __('Back to All Classes') }}
                     </a>
                     <div class="d-flex align-items-center flex-wrap" style="gap: 10px;">
-                        <h2 class="font-weight-bold mb-0">{{ $class->name }} Timetable</h2>
+                        <h2 class="font-weight-bold mb-0">{{ $class->name }} {{ __('Timetable') }}</h2>
                         @if(!empty($class->class_code))
                             <span class="badge-outline-white"><i class="fas fa-tag mr-1"></i>{{ $class->class_code }}</span>
                         @endif
                         @if(!empty($class->class_room))
-                            <span class="badge-outline-white"><i class="fas fa-door-open mr-1"></i>Room {{ $class->class_room }}</span>
+                            <span class="badge-outline-white"><i class="fas fa-door-open mr-1"></i>{{ __('Room') }} {{ $class->class_room }}</span>
                         @endif
                         @if(!empty($class->teacher_name))
                             <span class="badge-outline-white"><i class="fas fa-chalkboard-teacher mr-1"></i>{{ $class->teacher_name }}</span>
@@ -273,11 +273,11 @@
                 <!-- Action Controls -->
                 <div class="d-flex align-items-center flex-wrap" style="gap: 10px;">
                     <button type="button" class="btn btn-light btn-sm font-weight-bold px-3 py-2 shadow-sm" style="border-radius: 8px;" onclick="window.print()">
-                        <i class="fas fa-print mr-1"></i> Print Timetable
+                        <i class="fas fa-print mr-1"></i> {{ __('Print Timetable') }}
                     </button>
                     @if (Auth::user()->role == 0 || Auth::user()->role == 4)
                         <button type="button" class="btn btn-warning btn-sm font-weight-bold px-3 py-2 shadow-sm" style="border-radius: 8px;" data-toggle="modal" data-target="#addRoutineModal">
-                            <i class="fas fa-plus-circle mr-1"></i> Add Routine Slot
+                            <i class="fas fa-plus-circle mr-1"></i> {{ __('Add Routine Slot') }}
                         </button>
                     @endif
                 </div>
@@ -292,7 +292,7 @@
                     <div class="day-nav-pills" id="dayNavPills">
                         <button type="button" class="day-nav-pill active" data-target-day="all">
                             <i class="fas fa-calendar-week"></i>
-                            <span>All Days</span>
+                            <span>{{ __('All Days') }}</span>
                             <span class="day-count-badge">{{ $routines->count() }}</span>
                         </button>
                         @foreach ($daysOfWeek as $day)
@@ -300,7 +300,7 @@
                                 $dayRoutines = $routines->where('day', $day);
                             @endphp
                             <button type="button" class="day-nav-pill" data-target-day="{{ $day }}">
-                                <span>{{ $day }}</span>
+                                <span>{{ __($day) }}</span>
                                 <span class="day-count-badge">{{ $dayRoutines->count() }}</span>
                             </button>
                         @endforeach
@@ -310,7 +310,7 @@
                     @if(isset($allClasses) && $allClasses->count() > 1)
                         <div class="d-flex align-items-center" style="min-width: 220px;">
                             <select class="form-control form-control-sm" style="border-radius: 8px;" onchange="if(this.value) window.location.href=this.value;">
-                                <option value="">-- Switch Class --</option>
+                                <option value="">{{ __('-- Switch Class --') }}</option>
                                 @foreach($allClasses as $otherClass)
                                     <option value="{{ route('class_routines.index', $otherClass->class_id) }}" {{ $otherClass->class_id == $class->class_id ? 'selected' : '' }}>
                                         {{ $otherClass->name }} ({{ $otherClass->class_code ?? 'Class #' . $otherClass->class_id }})
@@ -334,16 +334,16 @@
                     <div class="day-card-header">
                         <h4 class="day-title">
                             <i class="far fa-calendar-check text-primary"></i>
-                            <span>{{ $day }}</span>
+                            <span>{{ __($day) }}</span>
                             @if($count > 0)
-                                <span class="badge badge-success px-2 py-1" style="font-size: 0.75rem; border-radius: 12px;">{{ $count }} {{ $count === 1 ? 'Slot' : 'Slots' }}</span>
+                                <span class="badge badge-success px-2 py-1" style="font-size: 0.75rem; border-radius: 12px;">{{ $count }} {{ $count === 1 ? __('Slot') : __('Slots') }}</span>
                             @else
-                                <span class="badge badge-secondary px-2 py-1" style="font-size: 0.75rem; border-radius: 12px;">No Sessions</span>
+                                <span class="badge badge-secondary px-2 py-1" style="font-size: 0.75rem; border-radius: 12px;">{{ __('No Sessions') }}</span>
                             @endif
                         </h4>
                         @if (Auth::user()->role == 0 || Auth::user()->role == 4)
                             <button type="button" class="btn btn-outline-primary btn-sm" style="border-radius: 20px; font-size: 0.8rem;" onclick="openAddRoutineForDay('{{ $day }}')">
-                                <i class="fas fa-plus mr-1"></i> Add to {{ $day }}
+                                <i class="fas fa-plus mr-1"></i> {{ __('Add to') }} {{ __($day) }}
                             </button>
                         @endif
                     </div>
@@ -352,7 +352,7 @@
                         @if($dayRoutines->isEmpty())
                             <div class="empty-day-state">
                                 <i class="far fa-calendar-times" style="font-size: 2.2rem; opacity: 0.5; margin-bottom: 8px;"></i>
-                                <p class="mb-0">No classes scheduled on {{ $day }}.</p>
+                                <p class="mb-0">{{ __('No classes scheduled on') }} {{ __($day) }}.</p>
                             </div>
                         @else
                             @php
@@ -375,7 +375,7 @@
                                             <span>{{ $startLabel }} - {{ $endLabel }}</span>
                                         </div>
                                         <div class="session-duration">
-                                            <i class="fas fa-hourglass-half mr-1"></i>{{ $durationHours }} {{ $durationHours === 1 ? 'hour' : 'hours' }}
+                                            <i class="fas fa-hourglass-half mr-1"></i>{{ $durationHours }} {{ $durationHours === 1 ? __('hour') : __('hours') }}
                                         </div>
                                     </div>
 
@@ -384,7 +384,7 @@
                                             <i class="fas fa-book-open text-info mr-2"></i>{{ $routine->subject_name }}
                                         </div>
                                         <div class="text-muted" style="font-size: 0.82rem;">
-                                            Class: {{ $class->name }} &bull; {{ $day }}
+                                            {{ __('Class:') }} {{ $class->name }} &bull; {{ __($day) }}
                                         </div>
                                     </div>
 
@@ -393,9 +393,9 @@
                                             <button type="button" class="btn btn-outline-primary btn-sm px-2"
                                                     style="border-radius: 8px;"
                                                     onclick="openEditRoutineModal({{ $routine->class_routine_id }}, '{{ $routine->subject_id }}', {{ $routine->time_start }}, {{ $routine->time_end }}, '{{ $routine->day }}')">
-                                                <i class="fas fa-edit mr-1"></i> Edit
+                                                <i class="fas fa-edit mr-1"></i> {{ __('Edit') }}
                                             </button>
-                                            <form action="{{ route('class_routines.destroy', $routine->class_routine_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to remove this routine slot?');">
+                                            <form action="{{ route('class_routines.destroy', $routine->class_routine_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('{{ __('Are you sure you want to remove this routine slot?') }}');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-outline-danger btn-sm px-2" style="border-radius: 8px;">
@@ -446,30 +446,30 @@
                     <input type="hidden" name="class_id" value="{{ $class->class_id }}">
 
                     <div class="form-group">
-                        <label class="font-weight-bold"><i class="fas fa-chalkboard mr-1 text-primary"></i> Class</label>
-                        <input type="text" class="form-control" value="{{ $class->name }} (Room: {{ $class->class_room ?? 'N/A' }})" readonly>
+                        <label class="font-weight-bold"><i class="fas fa-chalkboard mr-1 text-primary"></i> {{ __('Class') }}</label>
+                        <input type="text" class="form-control" value="{{ $class->name }} ({{ __('Room:') }} {{ $class->class_room ?? __('N/A') }})" readonly>
                     </div>
 
                     <div class="form-group">
                         <label for="add_subject_id" class="font-weight-bold">
-                            <i class="fas fa-book mr-1 text-info"></i> Subject <span class="text-danger">*</span>
+                            <i class="fas fa-book mr-1 text-info"></i> {{ __('Subject') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="subject_id" id="add_subject_id" required>
                             @forelse ($subjects as $subject)
                                 <option value="{{ $subject->subject_id }}">{{ $subject->name }}</option>
                             @empty
-                                <option value="">No subjects assigned to this class</option>
+                                <option value="">{{ __('No subjects assigned to this class') }}</option>
                             @endforelse
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="add_day" class="font-weight-bold">
-                            <i class="fas fa-calendar-day mr-1 text-warning"></i> Day of Week <span class="text-danger">*</span>
+                            <i class="fas fa-calendar-day mr-1 text-warning"></i> {{ __('Day of Week') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="day" id="add_day" required>
                             @foreach ($daysOfWeek as $day)
-                                <option value="{{ $day }}">{{ $day }}</option>
+                                <option value="{{ $day }}">{{ __($day) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -478,7 +478,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_time_start" class="font-weight-bold">
-                                    <i class="fas fa-clock mr-1 text-success"></i> Start Time <span class="text-danger">*</span>
+                                    <i class="fas fa-clock mr-1 text-success"></i> {{ __('Start Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control" name="time_start" id="add_time_start" required onchange="validateAddTimes()">
                                     @foreach($startHourOptions as $val => $label)
@@ -490,7 +490,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="add_time_end" class="font-weight-bold">
-                                    <i class="fas fa-stopwatch mr-1 text-danger"></i> End Time <span class="text-danger">*</span>
+                                    <i class="fas fa-stopwatch mr-1 text-danger"></i> {{ __('End Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control" name="time_end" id="add_time_end" required onchange="validateAddTimes()">
                                     @foreach($endHourOptions as $val => $label)
@@ -502,13 +502,13 @@
                     </div>
 
                     <div id="addDurationAlert" class="alert alert-info py-2 px-3 mb-0" style="font-size: 0.88rem; border-radius: 8px;">
-                        <i class="fas fa-info-circle mr-1"></i> <span id="addDurationText">Duration: 2 hours</span>
+                        <i class="fas fa-info-circle mr-1"></i> <span id="addDurationText">{{ __('Duration:') }} 2 {{ __('hours') }}</span>
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="submit" id="btnAddSubmit" class="btn btn-primary px-4 font-weight-bold">
-                        <i class="fas fa-save mr-1"></i> Save Routine
+                        <i class="fas fa-save mr-1"></i> {{ __('Save Routine') }}
                     </button>
                 </div>
             </form>
@@ -525,7 +525,7 @@
                 @method('PUT')
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title font-weight-bold" id="editRoutineModalLabel">
-                        <i class="fas fa-edit mr-2"></i> Edit Class Routine
+                        <i class="fas fa-edit mr-2"></i> {{ __('Edit Class Routine') }}
                     </h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -534,7 +534,7 @@
                 <div class="modal-body p-4">
                     <div class="form-group">
                         <label for="edit_subject_id" class="font-weight-bold">
-                            <i class="fas fa-book mr-1 text-info"></i> Subject <span class="text-danger">*</span>
+                            <i class="fas fa-book mr-1 text-info"></i> {{ __('Subject') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="subject_id" id="edit_subject_id" required>
                             @foreach ($subjects as $subject)
@@ -545,11 +545,11 @@
 
                     <div class="form-group">
                         <label for="edit_day" class="font-weight-bold">
-                            <i class="fas fa-calendar-day mr-1 text-warning"></i> Day of Week <span class="text-danger">*</span>
+                            <i class="fas fa-calendar-day mr-1 text-warning"></i> {{ __('Day of Week') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="day" id="edit_day" required>
                             @foreach ($daysOfWeek as $day)
-                                <option value="{{ $day }}">{{ $day }}</option>
+                                <option value="{{ $day }}">{{ __($day) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -558,7 +558,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="edit_time_start" class="font-weight-bold">
-                                    <i class="fas fa-clock mr-1 text-success"></i> Start Time <span class="text-danger">*</span>
+                                    <i class="fas fa-clock mr-1 text-success"></i> {{ __('Start Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control" name="time_start" id="edit_time_start" required onchange="validateEditTimes()">
                                     @foreach($startHourOptions as $val => $label)
@@ -570,7 +570,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="edit_time_end" class="font-weight-bold">
-                                    <i class="fas fa-stopwatch mr-1 text-danger"></i> End Time <span class="text-danger">*</span>
+                                    <i class="fas fa-stopwatch mr-1 text-danger"></i> {{ __('End Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control" name="time_end" id="edit_time_end" required onchange="validateEditTimes()">
                                     @foreach($endHourOptions as $val => $label)
@@ -582,13 +582,13 @@
                     </div>
 
                     <div id="editDurationAlert" class="alert alert-info py-2 px-3 mb-0" style="font-size: 0.88rem; border-radius: 8px;">
-                        <i class="fas fa-info-circle mr-1"></i> <span id="editDurationText">Duration: 2 hours</span>
+                        <i class="fas fa-info-circle mr-1"></i> <span id="editDurationText">{{ __('Duration:') }} 2 {{ __('hours') }}</span>
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="submit" id="btnEditSubmit" class="btn btn-info px-4 font-weight-bold text-white">
-                        <i class="fas fa-save mr-1"></i> Update Routine
+                        <i class="fas fa-save mr-1"></i> {{ __('Update Routine') }}
                     </button>
                 </div>
             </form>

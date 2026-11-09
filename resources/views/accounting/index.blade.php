@@ -389,13 +389,13 @@
             <div class="col-lg-7 col-md-6 mb-3 mb-md-0">
                 <h1 class="acc-hero-title">
                     <i class="fas fa-chart-pie text-primary"></i>
-                    Financial & Accounting Hub
+                    {{ __('Financial & Accounting Hub') }}
                     <span class="badge badge-primary px-3 py-1 font-weight-normal" style="font-size: 0.75rem; border-radius: 20px;">
                         FY {{ $selectedYear }}
                     </span>
                 </h1>
                 <p class="acc-hero-subtitle">
-                    Real-time general ledger, student tuition cash flow, procurement approvals, and expense controls.
+                    {{ __('Real-time general ledger, student tuition cash flow, procurement approvals, and expense controls.') }}
                 </p>
             </div>
             <div class="col-lg-5 col-md-6 text-md-right d-flex flex-wrap align-items-center justify-content-md-end gap-2">
@@ -410,12 +410,12 @@
 
                 @if(in_array(Auth::user()->role, [0, 3]))
                 <button type="button" class="btn btn-acc btn-acc-primary mr-2 mb-2 mb-sm-0" data-toggle="modal" data-target="#quickAddTransactionModal">
-                    <i class="fas fa-plus-circle"></i> Quick Record
+                    <i class="fas fa-plus-circle"></i> {{ __('Quick Record') }}
                 </button>
                 @endif
 
                 <a href="{{ route('accounting.transactions') }}" class="btn btn-acc btn-acc-outline mb-2 mb-sm-0">
-                    <i class="fas fa-book-open"></i> Full Ledger
+                    <i class="fas fa-book-open"></i> {{ __('Full Ledger') }}
                 </a>
             </div>
         </div>
@@ -429,7 +429,7 @@
                 <div>
                     <div class="acc-metric-header">
                         <div>
-                            <div class="acc-metric-title">Total Revenue</div>
+                            <div class="acc-metric-title">{{ __('Total Revenue') }}</div>
                             <div class="acc-metric-value text-success">
                                 ${{ number_format($totalIncome, 2) }}
                             </div>
@@ -440,7 +440,7 @@
                     </div>
                 </div>
                 <div class="acc-metric-footer">
-                    <span><i class="fas fa-calendar-day mr-1"></i> Current Month:</span>
+                    <span><i class="fas fa-calendar-day mr-1"></i> {{ __('Current Month:') }}</span>
                     <strong class="text-success">+${{ number_format($monthIncome, 2) }}</strong>
                 </div>
             </div>
@@ -452,7 +452,7 @@
                 <div>
                     <div class="acc-metric-header">
                         <div>
-                            <div class="acc-metric-title">Operating Expenses</div>
+                            <div class="acc-metric-title">{{ __('Operating Expenses') }}</div>
                             <div class="acc-metric-value text-danger">
                                 ${{ number_format($totalExpense, 2) }}
                             </div>
@@ -463,7 +463,7 @@
                     </div>
                 </div>
                 <div class="acc-metric-footer">
-                    <span><i class="fas fa-calendar-day mr-1"></i> Current Month:</span>
+                    <span><i class="fas fa-calendar-day mr-1"></i> {{ __('Current Month:') }}</span>
                     <strong class="text-danger">-${{ number_format($monthExpense, 2) }}</strong>
                 </div>
             </div>
@@ -475,7 +475,7 @@
                 <div>
                     <div class="acc-metric-header">
                         <div>
-                            <div class="acc-metric-title">Net Ledger Balance</div>
+                            <div class="acc-metric-title">{{ __('Net Ledger Balance') }}</div>
                             <div class="acc-metric-value {{ $netBalance >= 0 ? 'text-primary' : 'text-danger' }}">
                                 ${{ number_format($netBalance, 2) }}
                             </div>
@@ -486,7 +486,7 @@
                     </div>
                 </div>
                 <div class="acc-metric-footer">
-                    <span><i class="fas fa-chart-line mr-1"></i> Month Margin:</span>
+                    <span><i class="fas fa-chart-line mr-1"></i> {{ __('Month Margin:') }}</span>
                     <strong class="{{ $monthNet >= 0 ? 'text-success' : 'text-danger' }}">
                         {{ $monthNet >= 0 ? '+' : '' }}${{ number_format($monthNet, 2) }}
                     </strong>
@@ -500,9 +500,9 @@
                 <div>
                     <div class="acc-metric-header">
                         <div>
-                            <div class="acc-metric-title">Pending Approvals</div>
+                            <div class="acc-metric-title">{{ __('Pending Approvals') }}</div>
                             <div class="acc-metric-value {{ ($pendingPRCount + $pendingFRCount) > 0 ? 'text-warning' : 'text-muted' }}">
-                                {{ $pendingPRCount + $pendingFRCount }} <span style="font-size: 0.95rem; font-weight: 600;">Items</span>
+                                {{ $pendingPRCount + $pendingFRCount }} <span style="font-size: 0.95rem; font-weight: 600;">{{ __('Items') }}</span>
                             </div>
                         </div>
                         <div class="acc-metric-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
@@ -511,11 +511,12 @@
                     </div>
                 </div>
                 <div class="acc-metric-footer">
-                    <span>Pending Value:</span>
+                    <span>{{ __('Pending Value:') }}</span>
                     <strong class="text-warning">${{ number_format($pendingPRAmount + $pendingFRAmount, 2) }}</strong>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- 3. Workflow Launchers (3 Fast-Navigation Cards) -->
@@ -530,33 +531,33 @@
                                 <i class="fas fa-cart-shopping"></i>
                             </div>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">Purchase Requests</h5>
-                                <small class="text-muted">Procurement & Vendors</small>
+                                <h5 class="mb-0 font-weight-bold">{{ __('Purchase Requests') }}</h5>
+                                <small class="text-muted">{{ __('Procurement & Vendors') }}</small>
                             </div>
                         </div>
                         @if($pendingPRCount > 0)
-                            <span class="badge badge-warning acc-module-badge">{{ $pendingPRCount }} Pending</span>
+                            <span class="badge badge-warning acc-module-badge">{{ $pendingPRCount }} {{ __('Pending') }}</span>
                         @else
-                            <span class="badge badge-success acc-module-badge">All Cleared</span>
+                            <span class="badge badge-success acc-module-badge">{{ __('All Cleared') }}</span>
                         @endif
                     </div>
                     <p class="text-muted small mb-3">
-                        Submit departmental asset requisitions, track vendor quotes, and route approvals for institutional purchases.
+                        {{ __('Submit departmental asset requisitions, track vendor quotes, and route approvals for institutional purchases.') }}
                     </p>
                     <div class="row text-center mb-3 py-2" style="background: var(--acc-subtle-bg); border-radius: 8px;">
                         <div class="col-6 border-right">
-                            <span class="d-block small text-muted">Total Requests</span>
+                            <span class="d-block small text-muted">{{ __('Total Requests') }}</span>
                             <strong class="h6 mb-0">{{ $totalPRCount }}</strong>
                         </div>
                         <div class="col-6">
-                            <span class="d-block small text-muted">Approved Value</span>
+                            <span class="d-block small text-muted">{{ __('Approved Value') }}</span>
                             <strong class="h6 mb-0 text-success">${{ number_format($approvedPRAmount, 0) }}</strong>
                         </div>
                     </div>
                 </div>
                 <div>
                     <a href="{{ route('purchase_req.index') }}" class="btn btn-block btn-acc btn-acc-outline justify-content-center">
-                        Manage Purchase Requests <i class="fas fa-arrow-right ml-1"></i>
+                        {{ __('Manage Purchase Requests') }} <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
             </div>
@@ -572,33 +573,33 @@
                                 <i class="fas fa-receipt"></i>
                             </div>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">Fee Receipts & Billing</h5>
-                                <small class="text-muted">Tuition & Invoicing</small>
+                                <h5 class="mb-0 font-weight-bold">{{ __('Fee Receipts & Billing') }}</h5>
+                                <small class="text-muted">{{ __('Tuition & Invoicing') }}</small>
                             </div>
                         </div>
                         @if($pendingFRCount > 0)
-                            <span class="badge badge-warning acc-module-badge">{{ $pendingFRCount }} Pending</span>
+                            <span class="badge badge-warning acc-module-badge">{{ $pendingFRCount }} {{ __('Pending') }}</span>
                         @else
-                            <span class="badge badge-success acc-module-badge">Reconciled</span>
+                            <span class="badge badge-success acc-module-badge">{{ __('Reconciled') }}</span>
                         @endif
                     </div>
                     <p class="text-muted small mb-3">
-                        Generate official student tuition invoices, record payments via ABA Payway & Cash, and track installment balances.
+                        {{ __('Generate official student tuition invoices, record payments via ABA Payway & Cash, and track installment balances.') }}
                     </p>
                     <div class="row text-center mb-3 py-2" style="background: var(--acc-subtle-bg); border-radius: 8px;">
                         <div class="col-6 border-right">
-                            <span class="d-block small text-muted">Collected Fees</span>
+                            <span class="d-block small text-muted">{{ __('Collected Fees') }}</span>
                             <strong class="h6 mb-0 text-success">${{ number_format($totalCollectedFees, 0) }}</strong>
                         </div>
                         <div class="col-6">
-                            <span class="d-block small text-muted">Outstanding Bal.</span>
+                            <span class="d-block small text-muted">{{ __('Outstanding Bal.') }}</span>
                             <strong class="h6 mb-0 text-danger">${{ number_format($totalOutstandingFees, 0) }}</strong>
                         </div>
                     </div>
                 </div>
                 <div>
                     <a href="{{ route('fee_receipt.index') }}" class="btn btn-block btn-acc btn-acc-outline justify-content-center">
-                        Manage Fee Receipts <i class="fas fa-arrow-right ml-1"></i>
+                        {{ __('Manage Fee Receipts') }} <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
             </div>
@@ -614,29 +615,29 @@
                                 <i class="fas fa-vault"></i>
                             </div>
                             <div>
-                                <h5 class="mb-0 font-weight-bold">General Ledger & P&L</h5>
-                                <small class="text-muted">Accounting Books</small>
+                                <h5 class="mb-0 font-weight-bold">{{ __('General Ledger & P&L') }}</h5>
+                                <small class="text-muted">{{ __('Accounting Books') }}</small>
                             </div>
                         </div>
-                        <span class="badge badge-info acc-module-badge">Annual Books</span>
+                        <span class="badge badge-info acc-module-badge">{{ __('Annual Books') }}</span>
                     </div>
                     <p class="text-muted small mb-3">
-                        Complete double-entry accounting records, salary disbursements, utilities, facility upkeep, and tax compliance entries.
+                        {{ __('Complete double-entry accounting records, salary disbursements, utilities, facility upkeep, and tax compliance entries.') }}
                     </p>
                     <div class="row text-center mb-3 py-2" style="background: var(--acc-subtle-bg); border-radius: 8px;">
                         <div class="col-6 border-right">
-                            <span class="d-block small text-muted">Total Ledger Entries</span>
-                            <strong class="h6 mb-0">{{ count($recentTransactions) }} Records</strong>
+                            <span class="d-block small text-muted">{{ __('Total Ledger Entries') }}</span>
+                            <strong class="h6 mb-0">{{ count($recentTransactions) }} {{ __('Records') }}</strong>
                         </div>
                         <div class="col-6">
-                            <span class="d-block small text-muted">Ledger Health</span>
-                            <strong class="h6 mb-0 text-primary">Balanced</strong>
+                            <span class="d-block small text-muted">{{ __('Ledger Health') }}</span>
+                            <strong class="h6 mb-0 text-primary">{{ __('Balanced') }}</strong>
                         </div>
                     </div>
                 </div>
                 <div>
                     <a href="{{ route('accounting.transactions') }}" class="btn btn-block btn-acc btn-acc-outline justify-content-center">
-                        Open Profit & Loss Ledger <i class="fas fa-arrow-right ml-1"></i>
+                        {{ __('Open Profit & Loss Ledger') }} <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
             </div>
@@ -651,14 +652,14 @@
                 <div class="acc-panel-header">
                     <h5 class="acc-panel-title">
                         <i class="fas fa-chart-line text-primary"></i>
-                        Monthly Revenue & Expense Trends (FY {{ $selectedYear }})
+                        {{ __('Monthly Revenue & Expense Trends') }} (FY {{ $selectedYear }})
                     </h5>
                     <div class="d-flex align-items-center gap-2">
                         <span class="badge badge-light px-2 py-1 text-muted border">
-                            <i class="fas fa-circle text-success mr-1" style="font-size: 8px;"></i> Revenue
+                            <i class="fas fa-circle text-success mr-1" style="font-size: 8px;"></i> {{ __('Revenue') }}
                         </span>
                         <span class="badge badge-light px-2 py-1 text-muted border ml-1">
-                            <i class="fas fa-circle text-danger mr-1" style="font-size: 8px;"></i> Expenses
+                            <i class="fas fa-circle text-danger mr-1" style="font-size: 8px;"></i> {{ __('Expenses') }}
                         </span>
                     </div>
                 </div>
@@ -676,7 +677,7 @@
                 <div class="acc-panel-header">
                     <h5 class="acc-panel-title">
                         <i class="fas fa-chart-pie text-purple"></i>
-                        Expense Allocation
+                        {{ __('Expense Allocation') }}
                     </h5>
                 </div>
                 <div class="acc-panel-body">
@@ -692,7 +693,7 @@
                             <span class="font-weight-bold text-danger">${{ number_format($cat->total, 2) }}</span>
                         </div>
                         @empty
-                        <p class="text-muted text-center py-2 mb-0">No expense records found.</p>
+                        <p class="text-muted text-center py-2 mb-0">{{ __('No expense records found.') }}</p>
                         @endforelse
                     </div>
                 </div>
@@ -706,7 +707,7 @@
             <li class="nav-item">
                 <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pendingApprovalsPane" role="tab">
                     <i class="fas fa-bell mr-1"></i>
-                    Pending Approvals
+                    {{ __('Pending Approvals') }}
                     @if(($pendingPRCount + $pendingFRCount) > 0)
                         <span class="badge badge-danger ml-2">{{ $pendingPRCount + $pendingFRCount }}</span>
                     @endif
@@ -714,17 +715,17 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="transactions-tab" data-toggle="tab" href="#recentTransactionsPane" role="tab">
-                    <i class="fas fa-list-check mr-1"></i> Recent Transactions
+                    <i class="fas fa-list-check mr-1"></i> {{ __('Recent Transactions') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="purchase-tab" data-toggle="tab" href="#recentPurchasePane" role="tab">
-                    <i class="fas fa-cart-flatbed mr-1"></i> Purchase Requests
+                    <i class="fas fa-cart-flatbed mr-1"></i> {{ __('Purchase Requests') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="fees-tab" data-toggle="tab" href="#recentFeesPane" role="tab">
-                    <i class="fas fa-receipt mr-1"></i> Student Fee Receipts
+                    <i class="fas fa-receipt mr-1"></i> {{ __('Student Fee Receipts') }}
                 </a>
             </li>
         </ul>
@@ -737,13 +738,13 @@
                     <table class="table acc-table mb-0">
                         <thead>
                             <tr>
-                                <th>Type / Reference</th>
-                                <th>Requester / Student</th>
-                                <th>Department / Details</th>
-                                <th>Date Needed / Paid Via</th>
-                                <th>Total Amount</th>
-                                <th>Status</th>
-                                <th class="text-right">Actions</th>
+                                <th>{{ __('Type / Reference') }}</th>
+                                <th>{{ __('Requester / Student') }}</th>
+                                <th>{{ __('Department / Details') }}</th>
+                                <th>{{ __('Date Needed / Paid Via') }}</th>
+                                <th>{{ __('Total Amount') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th class="text-right">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -757,7 +758,7 @@
                                         <div class="font-weight-bold text-primary">
                                             <i class="fas fa-cart-shopping mr-1 text-cyan"></i> {{ $pr->request_no }}
                                         </div>
-                                        <small class="text-muted">Purchase Request</small>
+                                        <small class="text-muted">{{ __('Purchase Request') }}</small>
                                     </td>
                                     <td>
                                         <div class="font-weight-bold">{{ $pr->requisitioner }}</div>
@@ -769,27 +770,27 @@
                                     </td>
                                     <td>
                                         <div>{{ $pr->date_needed ?? $pr->date_prepared }}</div>
-                                        <small class="text-muted">Vendor: {{ $pr->vendor ?? 'General' }}</small>
+                                        <small class="text-muted">{{ __('Vendor:') }} {{ $pr->vendor ?? 'General' }}</small>
                                     </td>
                                     <td>
                                         <strong class="text-danger">${{ number_format($pr->total, 2) }}</strong>
                                     </td>
                                     <td>
                                         <span class="badge-status pending">
-                                            <span class="pulse-badge"></span> Pending Review
+                                            <span class="pulse-badge"></span> {{ __('Pending Review') }}
                                         </span>
                                     </td>
                                     <td class="text-right">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('purchase_req.show', $pr->id) }}" class="btn btn-outline-secondary mr-1" title="View Details">
+                                            <a href="{{ route('purchase_req.show', $pr->id) }}" class="btn btn-outline-secondary mr-1" title="{{ __('View Details') }}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             @if(in_array(Auth::user()->role, [0, 3]))
                                             <button type="button" class="btn btn-action-approve btn-action-sm mr-1" onclick="handleQuickApprove('pr', {{ $pr->id }})">
-                                                <i class="fas fa-check"></i> Approve
+                                                <i class="fas fa-check"></i> {{ __('Approve') }}
                                             </button>
                                             <button type="button" class="btn btn-action-reject btn-action-sm" onclick="handleQuickReject('pr', {{ $pr->id }})">
-                                                <i class="fas fa-xmark"></i> Reject
+                                                <i class="fas fa-xmark"></i> {{ __('Reject') }}
                                             </button>
                                             @endif
                                         </div>
@@ -805,39 +806,39 @@
                                         <div class="font-weight-bold text-success">
                                             <i class="fas fa-receipt mr-1 text-success"></i> {{ $fr->receipt_no ?? ('REC-'.$fr->id) }}
                                         </div>
-                                        <small class="text-muted">Fee Receipt</small>
+                                        <small class="text-muted">{{ __('Fee Receipt') }}</small>
                                     </td>
                                     <td>
                                         <div class="font-weight-bold">{{ $fr->student_name ?? 'Student' }}</div>
-                                        <small class="text-muted">Class: {{ $fr->class_name ?? 'N/A' }}</small>
+                                        <small class="text-muted">{{ __('Class:') }} {{ $fr->class_name ?? 'N/A' }}</small>
                                     </td>
                                     <td>
-                                        <div>Tuition & School Services</div>
-                                        <small class="text-muted">Remaining Bal: ${{ number_format($fr->remaining_balance, 2) }}</small>
+                                        <div>{{ __('Tuition & School Services') }}</div>
+                                        <small class="text-muted">{{ __('Remaining Bal:') }} ${{ number_format($fr->remaining_balance, 2) }}</small>
                                     </td>
                                     <td>
                                         <div>{{ $fr->date }}</div>
-                                        <small class="text-muted">Via: {{ $fr->paid_via }}</small>
+                                        <small class="text-muted">{{ __('Via:') }} {{ $fr->paid_via }}</small>
                                     </td>
                                     <td>
                                         <strong class="text-success">${{ number_format($fr->paid, 2) }}</strong>
                                     </td>
                                     <td>
                                         <span class="badge-status pending">
-                                            <span class="pulse-badge"></span> Pending Review
+                                            <span class="pulse-badge"></span> {{ __('Pending Review') }}
                                         </span>
                                     </td>
                                     <td class="text-right">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('fee_receipt.show', $fr->id) }}" class="btn btn-outline-secondary mr-1" title="View Details">
+                                            <a href="{{ route('fee_receipt.show', $fr->id) }}" class="btn btn-outline-secondary mr-1" title="{{ __('View Details') }}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             @if(in_array(Auth::user()->role, [0, 3]))
                                             <button type="button" class="btn btn-action-approve btn-action-sm mr-1" onclick="handleQuickApprove('fr', {{ $fr->id }})">
-                                                <i class="fas fa-check"></i> Approve
+                                                <i class="fas fa-check"></i> {{ __('Approve') }}
                                             </button>
                                             <button type="button" class="btn btn-action-reject btn-action-sm" onclick="handleQuickReject('fr', {{ $fr->id }})">
-                                                <i class="fas fa-xmark"></i> Reject
+                                                <i class="fas fa-xmark"></i> {{ __('Reject') }}
                                             </button>
                                             @endif
                                         </div>
@@ -849,8 +850,8 @@
                                 <tr>
                                     <td colspan="7" class="text-center py-5 text-muted">
                                         <div class="mb-2"><i class="fas fa-circle-check text-success" style="font-size: 2.5rem;"></i></div>
-                                        <h6 class="font-weight-bold">All Financial Items Up-to-Date</h6>
-                                        <p class="small mb-0">No purchase requisitions or fee receipts are currently awaiting approval.</p>
+                                        <h6 class="font-weight-bold">{{ __('All Financial Items Up-to-Date') }}</h6>
+                                        <p class="small mb-0">{{ __('No purchase requisitions or fee receipts are currently awaiting approval.') }}</p>
                                     </td>
                                 </tr>
                             @endif
@@ -865,11 +866,11 @@
                     <table class="table acc-table mb-0">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Flow Type</th>
-                                <th>Category</th>
-                                <th>Description / Memo</th>
-                                <th class="text-right">Amount</th>
+                                <th>{{ __('Date') }}</th>
+                                <th>{{ __('Flow Type') }}</th>
+                                <th>{{ __('Category') }}</th>
+                                <th>{{ __('Description / Memo') }}</th>
+                                <th class="text-right">{{ __('Amount') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -882,11 +883,11 @@
                                     <td>
                                         @if($tx->type === 'profit')
                                             <span class="badge badge-success px-2 py-1 font-weight-normal">
-                                                <i class="fas fa-arrow-up mr-1"></i> Inflow
+                                                <i class="fas fa-arrow-up mr-1"></i> {{ __('Inflow') }}
                                             </span>
                                         @else
                                             <span class="badge badge-danger px-2 py-1 font-weight-normal">
-                                                <i class="fas fa-arrow-down mr-1"></i> Outflow
+                                                <i class="fas fa-arrow-down mr-1"></i> {{ __('Outflow') }}
                                             </span>
                                         @endif
                                     </td>
@@ -904,7 +905,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">No transactions recorded yet.</td>
+                                    <td colspan="5" class="text-center py-4 text-muted">{{ __('No transactions recorded yet.') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -918,13 +919,13 @@
                     <table class="table acc-table mb-0">
                         <thead>
                             <tr>
-                                <th>Request #</th>
-                                <th>Requisitioner</th>
-                                <th>Department</th>
-                                <th>Purpose</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th class="text-right">View</th>
+                                <th>{{ __('Request #') }}</th>
+                                <th>{{ __('Requisitioner') }}</th>
+                                <th>{{ __('Department') }}</th>
+                                <th>{{ __('Purpose') }}</th>
+                                <th>{{ __('Total') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th class="text-right">{{ __('View') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -937,7 +938,7 @@
                                     <td><strong>${{ number_format($pr->total, 2) }}</strong></td>
                                     <td>
                                         <span class="badge-status {{ $pr->status }}">
-                                            {{ ucfirst($pr->status) }}
+                                            {{ __(ucfirst($pr->status)) }}
                                         </span>
                                     </td>
                                     <td class="text-right">
@@ -948,7 +949,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">No purchase requests found.</td>
+                                    <td colspan="7" class="text-center py-4 text-muted">{{ __('No purchase requests found.') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -962,14 +963,14 @@
                     <table class="table acc-table mb-0">
                         <thead>
                             <tr>
-                                <th>Receipt #</th>
-                                <th>Student Name</th>
-                                <th>Class</th>
-                                <th>Payment Method</th>
-                                <th>Amount Paid</th>
-                                <th>Balance</th>
-                                <th>Status</th>
-                                <th class="text-right">PDF</th>
+                                <th>{{ __('Receipt #') }}</th>
+                                <th>{{ __('Student Name') }}</th>
+                                <th>{{ __('Class') }}</th>
+                                <th>{{ __('Payment Method') }}</th>
+                                <th>{{ __('Amount Paid') }}</th>
+                                <th>{{ __('Balance') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th class="text-right">{{ __('PDF') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -983,18 +984,18 @@
                                     <td>${{ number_format($fr->remaining_balance, 2) }}</td>
                                     <td>
                                         <span class="badge-status {{ $fr->status }}">
-                                            {{ ucfirst($fr->status) }}
+                                            {{ __(ucfirst($fr->status)) }}
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <a href="{{ route('fee_receipt.pdf', $fr->id) }}" target="_blank" class="btn btn-sm btn-outline-danger" title="Download Official PDF">
+                                        <a href="{{ route('fee_receipt.pdf', $fr->id) }}" target="_blank" class="btn btn-sm btn-outline-danger" title="{{ __('Download Official PDF') }}">
                                             <i class="fas fa-file-pdf"></i>
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4 text-muted">No fee receipts found.</td>
+                                    <td colspan="8" class="text-center py-4 text-muted">{{ __('No fee receipts found.') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -1016,7 +1017,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-bold" id="quickAddModalLabel">
-                        <i class="fas fa-plus-circle text-primary mr-1"></i> Record Financial Entry
+                        <i class="fas fa-plus-circle text-primary mr-1"></i> {{ __('Record Financial Entry') }}
                     </h5>
                     <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -1024,15 +1025,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="font-weight-bold">Transaction Type <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold">{{ __('Transaction Type') }} <span class="text-danger">*</span></label>
                         <select name="type" class="custom-select font-weight-bold" required>
-                            <option value="expense" selected>Expense (Outflow)</option>
-                            <option value="profit">Income / Profit (Inflow)</option>
+                            <option value="expense" selected>{{ __('Expense (Outflow)') }}</option>
+                            <option value="profit">{{ __('Income / Profit (Inflow)') }}</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="font-weight-bold">Category <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold">{{ __('Category') }} <span class="text-danger">*</span></label>
                         <input type="text" name="category" list="categoryOptions" class="form-control" placeholder="e.g. Staff Salaries, Lab Equipment, Utilities" required>
                         <datalist id="categoryOptions">
                             <option value="Staff Salaries">
@@ -1050,11 +1051,11 @@
 
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label class="font-weight-bold">Date <span class="text-danger">*</span></label>
+                            <label class="font-weight-bold">{{ __('Date') }} <span class="text-danger">*</span></label>
                             <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label class="font-weight-bold">Amount ($) <span class="text-danger">*</span></label>
+                            <label class="font-weight-bold">{{ __('Amount ($)') }} <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
@@ -1065,14 +1066,14 @@
                     </div>
 
                     <div class="form-group mb-0">
-                        <label class="font-weight-bold">Memo / Description</label>
+                        <label class="font-weight-bold">{{ __('Memo / Description') }}</label>
                         <textarea name="note" class="form-control" rows="2" placeholder="Optional context or reference notes..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold">
-                        <i class="fas fa-check mr-1"></i> Save Entry
+                        <i class="fas fa-check mr-1"></i> {{ __('Save Entry') }}
                     </button>
                 </div>
             </form>

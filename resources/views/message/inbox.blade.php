@@ -238,14 +238,14 @@
         <div class="row mb-3 align-items-center">
             <div class="col-sm-6">
                 <h1 class="m-0 font-weight-bold">
-                    <i class="fas fa-inbox text-primary mr-2"></i>Inbox & Approvals
+                    <i class="fas fa-inbox text-primary mr-2"></i>{{ __('Inbox & Approvals') }}
                 </h1>
-                <p class="text-muted text-sm mb-0">Manage approvals, financial requests, admissions, and notifications</p>
+                <p class="text-muted text-sm mb-0">{{ __('Manage approvals, financial requests, admissions, and notifications') }}</p>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right bg-transparent p-0">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item active">Inbox & Approvals</li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> {{ __('Home') }}</a></li>
+                    <li class="breadcrumb-item active">{{ __('Inbox & Approvals') }}</li>
                 </ol>
             </div>
         </div>
@@ -260,9 +260,9 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-primary text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">All Notifications</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('All Notifications') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($counts['total']) }}</h2>
-                        <span class="text-xs opacity-75">Incoming notifications & requests</span>
+                        <span class="text-xs opacity-75">{{ __('Incoming notifications & requests') }}</span>
                         <i class="fas fa-inbox icon-bg text-white"></i>
                     </div>
                 </div>
@@ -271,14 +271,14 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-warning text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Pending Action</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Pending Action') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">
                             {{ number_format($counts['pending']) }}
                             @if($counts['pending'] > 0)
-                                <span class="badge badge-danger text-xs align-middle ml-2" style="font-size: 11px;">Requires Action</span>
+                                <span class="badge badge-danger text-xs align-middle ml-2" style="font-size: 11px;">{{ __('Requires Action') }}</span>
                             @endif
                         </h2>
-                        <span class="text-xs opacity-75">Awaiting admin decision</span>
+                        <span class="text-xs opacity-75">{{ __('Awaiting admin decision') }}</span>
                         <i class="fas fa-hourglass-half icon-bg text-white"></i>
                     </div>
                 </div>
@@ -287,9 +287,9 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-success text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Approved / Resolved</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Approved / Resolved') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($counts['approved']) }}</h2>
-                        <span class="text-xs opacity-75">Successfully processed</span>
+                        <span class="text-xs opacity-75">{{ __('Successfully processed') }}</span>
                         <i class="fas fa-check-circle icon-bg text-white"></i>
                     </div>
                 </div>
@@ -298,13 +298,13 @@
             <div class="col-xl-3 col-sm-6">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-info text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Unread Messages</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Unread Messages') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($counts['unread']) }}</h2>
                         <div class="d-flex justify-content-between align-items-center mt-1">
-                            <span class="text-xs opacity-75">New updates</span>
+                            <span class="text-xs opacity-75">{{ __('New updates') }}</span>
                             @if($counts['unread'] > 0)
                                 <button type="button" id="topMarkAllReadBtn" class="btn btn-xs btn-outline-light py-0 px-2" style="border-radius: 20px;">
-                                    Mark all read
+                                    {{ __('Mark all read') }}
                                 </button>
                             @endif
                         </div>
@@ -323,57 +323,57 @@
                     <div class="card-body p-3">
 
                         <h6 class="text-xs font-weight-bold text-uppercase text-muted px-2 mb-2" style="letter-spacing: 1px;">
-                            Quick Filters
+                            {{ __('Quick Filters') }}
                         </h6>
                         <nav class="nav flex-column inbox-nav mb-4">
                             <a href="{{ route('message.inbox', ['tab' => 'all']) }}" class="nav-link {{ $tab === 'all' && empty($type) ? 'active' : '' }}">
-                                <span><i class="fas fa-inbox mr-2"></i> All Notifications</span>
+                                <span><i class="fas fa-inbox mr-2"></i> {{ __('All Notifications') }}</span>
                                 <span class="badge badge-light badge-pill">{{ $counts['total'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['tab' => 'pending']) }}" class="nav-link {{ $tab === 'pending' ? 'active' : '' }}">
-                                <span><i class="fas fa-hourglass-half text-warning mr-2"></i> Pending Approvals</span>
+                                <span><i class="fas fa-hourglass-half text-warning mr-2"></i> {{ __('Pending Approvals') }}</span>
                                 <span class="badge badge-warning badge-pill text-white">{{ $counts['pending'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['tab' => 'approved']) }}" class="nav-link {{ $tab === 'approved' ? 'active' : '' }}">
-                                <span><i class="fas fa-check-circle text-success mr-2"></i> Approved</span>
+                                <span><i class="fas fa-check-circle text-success mr-2"></i> {{ __('Approved') }}</span>
                                 <span class="badge badge-success badge-pill">{{ $counts['approved'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['tab' => 'rejected']) }}" class="nav-link {{ $tab === 'rejected' ? 'active' : '' }}">
-                                <span><i class="fas fa-times-circle text-danger mr-2"></i> Rejected</span>
+                                <span><i class="fas fa-times-circle text-danger mr-2"></i> {{ __('Rejected') }}</span>
                                 <span class="badge badge-danger badge-pill">{{ $counts['rejected'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['tab' => 'unread']) }}" class="nav-link {{ $tab === 'unread' ? 'active' : '' }}">
-                                <span><i class="far fa-envelope text-info mr-2"></i> Unread</span>
+                                <span><i class="far fa-envelope text-info mr-2"></i> {{ __('Unread') }}</span>
                                 <span class="badge badge-info badge-pill">{{ $counts['unread'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['tab' => 'starred']) }}" class="nav-link {{ $tab === 'starred' ? 'active' : '' }}">
-                                <span><i class="fas fa-star text-warning mr-2"></i> Starred</span>
+                                <span><i class="fas fa-star text-warning mr-2"></i> {{ __('Starred') }}</span>
                                 <span class="badge badge-secondary badge-pill">{{ $counts['starred'] }}</span>
                             </a>
                         </nav>
 
                         <h6 class="text-xs font-weight-bold text-uppercase text-muted px-2 mb-2" style="letter-spacing: 1px;">
-                            Flow Categories
+                            {{ __('Flow Categories') }}
                         </h6>
                         <nav class="nav flex-column inbox-nav">
                             <a href="{{ route('message.inbox', ['type' => 'purchase_request']) }}" class="nav-link {{ $type === 'purchase_request' ? 'active' : '' }}">
-                                <span><i class="fas fa-shopping-cart text-primary mr-2"></i> Purchase Requests</span>
+                                <span><i class="fas fa-shopping-cart text-primary mr-2"></i> {{ __('Purchase Requests') }}</span>
                                 <span class="badge badge-light badge-pill">{{ $counts['purchase'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['type' => 'fee_receipt']) }}" class="nav-link {{ $type === 'fee_receipt' ? 'active' : '' }}">
-                                <span><i class="fas fa-receipt text-success mr-2"></i> Fee Receipts</span>
+                                <span><i class="fas fa-receipt text-success mr-2"></i> {{ __('Fee Receipts') }}</span>
                                 <span class="badge badge-light badge-pill">{{ $counts['fee'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['type' => 'admission']) }}" class="nav-link {{ $type === 'admission' ? 'active' : '' }}">
-                                <span><i class="fas fa-user-graduate text-purple mr-2" style="color: #8b5cf6;"></i> Admissions</span>
+                                <span><i class="fas fa-user-graduate text-purple mr-2" style="color: #8b5cf6;"></i> {{ __('Admissions') }}</span>
                                 <span class="badge badge-light badge-pill">{{ $counts['admission'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['type' => 'attendance_request']) }}" class="nav-link {{ $type === 'attendance_request' ? 'active' : '' }}">
-                                <span><i class="fas fa-calendar-check text-info mr-2"></i> Attendance Requests</span>
+                                <span><i class="fas fa-calendar-check text-info mr-2"></i> {{ __('Attendance Requests') }}</span>
                                 <span class="badge badge-light badge-pill">{{ $counts['attendance'] }}</span>
                             </a>
                             <a href="{{ route('message.inbox', ['type' => 'general']) }}" class="nav-link {{ $type === 'general' ? 'active' : '' }}">
-                                <span><i class="fas fa-bullhorn text-secondary mr-2"></i> General Notices</span>
+                                <span><i class="fas fa-bullhorn text-secondary mr-2"></i> {{ __('General Notices') }}</span>
                             </a>
                         </nav>
 
@@ -452,23 +452,23 @@
                                         <i class="fas fa-inbox fa-3x text-primary opacity-50"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-weight-bold mb-1">No notifications found</h5>
+                                <h5 class="font-weight-bold mb-1">{{ __('No notifications found') }}</h5>
                                 <p class="text-muted text-sm mb-3">
                                     @if($search)
-                                        No items matched your search query "{{ $search }}".
+                                        {{ __('No items matched your search query ":search".', ['search' => $search]) }}
                                     @elseif($tab === 'pending')
-                                        You're all caught up! There are no pending approvals waiting for your review.
+                                        {{ __("You're all caught up! There are no pending approvals waiting for your review.") }}
                                     @elseif($tab === 'unread')
-                                        You have read all your notifications.
+                                        {{ __('You have read all your notifications.') }}
                                     @elseif($tab === 'starred')
-                                        You haven't starred any notifications yet.
+                                        {{ __("You haven't starred any notifications yet.") }}
                                     @else
-                                        There are no notifications in this folder.
+                                        {{ __('There are no notifications in this folder.') }}
                                     @endif
                                 </p>
                                 @if($search || $type || $tab !== 'all')
                                     <a href="{{ route('message.inbox') }}" class="btn btn-primary btn-sm px-3" style="border-radius: 20px;">
-                                        <i class="fas fa-arrow-left mr-1"></i> View All Notifications
+                                        <i class="fas fa-arrow-left mr-1"></i> {{ __('View All Notifications') }}
                                     </a>
                                 @endif
                             </div>
@@ -667,12 +667,12 @@
                                     AD
                                 </div>
                                 <div>
-                                    <h6 class="font-weight-bold mb-0" id="modalUserName">User Name</h6>
+                                    <h6 class="font-weight-bold mb-0" id="modalUserName">{{ __('User Name') }}</h6>
                                     <span class="text-xs text-muted" id="modalUserEmail">user@email.com</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs text-muted d-block">Submitted At</span>
+                                <span class="text-xs text-muted d-block">{{ __('Submitted At') }}</span>
                                 <span class="font-weight-bold text-sm" id="modalCreatedAt">-</span>
                             </div>
                         </div>
@@ -687,22 +687,22 @@
             <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between align-items-center">
                 <div>
                     <a href="#" id="modalDirectLink" target="_blank" class="btn btn-outline-secondary btn-sm" style="border-radius: 8px;">
-                        <i class="fas fa-external-link-alt mr-1"></i> Open Record Page
+                        <i class="fas fa-external-link-alt mr-1"></i> {{ __('Open Record Page') }}
                     </a>
                 </div>
                 <div class="d-flex align-items-center">
                     <!-- Admin Approval Controls -->
                     <div id="modalAdminActions" style="display: none;" class="mr-2">
                         <button type="button" class="btn btn-danger btn-sm mr-2" id="modalRejectBtn" style="border-radius: 8px;">
-                            <i class="fas fa-times mr-1"></i> Reject
+                            <i class="fas fa-times mr-1"></i> {{ __('Reject') }}
                         </button>
                         <button type="button" class="btn btn-success btn-sm" id="modalApproveBtn" style="border-radius: 8px;">
-                            <i class="fas fa-check mr-1"></i> Approve Request
+                            <i class="fas fa-check mr-1"></i> {{ __('Approve Request') }}
                         </button>
                     </div>
 
                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">
-                        Close
+                        {{ __('Close') }}
                     </button>
                 </div>
             </div>
@@ -978,7 +978,7 @@
                             <div>${p.date_needed || 'As soon as possible'}</div>
                         </div>
                         <div class="col-sm-8">
-                            <span class="text-xs text-muted">Purpose</span>
+                            <span class="text-xs text-muted">{{ __('Purpose') }}</span>
                             <div>${p.purpose || 'Not specified'}</div>
                         </div>
                     </div>
@@ -986,15 +986,15 @@
 
                 if (data.items_list && data.items_list.length > 0) {
                     html += `
-                        <h6 class="font-weight-bold mt-3 mb-2 text-xs text-uppercase text-muted">Requested Items Breakdown</h6>
+                        <h6 class="font-weight-bold mt-3 mb-2 text-xs text-uppercase text-muted">{{ __('Requested Items Breakdown') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Description</th>
-                                        <th class="text-center" width="70">Qty</th>
-                                        <th class="text-right" width="100">Unit Price</th>
-                                        <th class="text-right" width="110">Total</th>
+                                        <th>{{ __('Description') }}</th>
+                                        <th class="text-center" width="70">{{ __('Qty') }}</th>
+                                        <th class="text-right" width="100">{{ __('Unit Price') }}</th>
+                                        <th class="text-right" width="110">{{ __('Total') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1019,29 +1019,29 @@
                 html += `
                     <div class="row mb-3">
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Student Name</span>
+                            <span class="text-xs text-muted">{{ __('Student Name') }}</span>
                             <div class="font-weight-bold">${stu.student_name || 'N/A'} (Roll #${stu.roll || 'N/A'})</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Class & Section</span>
+                            <span class="text-xs text-muted">{{ __('Class & Section') }}</span>
                             <div class="font-weight-bold">${stu.class_name || 'Class'} - ${stu.section_name || 'Section'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Paid Amount</span>
+                            <span class="text-xs text-muted">{{ __('Paid Amount') }}</span>
                             <div class="font-weight-bold text-success font-size-lg">$${parseFloat(f.paid || 0).toFixed(2)}</div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Receipt Number</span>
+                            <span class="text-xs text-muted">{{ __('Receipt Number') }}</span>
                             <div>${f.receipt_no || 'N/A'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Receipt Date</span>
+                            <span class="text-xs text-muted">{{ __('Receipt Date') }}</span>
                             <div>${f.date || 'N/A'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Paid Via</span>
+                            <span class="text-xs text-muted">{{ __('Paid Via') }}</span>
                             <div>${f.paid_via || 'Cash'}</div>
                         </div>
                     </div>
@@ -1049,15 +1049,15 @@
 
                 if (data.items_list && data.items_list.length > 0) {
                     html += `
-                        <h6 class="font-weight-bold mt-3 mb-2 text-xs text-uppercase text-muted">Fee Items Breakdown</h6>
+                        <h6 class="font-weight-bold mt-3 mb-2 text-xs text-uppercase text-muted">{{ __('Fee Items Breakdown') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Description</th>
-                                        <th class="text-center" width="70">Qty</th>
-                                        <th class="text-right" width="100">Price</th>
-                                        <th class="text-right" width="110">Total</th>
+                                        <th>{{ __('Description') }}</th>
+                                        <th class="text-center" width="70">{{ __('Qty') }}</th>
+                                        <th class="text-right" width="100">{{ __('Price') }}</th>
+                                        <th class="text-right" width="110">{{ __('Total') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1081,25 +1081,25 @@
                 html += `
                     <div class="row mb-3">
                         <div class="col-sm-6">
-                            <span class="text-xs text-muted">Applicant Full Name</span>
+                            <span class="text-xs text-muted">{{ __('Applicant Full Name') }}</span>
                             <div class="font-weight-bold font-size-lg">${a.full_name || 'N/A'}</div>
                         </div>
                         <div class="col-sm-6">
-                            <span class="text-xs text-muted">Desired Course</span>
+                            <span class="text-xs text-muted">{{ __('Desired Course') }}</span>
                             <div class="font-weight-bold text-primary">${a.course || 'General'}</div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Email</span>
+                            <span class="text-xs text-muted">{{ __('Email') }}</span>
                             <div>${a.email || 'N/A'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Phone Number</span>
+                            <span class="text-xs text-muted">{{ __('Phone Number') }}</span>
                             <div>${a.phone || 'N/A'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Country</span>
+                            <span class="text-xs text-muted">{{ __('Country') }}</span>
                             <div>${a.country || 'N/A'}</div>
                         </div>
                     </div>
@@ -1111,20 +1111,20 @@
                 html += `
                     <div class="row mb-3">
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Teacher</span>
+                            <span class="text-xs text-muted">{{ __('Teacher') }}</span>
                             <div class="font-weight-bold">${data.teacher_name || 'Teacher'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Class & Section</span>
+                            <span class="text-xs text-muted">{{ __('Class & Section') }}</span>
                             <div class="font-weight-bold">${data.class_name || 'Class'} (${data.section_name || 'Section'})</div>
                         </div>
                         <div class="col-sm-4">
-                            <span class="text-xs text-muted">Attendance Date</span>
+                            <span class="text-xs text-muted">{{ __('Attendance Date') }}</span>
                             <div class="font-weight-bold text-primary">${att.date || 'N/A'}</div>
                         </div>
                     </div>
                     <div class="p-3 bg-light rounded">
-                        <span class="text-xs text-muted d-block mb-1">Reason for Edit Request:</span>
+                        <span class="text-xs text-muted d-block mb-1">{{ __('Reason for Edit Request:') }}</span>
                         <div class="font-italic text-dark">"${att.reason || 'No specific reason given'}"</div>
                     </div>
                 `;

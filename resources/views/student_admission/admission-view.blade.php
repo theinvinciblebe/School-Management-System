@@ -66,42 +66,42 @@
             <a href="https://mawaridtech.com/" rel="home">
                 <img fetchpriority="high" style="width: 80px; height: 80px; margin-left: 50px;" src="https://log.mawaridtech.com/customize_images/1747990172.png" alt="Mawarid logo">
             </a>
-            <h1 class="text-3xl font-bold align-center">ADMISSION FORM</h1>
+            <h1 class="text-3xl font-bold align-center">{{ __('ADMISSION FORM') }}</h1>
         </div>
 
         <div class="max-w-6xl p-6 bg-white">
             <div>
-                <h2 class="text-xl font-semibold border-b pb-2 mb-4 forminator-title">PERSONAL INFORMATION</h2>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-4 forminator-title">{{ __('PERSONAL INFORMATION') }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-medium mb-1">Full Name </label>
+                        <label class="block font-medium mb-1">{{ __('Full Name') }}</label>
                         <input type="text" name="name" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->full_name ?? 'N/A'}}" disabled>
                     </div>
 
                     <div>
-                        <label class="block font-medium mb-1">Email Address</label>
+                        <label class="block font-medium mb-1">{{ __('Email Address') }}</label>
                         <input type="email" name="email" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->gmail ?? 'N/A'}}" disabled>
 
                     </div>
 
                     <div>
-                        <label class="block font-medium mb-1">Gender</label>
+                        <label class="block font-medium mb-1">{{ __('Gender') }}</label>
                         <input type="email" name="email" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->gender ?? 'N/A'}}" disabled>
                     </div>
 
                     <div>
-                        <label class="block font-medium mb-1">Date of Birth</label>
+                        <label class="block font-medium mb-1">{{ __('Date of Birth') }}</label>
                         <input type="date" name="dob" class="w-full border rounded px-3 py-2 forminator-input"  value="{{ $admission->dob ?? 'N/A'}}" disabled>
 
                     </div>
 
                     <div>
-                        <label class="block font-medium mb-1">Phone</label>
+                        <label class="block font-medium mb-1">{{ __('Phone') }}</label>
                         <input type="text" name="phone" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->phone ?? 'N/A'}}" disabled>
 
                     </div>
                     <div>
-                        <label class="block font-medium mb-1">ZIP / Postal Code</label>
+                        <label class="block font-medium mb-1">{{ __('ZIP / Postal Code') }}</label>
                         <input type="text" name="zip" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->zip ?? 'N/A'}}" disabled>
 
                     </div>
@@ -117,7 +117,7 @@
                         @endphp
 
                     <div class="md:col-span-2">
-                        <label class="block font-medium mb-1">Address</label>
+                        <label class="block font-medium mb-1">{{ __('Address') }}</label>
                         <input type="text" name="state" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $address ?? 'N/A'}}" disabled>
                     </div>
 
@@ -127,72 +127,72 @@
             </div>
             <br>
             <div>
-                <h2 class="text-xl font-semibold border-b pb-2 mb-4 forminator-title">COURSE APPLYING FOR</h2>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-4 forminator-title">{{ __('COURSE APPLYING FOR') }}</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-medium mb-1">Courses</label>
+                        <label class="block font-medium mb-1">{{ __('Courses') }}</label>
                         <input type="text" name="course" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->course ?? 'N/A'}}" disabled>
 
                     </div>
 
                     <div>
-                        <label class="block font-medium mb-1">Mode of Study</label>
+                        <label class="block font-medium mb-1">{{ __('Mode of Study') }}</label>
                         <input type="text" name="mode" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->mode ?? 'N/A'}}" disabled>
 
                     </div>
 
                     <div class="md:col-span-2">
-                        <label class="block font-medium mb-1">Subject</label>
+                        <label class="block font-medium mb-1">{{ __('Subject') }}</label>
                         <input type="text" name="subject" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->subject ?? 'N/A'}}" disabled>
                     </div>
                 </div>
             </div>
             <br>
-            <h2 class="text-xl font-semibold border-b pb-2 mb-4 forminator-title">EDUCATIONAL BACKGROUND</h2>
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4 forminator-title">{{ __('EDUCATIONAL BACKGROUND') }}</h2>
             <div>
                 @php
                     $educationRaw = $admission->education ?? '[]';
                     $educationArray = json_decode($educationRaw, true) ?? [];
                     $educationList = implode(', ', $educationArray);
                 @endphp
-                <label class="block font-medium mb-1">Educational Background</label>
+                <label class="block font-medium mb-1">{{ __('Educational Background') }}</label>
                 <input type="text" name="education" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $educationList ?: 'N/A' }}" disabled>
             </div>
 
-            <h2 class="text-xl font-semibold border-b pb-2 mt-4 forminator-title">WORK EXPERIENCE</h2>
+            <h2 class="text-xl font-semibold border-b pb-2 mt-4 forminator-title">{{ __('WORK EXPERIENCE') }}</h2>
             <br>
             <div>
-                <label class="block font-medium mb-1">Work Experience</label>
+                <label class="block font-medium mb-1">{{ __('Work Experience') }}</label>
                 <input type="text" name="work_exp" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->work_exp ?? 'N/A'}}" disabled>
             </div>
 
-            <h2 class="text-xl font-semibold border-b pb-2 mt-6 forminator-title">GUARDIAN CONTACT</h2>
+            <h2 class="text-xl font-semibold border-b pb-2 mt-6 forminator-title">{{ __('GUARDIAN CONTACT') }}</h2>
         <br>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
-                    <label class="block font-medium mb-1">Name </label>
+                    <label class="block font-medium mb-1">{{ __('Name') }} </label>
                     <input type="text" name="guardian_name" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->guardian_name ?? 'N/A'}}" disabled>
                 </div>
 
                 <div>
-                    <label class="block font-medium mb-1">Relationship</label>
+                    <label class="block font-medium mb-1">{{ __('Relationship') }}</label>
                     <input type="text" name="guardian_relationship" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->guardian_relationship ?? 'N/A'}}" disabled>
                 </div>
 
                 <div>
-                    <label class="block font-medium mb-1">Email Address </label>
+                    <label class="block font-medium mb-1">{{ __('Email Address') }} </label>
                     <input type="email" name="guardian_email" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->guardian_email ?? 'N/A'}}" disabled>
                 </div>
 
                 <div>
-                    <label class="block font-medium mb-1">Phone <span class="forminator-required"></span></label>
+                    <label class="block font-medium mb-1">{{ __('Phone') }} <span class="forminator-required"></span></label>
                     <input type="text" name="guardian_phone" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->guardian_phone ?? 'N/A'}}" disabled>
                 </div>
             </div>
 
             <div>
-                <label class="block font-medium mb-1 mt-4">Reference</label>
+                <label class="block font-medium mb-1 mt-4">{{ __('Reference') }}</label>
                 <input type="text" name="reference" class="w-full border rounded px-3 py-2 forminator-input" value="{{ $admission->reference ?? 'N/A'}}" disabled>
 
             </div>
@@ -200,13 +200,13 @@
         <div class="max-w-lg mx-auto mt-4 text-right">
             <button onclick="window.print()" class="float-right bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center space-x-2 shadow-md">
                 <i class="fas fa-print"></i>
-                <span>Print</span>
+                <span>{{ __('Print') }}</span>
             </button>
             <button
                 onclick="createPdfDocument()"
                 class="float-left bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center space-x-2">
                 <i class="fas fa-download"></i>
-                <span>Generate PDF</span>
+                <span>{{ __('Generate PDF') }}</span>
             </button>
         </div>
     </div>

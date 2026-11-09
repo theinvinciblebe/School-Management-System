@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Calendar</h1>
+                    <h1>{{ __('Calendar') }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item active">Calendar</li>
+                        <li class="breadcrumb-item"><a href="/dashboard">{{ __('Home') }}</a></li>
+                        <li class="breadcrumb-item active">{{ __('Calendar') }}</li>
                     </ol>
                 </div>
             </div>
@@ -29,20 +29,20 @@
                     <div class="sticky-top mb-3">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Draggable Events</h4>
+                                <h4 class="card-title">{{ __('Draggable Events') }}</h4>
                             </div>
                             <div class="card-body">
                                 <!-- the events -->
                                 <div id="external-events">
-                                    <div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Lunch</div>
-                                    <div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative;">Go home</div>
-                                    <div class="external-event bg-info ui-draggable ui-draggable-handle" style="position: relative;">Do homework</div>
-                                    <div class="external-event bg-primary ui-draggable ui-draggable-handle" style="position: relative;">Work on UI design</div>
-                                    <div class="external-event bg-danger ui-draggable ui-draggable-handle" style="position: relative;">Sleep tight</div>
+                                    <div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">{{ __('Lunch') }}</div>
+                                    <div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative;">{{ __('Go home') }}</div>
+                                    <div class="external-event bg-info ui-draggable ui-draggable-handle" style="position: relative;">{{ __('Do homework') }}</div>
+                                    <div class="external-event bg-primary ui-draggable ui-draggable-handle" style="position: relative;">{{ __('Work on UI design') }}</div>
+                                    <div class="external-event bg-danger ui-draggable ui-draggable-handle" style="position: relative;">{{ __('Sleep tight') }}</div>
                                     <div class="checkbox">
                                         <label for="drop-remove">
                                             <input type="checkbox" id="drop-remove">
-                                            remove after drop
+                                            {{ __('remove after drop') }}
                                         </label>
                                     </div>
                                 </div>
@@ -52,7 +52,7 @@
                         <!-- /.card -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Create Event</h3>
+                                <h3 class="card-title">{{ __('Create Event') }}</h3>
                             </div>
                             <div class="card-body">
                                 <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
@@ -66,10 +66,10 @@
                                 </div>
                                 <!-- /btn-group -->
                                 <div class="input-group">
-                                    <input id="new-event" type="text" class="form-control" placeholder="Event Title">
+                                    <input id="new-event" type="text" class="form-control" placeholder="{{ __('Event Title') }}">
 
                                     <div class="input-group-append">
-                                        <button id="add-new-event" type="button" class="btn btn-primary">Add</button>
+                                        <button id="add-new-event" type="button" class="btn btn-primary">{{ __('Add') }}</button>
                                     </div>
                                     <!-- /btn-group -->
                                 </div>
@@ -787,6 +787,12 @@
                 left  : 'prev,next today',
                 center: 'title',
                 right : 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: "{{ __('today') }}",
+                month: "{{ __('month') }}",
+                week: "{{ __('week') }}",
+                day: "{{ __('day') }}"
             },
             themeSystem: 'bootstrap',
             //Random default events

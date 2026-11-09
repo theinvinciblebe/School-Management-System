@@ -429,10 +429,10 @@
                 <div class="col-12" style="grid-column: 1 / -1;">
                     <div class="empty-state-container">
                         <i class="fas fa-book-reader empty-state-icon"></i>
-                        <h4 class="font-weight-bold">No Subjects Found</h4>
-                        <p class="text-muted mb-3">No subjects have been assigned to <strong>{{ $class->name }}</strong> yet.</p>
+                        <h4 class="font-weight-bold">{{ __('No Subjects Found') }}</h4>
+                        <p class="text-muted mb-3">{{ __('No subjects have been assigned to :class yet.', ['class' => $class->name]) }}</p>
                         <a href="{{ route('myClass.index') }}" class="btn btn-outline-primary btn-sm px-3">
-                            <i class="fas fa-arrow-left mr-1"></i> Return to My Classes
+                            <i class="fas fa-arrow-left mr-1"></i> {{ __('Return to My Classes') }}
                         </a>
                     </div>
                 </div>
@@ -442,10 +442,10 @@
         <!-- No search matches empty state (hidden by default) -->
         <div id="noSubjectSearchMatches" class="empty-state-container mt-4" style="display: none;">
             <i class="fas fa-search empty-state-icon"></i>
-            <h4 class="font-weight-bold">No Matching Subjects Found</h4>
-            <p class="text-muted mb-3">No subjects match your current search keyword. Try a different search.</p>
+            <h4 class="font-weight-bold">{{ __('No Matching Subjects Found') }}</h4>
+            <p class="text-muted mb-3">{{ __('No subjects match your current search keyword. Try a different search.') }}</p>
             <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="resetSubjectSearch()">
-                <i class="fas fa-redo mr-1"></i> Clear Search
+                <i class="fas fa-redo mr-1"></i> {{ __('Clear Search') }}
             </button>
         </div>
     </div>

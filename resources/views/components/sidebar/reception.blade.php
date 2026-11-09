@@ -115,7 +115,6 @@
                 <i class="nav-icon fas fa-book-open"></i>
                 <p>
                     Subject
-                    <span class="right badge badge-danger">New</span>
                 </p>
             </a>
         </li>

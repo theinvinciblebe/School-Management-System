@@ -149,7 +149,7 @@ class ActivityLogController extends Controller
             Auth::user()
         );
 
-        return redirect()->route('activity.logs')->with('success', "Successfully purged {$deleted} activity logs ({$scopeText})!");
+        return redirect()->route('activity.logs')->with('success', __('Successfully purged :count activity logs (:scope)!', ['count' => $deleted, 'scope' => $scopeText]));
     }
 
     /**

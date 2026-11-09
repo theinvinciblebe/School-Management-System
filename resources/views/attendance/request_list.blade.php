@@ -75,17 +75,17 @@
         <div class="row mb-3 align-items-center">
             <div class="col-sm-6">
                 <h1 class="m-0 font-weight-bold">
-                    <i class="fas fa-clipboard-check text-info mr-2"></i>Attendance Edit Requests
+                    <i class="fas fa-clipboard-check text-info mr-2"></i>{{ __('Attendance Edit Requests') }}
                 </h1>
-                <p class="text-muted text-sm mb-0">Manage teacher attendance modification requests, approval status, and messages</p>
+                <p class="text-muted text-sm mb-0">{{ __('Manage teacher attendance modification requests, approval status, and messages') }}</p>
             </div>
             <div class="col-sm-6 text-sm-right mt-2 mt-sm-0">
                 <a href="{{ route('message.inbox', ['type' => 'attendance_request']) }}" class="btn btn-outline-primary btn-sm px-3 shadow-sm mr-2" style="border-radius: 20px;">
-                    <i class="fas fa-inbox mr-1"></i> View in Inbox Approvals
+                    <i class="fas fa-inbox mr-1"></i> {{ __('View in Inbox Approvals') }}
                 </a>
                 <ol class="breadcrumb float-sm-right bg-transparent p-0 d-inline-block align-middle mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item active">Attendance Requests</li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> {{ __('Home') }}</a></li>
+                    <li class="breadcrumb-item active">{{ __('Attendance Requests') }}</li>
                 </ol>
             </div>
         </div>
@@ -100,9 +100,9 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-primary text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">All Requests</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('All Requests') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($counts['total']) }}</h2>
-                        <span class="text-xs opacity-75">Total modification submissions</span>
+                        <span class="text-xs opacity-75">{{ __('Total modification submissions') }}</span>
                         <i class="fas fa-clipboard-list icon-bg text-white"></i>
                     </div>
                 </div>
@@ -111,14 +111,14 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-warning text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Pending Approval</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Pending Approval') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">
                             {{ number_format($counts['pending']) }}
                             @if($counts['pending'] > 0 && $isAdmin)
-                                <span class="badge badge-danger text-xs align-middle ml-2" style="font-size: 11px;">Requires Action</span>
+                                <span class="badge badge-danger text-xs align-middle ml-2" style="font-size: 11px;">{{ __('Requires Action') }}</span>
                             @endif
                         </h2>
-                        <span class="text-xs opacity-75">Awaiting administrator review</span>
+                        <span class="text-xs opacity-75">{{ __('Awaiting administrator review') }}</span>
                         <i class="fas fa-hourglass-half icon-bg text-white"></i>
                     </div>
                 </div>
@@ -127,9 +127,9 @@
             <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-success text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Approved</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Approved') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($counts['approved']) }}</h2>
-                        <span class="text-xs opacity-75">Unlocked for teacher editing</span>
+                        <span class="text-xs opacity-75">{{ __('Unlocked for teacher editing') }}</span>
                         <i class="fas fa-check-circle icon-bg text-white"></i>
                     </div>
                 </div>
@@ -138,9 +138,9 @@
             <div class="col-xl-3 col-sm-6">
                 <div class="card metric-card shadow-sm border-0 bg-gradient-info text-white h-100">
                     <div class="card-body p-3">
-                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">Rejected / Done</span>
+                        <span class="text-uppercase text-xs font-weight-bold" style="letter-spacing: 0.5px;">{{ __('Rejected / Done') }}</span>
                         <h2 class="font-weight-bold mt-1 mb-0">{{ number_format($counts['rejected'] + $counts['completed']) }}</h2>
-                        <span class="text-xs opacity-75">Processed requests</span>
+                        <span class="text-xs opacity-75">{{ __('Processed requests') }}</span>
                         <i class="fas fa-archive icon-bg text-white"></i>
                     </div>
                 </div>
@@ -159,22 +159,22 @@
                         <ul class="nav nav-pills">
                             <li class="nav-item">
                                 <a class="nav-link py-1 px-3 {{ $tab === 'all' ? 'active' : '' }}" href="{{ route('attendance.requestList', ['tab' => 'all']) }}">
-                                    All <span class="badge badge-light ml-1">{{ $counts['total'] }}</span>
+                                    {{ __('All') }} <span class="badge badge-light ml-1">{{ $counts['total'] }}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link py-1 px-3 {{ $tab === 'pending' ? 'active' : '' }}" href="{{ route('attendance.requestList', ['tab' => 'pending']) }}">
-                                    Pending <span class="badge badge-warning text-white ml-1">{{ $counts['pending'] }}</span>
+                                    {{ __('Pending') }} <span class="badge badge-warning text-white ml-1">{{ $counts['pending'] }}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link py-1 px-3 {{ $tab === 'approved' ? 'active' : '' }}" href="{{ route('attendance.requestList', ['tab' => 'approved']) }}">
-                                    Approved <span class="badge badge-success ml-1">{{ $counts['approved'] }}</span>
+                                    {{ __('Approved') }} <span class="badge badge-success ml-1">{{ $counts['approved'] }}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link py-1 px-3 {{ $tab === 'rejected' ? 'active' : '' }}" href="{{ route('attendance.requestList', ['tab' => 'rejected']) }}">
-                                    Rejected <span class="badge badge-danger ml-1">{{ $counts['rejected'] }}</span>
+                                    {{ __('Rejected') }} <span class="badge badge-danger ml-1">{{ $counts['rejected'] }}</span>
                                 </a>
                             </li>
                         </ul>
@@ -187,7 +187,7 @@
                                 <input type="hidden" name="tab" value="{{ $tab }}">
                             @endif
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" class="form-control" placeholder="Search teacher, class, date, reason..." value="{{ $search ?? '' }}" style="border-radius: 20px 0 0 20px;">
+                                <input type="text" name="search" class="form-control" placeholder="{{ __('Search teacher, class, date, reason...') }}" value="{{ $search ?? '' }}" style="border-radius: 20px 0 0 20px;">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary" type="submit" style="border-radius: 0 20px 20px 0;">
                                         <i class="fas fa-search"></i>
@@ -209,7 +209,7 @@
                                 <i class="fas fa-calendar-check fa-3x text-info opacity-50"></i>
                             </span>
                         </div>
-                        <h5 class="font-weight-bold mb-1">No attendance requests found</h5>
+                        <h5 class="font-weight-bold mb-1">{{ __('No attendance requests found') }}</h5>
                         <p class="text-muted text-sm mb-3">
                             @if($search)
                                 No records matched your search query "{{ $search }}".
@@ -221,7 +221,7 @@
                         </p>
                         @if($search || $tab !== 'all')
                             <a href="{{ route('attendance.requestList') }}" class="btn btn-info btn-sm px-3" style="border-radius: 20px;">
-                                <i class="fas fa-arrow-left mr-1"></i> View All Requests
+                                <i class="fas fa-arrow-left mr-1"></i> {{ __('View All Requests') }}
                             </a>
                         @endif
                     </div>
@@ -230,12 +230,12 @@
                         <table class="table table-hover request-table mb-0">
                             <thead>
                                 <tr class="bg-light">
-                                    <th style="width: 250px;">Teacher</th>
-                                    <th>Class & Section</th>
-                                    <th>Target Date</th>
-                                    <th>Reason for Edit</th>
-                                    <th>Status</th>
-                                    <th class="text-right" style="width: 190px;">Actions</th>
+                                    <th style="width: 250px;">{{ __('Teacher') }}</th>
+                                    <th>{{ __('Class & Section') }}</th>
+                                    <th>{{ __('Target Date') }}</th>
+                                    <th>{{ __('Reason for Edit') }}</th>
+                                    <th>{{ __('Status') }}</th>
+                                    <th class="text-right" style="width: 190px;">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -388,7 +388,7 @@
                             TE
                         </div>
                         <div>
-                            <h6 class="font-weight-bold mb-0" id="modalTeacherName">Teacher Name</h6>
+                            <h6 class="font-weight-bold mb-0" id="modalTeacherName">{{ __('Teacher Name') }}</h6>
                             <span class="text-xs text-muted" id="modalTeacherEmail">teacher@mail.com</span>
                         </div>
                     </div>
@@ -397,24 +397,24 @@
                 <!-- Request Parameters -->
                 <div class="row mb-3">
                     <div class="col-6">
-                        <span class="text-xs text-muted">Class & Section</span>
+                        <span class="text-xs text-muted">{{ __('Class & Section') }}</span>
                         <div class="font-weight-bold" id="modalClassSection">-</div>
                     </div>
                     <div class="col-6">
-                        <span class="text-xs text-muted">Attendance Date</span>
+                        <span class="text-xs text-muted">{{ __('Attendance Date') }}</span>
                         <div class="font-weight-bold text-primary" id="modalDate">-</div>
                     </div>
                 </div>
 
                 <!-- Justification Callout -->
                 <div class="p-3 bg-light rounded mb-3 border-left" style="border-left: 4px solid #0ea5e9 !important; border-radius: 8px;">
-                    <span class="text-xs text-uppercase text-muted font-weight-bold d-block mb-1">Teacher's Reason / Justification</span>
+                    <span class="text-xs text-uppercase text-muted font-weight-bold d-block mb-1">{{ __("Teacher's Reason / Justification") }}</span>
                     <p class="mb-0 text-dark font-italic" id="modalReason" style="font-size: 13.5px;"></p>
                 </div>
 
                 <div class="text-center">
                     <a href="{{ route('message.inbox', ['type' => 'attendance_request']) }}" class="text-xs text-info">
-                        <i class="fas fa-inbox mr-1"></i> View related messages in Inbox & Approvals
+                        <i class="fas fa-inbox mr-1"></i> {{ __('View related messages in Inbox & Approvals') }}
                     </a>
                 </div>
             </div>
@@ -422,14 +422,14 @@
             <!-- Footer -->
             <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between">
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 8px;">
-                    Close
+                    {{ __('Close') }}
                 </button>
                 <div id="modalAdminButtons" style="display: none;">
                     <button type="button" class="btn btn-danger btn-sm mr-2" id="modalRejectBtn" style="border-radius: 8px;">
-                        <i class="fas fa-times mr-1"></i> Reject
+                        <i class="fas fa-times mr-1"></i> {{ __('Reject') }}
                     </button>
                     <button type="button" class="btn btn-success btn-sm" id="modalApproveBtn" style="border-radius: 8px;">
-                        <i class="fas fa-check mr-1"></i> Approve Request
+                        <i class="fas fa-check mr-1"></i> {{ __('Approve Request') }}
                     </button>
                 </div>
             </div>

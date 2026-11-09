@@ -1,45 +1,39 @@
 @extends('layout.main')
 @section('content')
-{{--    <style>--}}
-{{--        .scrollable-card {--}}
-{{--            max-height: 500px; /* You can set any height */--}}
-{{--            overflow-y: auto;  /* Adds vertical scrolling when content exceeds height */--}}
-{{--        }--}}
-{{--    </style>--}}
     <div class="row">
         <div class="card col-md-8 mx-auto my-3">
             <div class="card card-info">
                 <div class="card-header text-center">
-                    <h3 class="card-title">Admit New Student</h3>
+                    <h3 class="card-title">{{ __('Admit New Student') }}</h3>
                 </div>
                 <div class="card-body scrollable-card">
                     <form action="{{ route('students.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="name">Name</label>
+                                <label for="name">{{ __('Name') }}</label>
                                 <div class="input-group mb-3 ">
                                     <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-user"></i>
                                     </span>
                                     </div>
-                                    <input type="text" name="name" class="form-control" placeholder="Student Name" required>
+                                    <input type="text" name="name" class="form-control" placeholder="{{ __('Student Name') }}" required>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="birthday">Date Of Birth</label>
+                                <label for="birthday">{{ __('Date of Birth') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         <i class="fas fa-calendar"></i>
                                     </span>
                                     </div>
-                                    <input type="date" name="birthday" class="form-control" placeholder="Birthday" required>
+                                    <input type="date" name="birthday" class="form-control" placeholder="{{ __('Birthday') }}" required>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="sex">Sex</label>
+                                <label for="sex">{{ __('Sex') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -47,24 +41,24 @@
                                     </span>
                                     </div>
                                     <select name="sex" class="form-control" required>
-                                        <option value="1">Male</option>
-                                        <option value="0">Female</option>
+                                        <option value="1">{{ __('Male') }}</option>
+                                        <option value="0">{{ __('Female') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="address">Address</label>
+                                <label for="address">{{ __('Address') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fas fa-location-arrow"></i>
                                 </span>
                                     </div>
-                                    <input type="text" name="address" class="form-control" placeholder="123 Main st" required>
+                                    <input type="text" name="address" class="form-control" placeholder="{{ __('123 Main st') }}" required>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="address">Telephone</label>
+                                <label for="phone">{{ __('Telephone') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -75,7 +69,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="address">Email</label>
+                                <label for="email">{{ __('Email') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -87,10 +81,9 @@
                             </div>
                         </div>
 
-
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="class_id">Class</label>
+                                <label for="class_id">{{ __('Class') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
@@ -98,7 +91,7 @@
                                         </span>
                                     </div>
                                     <select name="class_id" id="class_id" class="form-control" required>
-                                        <option value="">Select Class</option>
+                                        <option value="">{{ __('Select Class') }}</option>
                                         @foreach($classes as $class)
                                             <option value="{{ $class->class_id }}">{{ $class->name }}</option>
                                         @endforeach
@@ -106,7 +99,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="section_id">Section</label>
+                                <label for="section_id">{{ __('Section') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -114,71 +107,56 @@
                                 </span>
                                     </div>
                                     <select name="section_id" id="section_id" class="form-control" required>
-                                        <option value="">Select Class First</option>
+                                        <option value="">{{ __('Select Class First') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="parent_name">Parent Name</label>
+                                <label for="parent_name">{{ __('Parent Name') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fas fa-user"></i>
                                 </span>
                                     </div>
-                                    <input type="text" name="parent_name" class="form-control" placeholder="Enter Parent Name">
+                                    <input type="text" name="parent_name" class="form-control" placeholder="{{ __('Enter Parent Name') }}">
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="parent_phone">Parent Telephone</label>
+                                <label for="parent_phone">{{ __('Parent Telephone') }}</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fas fa-phone"></i>
                                 </span>
                                     </div>
-                                    <input type="text" name="parent_phone" class="form-control" placeholder="Enter Parent Telephone">
+                                    <input type="text" name="parent_phone" class="form-control" placeholder="{{ __('Enter Parent Telephone') }}">
                                 </div>
                             </div>
                             <input type="hidden" name="roll" value="{{ old('roll', $student->roll ?? '') }}">
-
-                            {{--                            <div class="form-group col-md-6">--}}
-{{--                                <label for="roll">Roll</label>--}}
-{{--                                <div class="input-group mb-3">--}}
-{{--                                    <div class="input-group-prepend">--}}
-{{--                                <span class="input-group-text">--}}
-{{--                                    <i class="fas fa-id-badge"></i>--}}
-{{--                                </span>--}}
-{{--                                    </div>--}}
-{{--                                    <input type="number" name="roll" class="form-control" required>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputFile">File input</label>
+                            <label for="exampleInputFile">{{ __('Profile Photo') }}</label>
                             <div class="input-group">
                                 <div class="custom-file">
                                     <input type="file" name="file" accept="image/*" class="custom-file-input" id="exampleInputFile" onchange="previewFile()">
-                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    <label class="custom-file-label" for="exampleInputFile">{{ __('Choose file') }}</label>
                                 </div>
                                 <div class="input-group-append">
-                                    <span class="input-group-text">Upload</span>
+                                    <span class="input-group-text">{{ __('Upload') }}</span>
                                 </div>
                             </div>
                             <!-- Preview Image -->
                             <img id="previewImage" src="#" alt="Image Preview" style="max-width: 150px; display: none; margin-top: 10px;">
                         </div>
 
-
                         <p class="text-muted">
-                            Note: The default password for the newly created user will be <strong>123456</strong>.
-                            The user can change it later from their account settings.
+                            {{ __('Note: The default password for the newly created user will be 123456. The user can change it later from their account settings.') }}
                         </p>
 
-
-                        <button type="submit" class="btn btn-success">Admit Student</button>
-                        <a href="{{ url()->previous() }}" class="btn btn-secondary float-right">Back</a>
+                        <button type="submit" class="btn btn-success">{{ __('Admit Student') }}</button>
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary float-right">{{ __('Back') }}</a>
                     </form>
                 </div>
             </div>
@@ -186,18 +164,17 @@
 
     </div>
 
-
     <!-- AJAX to load sections based on selected class -->
     <script>
         document.getElementById('class_id').addEventListener('change', function () {
             const classId = this.value;
             const sectionSelect = document.getElementById('section_id');
-            sectionSelect.innerHTML = '<option value="">Loading...</option>';
+            sectionSelect.innerHTML = '<option value="">{{ __("Loading...") }}</option>';
 
             fetch(`/get-sections-by-class/${classId}`)
                 .then(response => response.json())
                 .then(data => {
-                    sectionSelect.innerHTML = '<option value="">Select Section</option>';
+                    sectionSelect.innerHTML = '<option value="">{{ __("Select Section") }}</option>';
                     data.sections.forEach(section => {
                         sectionSelect.innerHTML += `<option value="${section.section_id}">${section.name}</option>`;
                     });

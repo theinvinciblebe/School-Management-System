@@ -304,22 +304,22 @@
             <div class="col-lg-7 col-md-6 mb-3 mb-md-0">
                 <h1 class="sub-hero-title">
                     <i class="fas fa-book-bookmark text-primary"></i>
-                    Class Curriculum & Subject Hub
+                    {{ __('Class Curriculum & Subject Hub') }}
                     <span class="badge badge-primary px-3 py-1 font-weight-normal" style="font-size: 0.75rem; border-radius: 20px;">
-                        Curriculum Process
+                        {{ __('Curriculum Process') }}
                     </span>
                 </h1>
                 <p class="sub-hero-subtitle">
-                    Select an academic class below to configure syllabus subjects, assign specialist teachers, and manage class course modules.
+                    {{ __('Select an academic class below to configure syllabus subjects, assign specialist teachers, and manage class course modules.') }}
                 </p>
             </div>
             <div class="col-lg-5 col-md-6 text-md-right d-flex flex-wrap align-items-center justify-content-md-end gap-2">
                 @if (in_array(Auth::user()->role, [0, 4]))
                     <button type="button" class="btn btn-sub-primary mr-2 mb-2 mb-sm-0 shadow-sm" data-toggle="modal" data-target="#quickAddSubjectModal">
-                        <i class="fas fa-plus-circle"></i> Add Subject
+                        <i class="fas fa-plus-circle"></i> {{ __('Add Subject') }}
                     </button>
                     <a href="{{ route('class.index') }}" class="btn btn-sub-outline mb-2 mb-sm-0">
-                        <i class="fas fa-layer-group"></i> Manage Classes
+                        <i class="fas fa-layer-group"></i> {{ __('Manage Classes') }}
                     </a>
                 @endif
             </div>
@@ -331,9 +331,9 @@
         <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <div class="sub-metric-card">
                 <div>
-                    <div class="sub-metric-label">Academic Classes</div>
+                    <div class="sub-metric-label">{{ __('Academic Classes') }}</div>
                     <div class="sub-metric-val text-primary">{{ $totalClasses }}</div>
-                    <small class="text-muted">Configured Streams</small>
+                    <small class="text-muted">{{ __('Configured Streams') }}</small>
                 </div>
                 <div class="sub-metric-icon" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
                     <i class="fas fa-graduation-cap"></i>
@@ -344,9 +344,9 @@
         <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <div class="sub-metric-card">
                 <div>
-                    <div class="sub-metric-label">Active Subjects</div>
+                    <div class="sub-metric-label">{{ __('Active Subjects') }}</div>
                     <div class="sub-metric-val text-success">{{ $totalSubjects }}</div>
-                    <small class="text-muted">Syllabus Modules</small>
+                    <small class="text-muted">{{ __('Syllabus Modules') }}</small>
                 </div>
                 <div class="sub-metric-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
                     <i class="fas fa-book-open"></i>
@@ -357,9 +357,9 @@
         <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <div class="sub-metric-card">
                 <div>
-                    <div class="sub-metric-label">Faculty Instructors</div>
+                    <div class="sub-metric-label">{{ __('Faculty Instructors') }}</div>
                     <div class="sub-metric-val text-info">{{ $totalTeachers }}</div>
-                    <small class="text-muted">Qualified Teachers</small>
+                    <small class="text-muted">{{ __('Qualified Teachers') }}</small>
                 </div>
                 <div class="sub-metric-icon" style="background: rgba(6, 182, 212, 0.12); color: #06b6d4;">
                     <i class="fas fa-chalkboard-user"></i>
@@ -370,9 +370,9 @@
         <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <div class="sub-metric-card">
                 <div>
-                    <div class="sub-metric-label">Enrolled Students</div>
+                    <div class="sub-metric-label">{{ __('Enrolled Students') }}</div>
                     <div class="sub-metric-val text-warning">{{ $totalStudents }}</div>
-                    <small class="text-muted">Active Class Learners</small>
+                    <small class="text-muted">{{ __('Active Class Learners') }}</small>
                 </div>
                 <div class="sub-metric-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
                     <i class="fas fa-users-viewfinder"></i>
@@ -388,8 +388,8 @@
                 <div class="sub-step-item">
                     <div class="sub-step-num" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">1</div>
                     <div>
-                        <strong class="d-block small">Select Class Program</strong>
-                        <span class="text-muted text-xs">Choose the target class stream below</span>
+                        <strong class="d-block small">{{ __('Select Class Program') }}</strong>
+                        <span class="text-muted text-xs">{{ __('Choose the target class stream below') }}</span>
                     </div>
                 </div>
             </div>
@@ -397,8 +397,8 @@
                 <div class="sub-step-item">
                     <div class="sub-step-num" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">2</div>
                     <div>
-                        <strong class="d-block small">Configure Subjects & Faculty</strong>
-                        <span class="text-muted text-xs">Add subjects and assign specialist teachers</span>
+                        <strong class="d-block small">{{ __('Configure Subjects & Faculty') }}</strong>
+                        <span class="text-muted text-xs">{{ __('Add subjects and assign specialist teachers') }}</span>
                     </div>
                 </div>
             </div>
@@ -406,8 +406,8 @@
                 <div class="sub-step-item">
                     <div class="sub-step-num" style="background: linear-gradient(135deg, #10b981, #059669);">3</div>
                     <div>
-                        <strong class="d-block small">Class Routine & Evaluation</strong>
-                        <span class="text-muted text-xs">Manage timetable periods and student grades</span>
+                        <strong class="d-block small">{{ __('Class Routine & Evaluation') }}</strong>
+                        <span class="text-muted text-xs">{{ __('Manage timetable periods and student grades') }}</span>
                     </div>
                 </div>
             </div>
@@ -424,7 +424,7 @@
                             <i class="fas fa-search text-muted"></i>
                         </span>
                     </div>
-                    <input type="text" id="classSearchInput" class="form-control border-left-0" placeholder="Filter classes by name, code, room, or subject..." style="border-radius: 0 8px 8px 0;">
+                    <input type="text" id="classSearchInput" class="form-control border-left-0" placeholder="{{ __('Filter classes by name, code, room, or subject...') }}" style="border-radius: 0 8px 8px 0;">
                 </div>
             </div>
 
@@ -432,23 +432,23 @@
                 <!-- Status Filter Buttons -->
                 <div class="btn-group btn-group-sm mr-2 mb-2 mb-sm-0" role="group">
                     <button type="button" class="btn btn-primary active class-filter-btn" data-filter="all">
-                        All ({{ $totalClasses }})
+                        {{ __('All') }} ({{ $totalClasses }})
                     </button>
                     <button type="button" class="btn btn-outline-secondary class-filter-btn" data-filter="has-subjects">
-                        With Subjects
+                        {{ __('With Subjects') }}
                     </button>
                     <button type="button" class="btn btn-outline-secondary class-filter-btn" data-filter="no-subjects">
-                        Empty
+                        {{ __('Empty') }}
                     </button>
                 </div>
 
                 <!-- View Switcher (Grid vs Table) -->
                 <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-secondary active view-toggle-btn" id="viewGridBtn" title="Grid Card View">
-                        <i class="fas fa-table-cells-large"></i> Grid
+                    <button type="button" class="btn btn-outline-secondary active view-toggle-btn" id="viewGridBtn" title="{{ __('Grid Card View') }}">
+                        <i class="fas fa-table-cells-large"></i> {{ __('Grid') }}
                     </button>
-                    <button type="button" class="btn btn-outline-secondary view-toggle-btn" id="viewTableBtn" title="List Table View">
-                        <i class="fas fa-list"></i> Table
+                    <button type="button" class="btn btn-outline-secondary view-toggle-btn" id="viewTableBtn" title="{{ __('List Table View') }}">
+                        <i class="fas fa-list"></i> {{ __('Table') }}
                     </button>
                 </div>
             </div>
@@ -497,21 +497,21 @@
                                 </span>
                                 <div>
                                     <h5 class="font-weight-bold mb-1">
-                                        <a href="{{ route('subject.index', ['class_id' => $c->class_id]) }}" class="text-reset text-decoration-none" title="Manage Subjects">
+                                        <a href="{{ route('subject.index', ['class_id' => $c->class_id]) }}" class="text-reset text-decoration-none" title="{{ __('Manage Subjects') }}">
                                             {{ $c->name }}
                                         </a>
                                     </h5>
                                     <div class="text-xs text-muted">
-                                        <span class="badge badge-light border text-muted mr-1">Code: <b>{{ $c->class_code ?? 'N/A' }}</b></span>
+                                        <span class="badge badge-light border text-muted mr-1">{{ __('Code') }}: <b>{{ $c->class_code ?? 'N/A' }}</b></span>
                                         @if(!empty($c->class_room))
-                                            <span class="badge badge-light border text-muted">Room: <b>{{ $c->class_room }}</b></span>
+                                            <span class="badge badge-light border text-muted">{{ __('Room') }}: <b>{{ $c->class_room }}</b></span>
                                         @endif
                                     </div>
                                 </div>
                             </div>
 
                             <span class="badge {{ $cSubjects->count() > 0 ? $palette['badge'] : 'badge-secondary' }} px-2 py-1 text-xs" style="border-radius: 8px;">
-                                {{ $cSubjects->count() }} {{ Str::plural('Subject', $cSubjects->count()) }}
+                                {{ $cSubjects->count() }} {{ __('Subjects') }}
                             </span>
                         </div>
 
@@ -519,12 +519,12 @@
                         <div class="sub-card-body">
                             <div class="mb-3">
                                 <span class="text-xs text-uppercase font-weight-bold text-muted d-block mb-2" style="letter-spacing: 0.5px;">
-                                    <i class="fas fa-list-check mr-1 text-primary"></i> Curriculum Subjects:
+                                    <i class="fas fa-list-check mr-1 text-primary"></i> {{ __('Curriculum Subjects') }}:
                                 </span>
 
                                 <div class="d-flex flex-wrap" style="min-height: 48px;">
                                     @forelse($cSubjects as $s)
-                                        <span class="subject-pill" title="Instructor: {{ $s->teacher_name ?? 'Unassigned' }}">
+                                        <span class="subject-pill" title="{{ __('Instructor') }}: {{ $s->teacher_name ?? __('Unassigned') }}">
                                             <i class="fas fa-book text-muted" style="font-size: 10px;"></i>
                                             <span>{{ $s->name }}</span>
                                             @if($s->teacher_name)
@@ -533,11 +533,11 @@
                                         </span>
                                     @empty
                                         <div class="w-100 py-2 px-3 rounded text-center small text-muted" style="background: var(--sub-subtle-bg); border: 1px dashed var(--sub-card-border);">
-                                            <i class="fas fa-circle-info mr-1"></i> No subjects assigned to this class yet.
+                                            <i class="fas fa-circle-info mr-1"></i> {{ __('No subjects assigned to this class yet.') }}
                                             @if(in_array(Auth::user()->role, [0, 4]))
                                                 <div class="mt-1">
                                                     <a href="javascript:void(0)" onclick="openAddSubjectForClass({{ $c->class_id }}, '{{ addslashes($c->name) }}')" class="font-weight-bold text-primary">
-                                                        + Add First Subject
+                                                        + {{ __('Add First Subject') }}
                                                     </a>
                                                 </div>
                                             @endif
@@ -549,14 +549,14 @@
                             <!-- Meta Details: Class Teacher & Sections -->
                             <div class="row pt-2 border-top" style="font-size: 12px;">
                                 <div class="col-7 pr-1">
-                                    <span class="text-muted d-block text-xs">Class In-charge</span>
+                                    <span class="text-muted d-block text-xs">{{ __('Class In-charge') }}</span>
                                     <span class="font-weight-bold text-truncate d-block">
                                         <i class="fas fa-chalkboard-user mr-1 text-muted"></i>
-                                        {{ $c->teacher_name ?? 'Not Assigned' }}
+                                        {{ $c->teacher_name ?? __('Not Assigned') }}
                                     </span>
                                 </div>
                                 <div class="col-5 pl-1 text-right">
-                                    <span class="text-muted d-block text-xs">Students</span>
+                                    <span class="text-muted d-block text-xs">{{ __('Students') }}</span>
                                     <span class="font-weight-bold text-primary">
                                         <i class="fas fa-user-graduate mr-1"></i>
                                         {{ $cStudentsCount }}
@@ -568,16 +568,16 @@
                         <!-- Card Footer -->
                         <div class="sub-card-footer">
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('students.byClass', $c->class_id) }}" class="btn btn-sub-outline btn-sm py-1 px-2" title="View Students Roster">
-                                    <i class="fas fa-users mr-1"></i> Roster
+                                <a href="{{ route('students.byClass', $c->class_id) }}" class="btn btn-sub-outline btn-sm py-1 px-2" title="{{ __('View Students Roster') }}">
+                                    <i class="fas fa-users mr-1"></i> {{ __('Roster') }}
                                 </a>
-                                <a href="{{ route('class_routines.index', $c->class_id) }}" class="btn btn-sub-outline btn-sm py-1 px-2 ml-1" title="View Timetable Routine">
-                                    <i class="fas fa-calendar-days mr-1"></i> Routine
+                                <a href="{{ route('class_routines.index', $c->class_id) }}" class="btn btn-sub-outline btn-sm py-1 px-2 ml-1" title="{{ __('View Timetable Routine') }}">
+                                    <i class="fas fa-calendar-days mr-1"></i> {{ __('Routine') }}
                                 </a>
                             </div>
 
                             <a href="{{ route('subject.index', ['class_id' => $c->class_id]) }}" class="btn btn-sub-primary btn-sm py-1 px-3 shadow-sm font-weight-bold">
-                                <span>Manage Subjects</span>
+                                <span>{{ __('Manage Subjects') }}</span>
                                 <i class="fas fa-arrow-right ml-1 text-xs"></i>
                             </a>
                         </div>
@@ -587,8 +587,8 @@
             @empty
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-folder-open fa-3x text-muted opacity-50 mb-3"></i>
-                    <h5 class="font-weight-bold">No Classes Available</h5>
-                    <p class="text-muted small">No class programs have been registered in the system yet.</p>
+                    <h5 class="font-weight-bold">{{ __('No Classes Available') }}</h5>
+                    <p class="text-muted small">{{ __('No class programs have been registered in the system yet.') }}</p>
                 </div>
             @endforelse
         </div>
@@ -596,9 +596,10 @@
         <!-- No Filter Results Message -->
         <div id="noGridMatchMessage" class="text-center py-5" style="display: none;">
             <i class="fas fa-search fa-3x text-muted opacity-50 mb-3"></i>
-            <h5 class="font-weight-bold">No matching classes found</h5>
-            <p class="text-muted small">Try adjusting your search criteria or filter options.</p>
-            <button type="button" class="btn btn-sm btn-sub-outline" onclick="resetClassFilters()">Reset Filters</button>
+            <h5 class="font-weight-bold">{{ __('No matching classes found') }}</h5>
+            <p class="text-muted small">{{ __('Try adjusting your search criteria or filter options.') }}</p>
+            <button type="button" class="btn btn-sm btn-sub-outline" onclick="resetClassFilters()">{{ __('Reset Filters') }}</button>
+        </div>
         </div>
     </div>
 
@@ -609,12 +610,12 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
-                        <th>Class Name</th>
-                        <th>Code & Room</th>
-                        <th>Class In-charge</th>
-                        <th>Assigned Subjects</th>
-                        <th class="text-center" style="width: 90px;">Students</th>
-                        <th class="text-right" style="width: 200px;">Actions</th>
+                        <th>{{ __('Class Name') }}</th>
+                        <th>{{ __('Code & Room') }}</th>
+                        <th>{{ __('Class In-charge') }}</th>
+                        <th>{{ __('Assigned Subjects') }}</th>
+                        <th class="text-center" style="width: 90px;">{{ __('Students') }}</th>
+                        <th class="text-right" style="width: 200px;">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -640,13 +641,13 @@
                                 </strong>
                             </td>
                             <td>
-                                <span class="badge badge-light border text-muted mr-1">Code: <b>{{ $c->class_code ?? 'N/A' }}</b></span>
+                                <span class="badge badge-light border text-muted mr-1">{{ __('Code') }}: <b>{{ $c->class_code ?? 'N/A' }}</b></span>
                                 @if(!empty($c->class_room))
-                                    <span class="badge badge-light border text-muted">Room: <b>{{ $c->class_room }}</b></span>
+                                    <span class="badge badge-light border text-muted">{{ __('Room') }}: <b>{{ $c->class_room }}</b></span>
                                 @endif
                             </td>
                             <td>
-                                <span>{{ $c->teacher_name ?? 'Not Assigned' }}</span>
+                                <span>{{ $c->teacher_name ?? __('Not Assigned') }}</span>
                             </td>
                             <td>
                                 <div class="d-flex flex-wrap align-items-center">
@@ -655,10 +656,10 @@
                                             {{ $s->name }}
                                         </span>
                                     @empty
-                                        <span class="text-xs text-muted font-italic">No subjects</span>
+                                        <span class="text-xs text-muted font-italic">{{ __('No subjects') }}</span>
                                     @endforelse
                                     @if($cSubjects->count() > 4)
-                                        <span class="badge badge-primary text-xs">+{{ $cSubjects->count() - 4 }} more</span>
+                                        <span class="badge badge-primary text-xs">+{{ $cSubjects->count() - 4 }} {{ __('more') }}</span>
                                     @endif
                                 </div>
                             </td>
@@ -667,14 +668,14 @@
                             </td>
                             <td class="text-right">
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('students.byClass', $c->class_id) }}" class="btn btn-outline-secondary btn-sm" title="Roster">
+                                    <a href="{{ route('students.byClass', $c->class_id) }}" class="btn btn-outline-secondary btn-sm" title="{{ __('Roster') }}">
                                         <i class="fas fa-users"></i>
                                     </a>
-                                    <a href="{{ route('class_routines.index', $c->class_id) }}" class="btn btn-outline-secondary btn-sm" title="Routine">
+                                    <a href="{{ route('class_routines.index', $c->class_id) }}" class="btn btn-outline-secondary btn-sm" title="{{ __('Routine') }}">
                                         <i class="fas fa-calendar-days"></i>
                                     </a>
                                     <a href="{{ route('subject.index', ['class_id' => $c->class_id]) }}" class="btn btn-primary btn-sm font-weight-bold ml-1">
-                                        <i class="fas fa-book-open mr-1"></i> Subjects
+                                        <i class="fas fa-book-open mr-1"></i> {{ __('Subjects') }}
                                     </a>
                                 </div>
                             </td>
@@ -687,8 +688,8 @@
         <!-- No Table Match Message -->
         <div id="noTableMatchMessage" class="text-center py-5" style="display: none;">
             <i class="fas fa-search fa-3x text-muted opacity-50 mb-3"></i>
-            <h5 class="font-weight-bold">No matching classes found</h5>
-            <p class="text-muted small">Try adjusting your search query.</p>
+            <h5 class="font-weight-bold">{{ __('No matching classes found') }}</h5>
+            <p class="text-muted small">{{ __('Try adjusting your search query.') }}</p>
         </div>
     </div>
 
@@ -703,7 +704,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-bold" id="quickAddModalLabel">
-                        <i class="fas fa-plus-circle text-primary mr-1"></i> Add Subject Module
+                        <i class="fas fa-plus-circle text-primary mr-1"></i> {{ __('Add Subject Module') }}
                     </h5>
                     <button type="button" class="close text-muted" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -711,35 +712,35 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="font-weight-bold">Academic Class <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold">{{ __('Academic Class') }} <span class="text-danger">*</span></label>
                         <select name="class_id" id="modalClassSelect" class="custom-select font-weight-bold" required>
-                            <option value="" disabled selected>-- Select Target Class --</option>
+                            <option value="" disabled selected>-- {{ __('Select Target Class') }} --</option>
                             @foreach($classes as $c)
-                                <option value="{{ $c->class_id }}">{{ $c->name }} ({{ $c->class_code ?? 'Class' }})</option>
+                                <option value="{{ $c->class_id }}">{{ $c->name }} ({{ $c->class_code ?? __('Class') }})</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="font-weight-bold">Subject Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g. Advanced Laravel, UI/UX Design, Data Structures" required>
+                        <label class="font-weight-bold">{{ __('Subject Name') }} <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="{{ __('e.g. Advanced Laravel, UI/UX Design, Data Structures') }}" required>
                     </div>
 
                     <div class="form-group mb-0">
-                        <label class="font-weight-bold">Assign Specialist Teacher</label>
+                        <label class="font-weight-bold">{{ __('Assign Specialist Teacher') }}</label>
                         <select name="teacher_id" class="custom-select">
-                            <option value="">-- No Teacher Assigned Yet --</option>
+                            <option value="">-- {{ __('No Teacher Assigned Yet') }} --</option>
                             @foreach($teachers as $t)
-                                <option value="{{ $t->teacher_id }}">{{ $t->name }} (Teacher #{{ $t->teacher_id }})</option>
+                                <option value="{{ $t->teacher_id }}">{{ $t->name }} ({{ __('Teacher') }} #{{ $t->teacher_id }})</option>
                             @endforeach
                         </select>
-                        <small class="text-muted mt-1 d-block">You can reassign or update instructors anytime from the class subject table.</small>
+                        <small class="text-muted mt-1 d-block">{{ __('You can reassign or update instructors anytime from the class subject table.') }}</small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold">
-                        <i class="fas fa-check mr-1"></i> Save Subject
+                        <i class="fas fa-check mr-1"></i> {{ __('Save Subject') }}
                     </button>
                 </div>
             </form>

@@ -322,11 +322,11 @@
             <div class="row align-items-center">
                 <div class="col-lg-7 col-md-12 mb-3 mb-lg-0">
                     <span class="badge badge-light px-3 py-1 mb-2 font-weight-bold text-primary">
-                        <i class="fas fa-calendar-alt mr-1"></i> Academic Scheduling
+                        <i class="fas fa-calendar-alt mr-1"></i> {{ __('Academic Scheduling') }}
                     </span>
-                    <h2 class="font-weight-bold mb-2">Class Routines & Timetables</h2>
+                    <h2 class="font-weight-bold mb-2">{{ __('Class Routines & Timetables') }}</h2>
                     <p class="mb-0 text-white-50" style="font-size: 1rem;">
-                        Select a class below to view full weekly timetable routines, schedule lecture hours, and organize teacher assignments.
+                        {{ __('Select a class below to view full weekly timetable routines, schedule lecture hours, and organize teacher assignments.') }}
                     </p>
                 </div>
                 <div class="col-lg-5 col-md-12">
@@ -334,19 +334,19 @@
                         <div class="col-4">
                             <div class="hero-stat-card text-center">
                                 <div class="stat-number">{{ $classes->count() }}</div>
-                                <div class="stat-label">Classes</div>
+                                <div class="stat-label">{{ __('Classes') }}</div>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="hero-stat-card text-center">
                                 <div class="stat-number">{{ $totalRoutines }}</div>
-                                <div class="stat-label">Routines</div>
+                                <div class="stat-label">{{ __('Routines') }}</div>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="hero-stat-card text-center">
                                 <div class="stat-number">{{ $allSubjects->count() }}</div>
-                                <div class="stat-label">Subjects</div>
+                                <div class="stat-label">{{ __('Subjects') }}</div>
                             </div>
                         </div>
                     </div>
@@ -361,7 +361,7 @@
                     <!-- Search Input -->
                     <div class="col-lg-5 col-md-6 mb-2 mb-lg-0">
                         <div class="input-group search-input-group">
-                            <input type="text" id="classFilterSearch" class="form-control" placeholder="Search by class name, code, room, or teacher...">
+                            <input type="text" id="classFilterSearch" class="form-control" placeholder="{{ __('Search by class name, code, room, or teacher...') }}">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-search text-muted"></i></span>
                             </div>
@@ -372,7 +372,7 @@
                     <div class="col-lg-4 col-md-6 mb-2 mb-lg-0">
                         <div class="input-group">
                             <select id="quickClassDropdown" class="form-control" style="border-radius: 10px;">
-                                <option value="">-- Quick Jump to Class Timetable --</option>
+                                <option value="">{{ __('-- Quick Jump to Class Timetable --') }}</option>
                                 @foreach($classes as $c)
                                     <option value="{{ route('class_routines.index', $c->class_id) }}">
                                         {{ $c->name }} ({{ $c->class_code ?? 'Class #' . $c->class_id }})
@@ -386,7 +386,7 @@
                     <div class="col-lg-3 col-md-12 text-lg-right text-left">
                         @if (Auth::user()->role == 0 || Auth::user()->role == 4)
                             <button type="button" class="btn btn-primary px-3 shadow-sm font-weight-bold" style="border-radius: 10px; height: 44px;" data-toggle="modal" data-target="#quickAddRoutineModal">
-                                <i class="fas fa-plus-circle mr-1"></i> Add Routine
+                                <i class="fas fa-plus-circle mr-1"></i> {{ __('Add Routine') }}
                             </button>
                         @endif
                     </div>
@@ -394,15 +394,15 @@
 
                 <!-- Filter Tabs -->
                 <div class="d-flex flex-wrap align-items-center mt-3 pt-2 border-top" style="gap: 8px;">
-                    <span class="text-muted mr-2 font-weight-bold" style="font-size: 0.85rem;">Filter:</span>
+                    <span class="text-muted mr-2 font-weight-bold" style="font-size: 0.85rem;">{{ __('Filter:') }}</span>
                     <button type="button" class="filter-btn-pill active" data-filter="all">
-                        All Classes ({{ $classes->count() }})
+                        {{ __('All Classes') }} ({{ $classes->count() }})
                     </button>
                     <button type="button" class="filter-btn-pill" data-filter="active">
-                        With Routines ({{ $classes->where('routine_count', '>', 0)->count() }})
+                        {{ __('With Routines') }} ({{ $classes->where('routine_count', '>', 0)->count() }})
                     </button>
                     <button type="button" class="filter-btn-pill" data-filter="empty">
-                        No Routines ({{ $classes->where('routine_count', 0)->count() }})
+                        {{ __('No Routines') }} ({{ $classes->where('routine_count', 0)->count() }})
                     </button>
                 </div>
             </div>
@@ -440,16 +440,16 @@
                                 </span>
                             @else
                                 <span class="badge badge-light badge-pill-custom text-muted">
-                                    <i class="fas fa-door-open mr-1"></i>Room N/A
+                                    <i class="fas fa-door-open mr-1"></i>{{ __('Room N/A') }}
                                 </span>
                             @endif
                             @if($hasRoutines)
                                 <span class="badge badge-success badge-pill-custom ml-auto">
-                                    <i class="fas fa-check-circle mr-1"></i>Scheduled
+                                    <i class="fas fa-check-circle mr-1"></i>{{ __('Scheduled') }}
                                 </span>
                             @else
                                 <span class="badge badge-warning badge-pill-custom ml-auto">
-                                    <i class="fas fa-clock mr-1"></i>Needs Setup
+                                    <i class="fas fa-clock mr-1"></i>{{ __('Needs Setup') }}
                                 </span>
                             @endif
                         </div>
@@ -461,7 +461,7 @@
                         <div class="teacher-pill">
                             <i class="fas fa-chalkboard-teacher mr-2 text-primary"></i>
                             <span class="text-truncate">
-                                {{ $class->teacher_name ? 'Teacher: ' . $class->teacher_name : 'No Teacher Assigned' }}
+                                {{ $class->teacher_name ? __('Teacher:') . ' ' . $class->teacher_name : __('No Teacher Assigned') }}
                             </span>
                         </div>
 
@@ -469,11 +469,11 @@
                         <div class="routine-metrics-row">
                             <div class="metric-item">
                                 <div class="metric-val text-primary">{{ $class->routine_count }}</div>
-                                <div class="metric-lbl">Routine Slots</div>
+                                <div class="metric-lbl">{{ __('Routine Slots') }}</div>
                             </div>
                             <div class="metric-item">
                                 <div class="metric-val text-info">{{ $class->subject_count }}</div>
-                                <div class="metric-lbl">Subjects</div>
+                                <div class="metric-lbl">{{ __('Subjects') }}</div>
                             </div>
                         </div>
 
@@ -481,12 +481,12 @@
                         <div class="class-card-actions">
                             <a href="{{ route('class_routines.index', $class->class_id) }}" class="btn-view-routine">
                                 <i class="fas fa-calendar-alt" style="color: #fff;"></i>
-                                <span style="color: #fff;">View Timetable</span>
+                                <span style="color: #fff;">{{ __('View Timetable') }}</span>
                                 <i class="fas fa-arrow-right ml-auto" style="color: #fff;font-size: 0.8rem;"></i>
                             </a>
                             @if (Auth::user()->role == 0 || Auth::user()->role == 4)
                                 <button type="button" class="btn-quick-add"
-                                        title="Quick Add Routine"
+                                        title="{{ __('Quick Add Routine') }}"
                                         onclick="openScheduleForClass({{ $class->class_id }})">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -498,8 +498,8 @@
                 <div class="col-12" style="grid-column: 1 / -1;">
                     <div class="empty-state-container">
                         <i class="fas fa-folder-open empty-state-icon"></i>
-                        <h4 class="font-weight-bold">No Classes Available</h4>
-                        <p class="text-muted">No classes were found under your current account permissions.</p>
+                        <h4 class="font-weight-bold">{{ __('No Classes Available') }}</h4>
+                        <p class="text-muted">{{ __('No classes were found under your current account permissions.') }}</p>
                     </div>
                 </div>
             @endforelse
@@ -508,10 +508,10 @@
         <!-- No search matches empty state (hidden by default) -->
         <div id="noSearchMatches" class="empty-state-container mt-4" style="display: none;">
             <i class="fas fa-search empty-state-icon"></i>
-            <h4 class="font-weight-bold">No Matching Classes Found</h4>
-            <p class="text-muted mb-3">No classes match your current search criteria. Try a different keyword.</p>
+            <h4 class="font-weight-bold">{{ __('No Matching Classes Found') }}</h4>
+            <p class="text-muted mb-3">{{ __('No classes match your current search criteria. Try a different keyword.') }}</p>
             <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="resetClassSearch()">
-                <i class="fas fa-redo mr-1"></i> Clear Search
+                <i class="fas fa-redo mr-1"></i> {{ __('Clear Search') }}
             </button>
         </div>
     </div>
@@ -524,7 +524,7 @@
         <div class="modal-content" style="border-radius: 14px; overflow: hidden; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title font-weight-bold" id="quickAddRoutineModalLabel">
-                    <i class="fas fa-calendar-plus mr-2"></i> Schedule Class Routine
+                    <i class="fas fa-calendar-plus mr-2"></i> {{ __('Schedule Class Routine') }}
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -536,12 +536,12 @@
                     <!-- Class Selection -->
                     <div class="form-group">
                         <label for="modal_class_id" class="font-weight-bold">
-                            <i class="fas fa-chalkboard text-primary mr-1"></i> Select Class <span class="text-danger">*</span>
+                            <i class="fas fa-chalkboard text-primary mr-1"></i> {{ __('Select Class') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="class_id" id="modal_class_id" required onchange="filterSubjectsByClass(this.value)">
-                            <option value="">-- Choose Class --</option>
+                            <option value="">{{ __('-- Choose Class --') }}</option>
                             @foreach ($classes as $c)
-                                <option value="{{ $c->class_id }}" data-code="{{ $c->class_code }}">{{ $c->name }} (Room: {{ $c->class_room ?? 'N/A' }})</option>
+                                <option value="{{ $c->class_id }}" data-code="{{ $c->class_code }}">{{ $c->name }} ({{ __('Room:') }} {{ $c->class_room ?? __('N/A') }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -549,25 +549,25 @@
                     <!-- Subject Selection -->
                     <div class="form-group">
                         <label for="modal_subject_id" class="font-weight-bold">
-                            <i class="fas fa-book text-info mr-1"></i> Subject <span class="text-danger">*</span>
+                            <i class="fas fa-book text-info mr-1"></i> {{ __('Subject') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="subject_id" id="modal_subject_id" required>
-                            <option value="">-- First Select a Class Above --</option>
+                            <option value="">{{ __('-- First Select a Class Above --') }}</option>
                             @foreach ($allSubjects as $sub)
                                 <option value="{{ $sub->subject_id }}" data-class="{{ $sub->class_id }}">{{ $sub->name }}</option>
                             @endforeach
                         </select>
-                        <small id="subjectHelpText" class="form-text text-muted">Showing subjects assigned to the chosen class.</small>
+                        <small id="subjectHelpText" class="form-text text-muted">{{ __('Showing subjects assigned to the chosen class.') }}</small>
                     </div>
 
                     <!-- Day of the Week -->
                     <div class="form-group">
                         <label for="modal_day" class="font-weight-bold">
-                            <i class="fas fa-calendar-day text-warning mr-1"></i> Day of Week <span class="text-danger">*</span>
+                            <i class="fas fa-calendar-day text-warning mr-1"></i> {{ __('Day of Week') }} <span class="text-danger">*</span>
                         </label>
                         <select class="form-control" name="day" id="modal_day" required>
                             @foreach ($daysOfWeek as $day)
-                                <option value="{{ $day }}">{{ $day }}</option>
+                                <option value="{{ $day }}">{{ __($day) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -611,7 +611,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="modal_time_start" class="font-weight-bold">
-                                    <i class="fas fa-clock text-success mr-1"></i> Start Time <span class="text-danger">*</span>
+                                    <i class="fas fa-clock text-success mr-1"></i> {{ __('Start Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control" name="time_start" id="modal_time_start" required onchange="validateRoutineTimes()">
                                     @foreach($hours as $val => $label)
@@ -623,7 +623,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="modal_time_end" class="font-weight-bold">
-                                    <i class="fas fa-stopwatch text-danger mr-1"></i> End Time <span class="text-danger">*</span>
+                                    <i class="fas fa-stopwatch text-danger mr-1"></i> {{ __('End Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control" name="time_end" id="modal_time_end" required onchange="validateRoutineTimes()">
                                     @foreach($endHours as $val => $label)
@@ -636,13 +636,13 @@
 
                     <!-- Time Duration Notice -->
                     <div id="routineDurationAlert" class="alert alert-info py-2 px-3 mb-0" style="font-size: 0.88rem; border-radius: 8px;">
-                        <i class="fas fa-info-circle mr-1"></i> <span id="routineDurationText">Duration: 2 hours</span>
+                        <i class="fas fa-info-circle mr-1"></i> <span id="routineDurationText">{{ __('Duration:') }} 2 {{ __('hours') }}</span>
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="submit" id="btnSubmitRoutine" class="btn btn-primary px-4 font-weight-bold">
-                        <i class="fas fa-save mr-1"></i> Save Routine
+                        <i class="fas fa-save mr-1"></i> {{ __('Save Routine') }}
                     </button>
                 </div>
             </form>

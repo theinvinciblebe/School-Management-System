@@ -364,14 +364,16 @@ class AccountingController extends Controller
                 'sec.name as section_name',
                 DB::raw($this->sectionDurationExpression()),
                 'fr.receipt_no',
-//                'fr.paid',
-//                'fr.previous_balance',
-//                'fr.remaining_balance',
+                'fr.paid',
+                'fr.grand_total',
+                'fr.previous_balance',
+                'fr.remaining_balance',
                 'fr.paid_via',
                 'fr.date as receipt_date',
                 'fr.status',
                 'sec.start_date'
             )
+            ->orderBy('fr.id', 'desc')
             ->get();
 
         $students = DB::table('student_classes as sc')
@@ -907,7 +909,7 @@ class AccountingController extends Controller
     {
         $this->authorizeAccountingAccess();
 
-        $purchases = DB::table('purchase_request')->get();
+        $purchases = DB::table('purchase_request')->orderBy('id', 'desc')->get();
 
         $staffs = DB::table('staff')
             ->leftJoin('department', 'department.id', '=', 'staff.department_id')

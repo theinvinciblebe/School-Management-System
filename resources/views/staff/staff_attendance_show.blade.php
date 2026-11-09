@@ -229,13 +229,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="receipt-title">Staff Attendance Record</div>
+                <div class="receipt-title">{{ __('Staff Attendance Record') }}</div>
 {{--                <p class="text-muted">--}}
 {{--                    *Note: Receipt for Accountant.--}}
 {{--                </p>--}}
                 <table class="info-table">
                     <tr>
-                        <th class="col-6">Date</th>
+                        <th class="col-6">{{ __('Date') }}</th>
                         <td class="col-6">
                             <strong>{{ \Carbon\Carbon::parse($date)->format('D, d M Y') }}</strong>
                         </td>
@@ -243,11 +243,11 @@
                 </table>
                 <table class="info-table">
                     <tr>
-                        <th>S.No</th>
-                        <th>Employee Name</th>
-                        <th>Status</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
+                        <th>{{ __('S.No') }}</th>
+                        <th>{{ __('Employee Name') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Time In') }}</th>
+                        <th>{{ __('Time Out') }}</th>
                     </tr>
                     @forelse ($attendance as $index => $record)
                         <tr>
@@ -258,7 +258,7 @@
                                 @elseif($record->status == 'Undefined') gray
                                 @else black
                                 @endif">
-                                <b>{{ $record->status  }}</b>
+                                <b>{{ __($record->status) }}</b>
                             </td>
                             <td>{{ $record->time_in ?? '-' }}</td>
                             <td>{{ $record->time_out ?? '-' }}</td>
@@ -266,7 +266,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">No attendance records found.</td>
+                            <td colspan="5" class="text-center">{{ __('No attendance records found.') }}</td>
                         </tr>
                     @endforelse
                 </table>
@@ -295,13 +295,12 @@
 {{--                        <p>2. Receipt must be retained for any future references.</p>--}}
 {{--                        <p>3. For any queries, please contact the administration.</p>--}}
 {{--                    </div>--}}
-
 {{--                </div>--}}
 
-                <button class="print-btn" onclick="window.print();"><i class="fas fa-print"></i> Print</button>
-                <a href="{{ route('staffAttendance.index') }}" class="btn btn-secondary mt-3"><i class="fas fa-back"></i>Back to List</a>
+                <button class="print-btn" onclick="window.print();"><i class="fas fa-print"></i> {{ __('Print') }}</button>
+                <a href="{{ route('staffAttendance.index') }}" class="btn btn-secondary mt-3"><i class="fas fa-back"></i> {{ __('Back to List') }}</a>
                 <a href="{{ route('staffAttendance.pdf', $date) }}" class="btn btn-primary mt-3">
-                    <i class="fas fa-download"></i> Generate PDF
+                    <i class="fas fa-download"></i> {{ __('Generate PDF') }}
                 </a>
             </div>
         </div>

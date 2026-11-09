@@ -194,10 +194,10 @@
         <thead>
             <tr>
                 <th width="5%" style="text-align: center;">#</th>
-                <th width="10%">Roll</th>
-                <th width="40%">Student Name</th>
-                <th width="20%">Section</th>
-                <th width="25%" style="text-align: center;">Status</th>
+                <th width="10%">{{ __('Roll') }}</th>
+                <th width="40%">{{ __('Student Name') }}</th>
+                <th width="20%">{{ __('Section') }}</th>
+                <th width="25%" style="text-align: center;">{{ __('Status') }}</th>
             </tr>
         </thead>
         <tbody>

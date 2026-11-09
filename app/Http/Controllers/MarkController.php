@@ -68,6 +68,8 @@ class MarkController extends Controller
             ->select(
                 'student.student_id',
                 'student.name as student_name',
+                'student.sex',
+                'student.photo',
                 'class.name as class_name',
                 'section.name as section_name',
                 'section.section_id',
@@ -90,8 +92,9 @@ class MarkController extends Controller
 
         $sections = DB::table('section')->where('class_id', $class_id)->get();
         $class = DB::table('class')->where('class_id', $class_id)->first();
+        $classes = DB::table('class')->get();
 
-        return view('student_section.student_mark.index', compact('students', 'sections', 'class', 'marks'));
+        return view('student_section.student_mark.index', compact('students', 'sections', 'class', 'marks', 'classes'));
     }
 
     public function getStudentMarks($class_id, $student_id)

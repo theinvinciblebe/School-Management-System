@@ -403,13 +403,13 @@
                 <div class="d-flex flex-wrap align-items-center mt-3 pt-2 border-top" style="gap: 8px;">
                     <span class="text-muted mr-2 font-weight-bold" style="font-size: 0.85rem;">Filter:</span>
                     <button type="button" class="filter-btn-pill active" data-filter="all">
-                        All Classes ({{ $classes->count() }})
+                        {{ __('All Classes') }} ({{ $classes->count() }})
                     </button>
                     <button type="button" class="filter-btn-pill" data-filter="with-subjects">
-                        With Subjects ({{ $classes->where('subject_count', '>', 0)->count() }})
+                        {{ __('With Subjects') }} ({{ $classes->where('subject_count', '>', 0)->count() }})
                     </button>
                     <button type="button" class="filter-btn-pill" data-filter="no-subjects">
-                        No Subjects ({{ $classes->where('subject_count', 0)->count() }})
+                        {{ __('No Subjects') }} ({{ $classes->where('subject_count', 0)->count() }})
                     </button>
                 </div>
             </div>
@@ -505,8 +505,8 @@
                 <div class="col-12" style="grid-column: 1 / -1;">
                     <div class="empty-state-container">
                         <i class="fas fa-school empty-state-icon"></i>
-                        <h4 class="font-weight-bold">No Classes Available</h4>
-                        <p class="text-muted">You are currently not enrolled in any classes or no classes were found.</p>
+                        <h4 class="font-weight-bold">{{ __('No Classes Available') }}</h4>
+                        <p class="text-muted">{{ __('You are currently not enrolled in any classes or no classes were found.') }}</p>
                     </div>
                 </div>
             @endforelse
@@ -515,10 +515,10 @@
         <!-- No search matches empty state (hidden by default) -->
         <div id="noSearchMatches" class="empty-state-container mt-4" style="display: none;">
             <i class="fas fa-search empty-state-icon"></i>
-            <h4 class="font-weight-bold">No Matching Classes Found</h4>
-            <p class="text-muted mb-3">No classes match your current search criteria. Try a different keyword.</p>
+            <h4 class="font-weight-bold">{{ __('No Matching Classes Found') }}</h4>
+            <p class="text-muted mb-3">{{ __('No classes match your current search criteria. Try a different keyword.') }}</p>
             <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="resetClassSearch()">
-                <i class="fas fa-redo mr-1"></i> Clear Search
+                <i class="fas fa-redo mr-1"></i> {{ __('Clear Search') }}
             </button>
         </div>
     </div>
