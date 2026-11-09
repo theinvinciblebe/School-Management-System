@@ -4,8 +4,6 @@ A modern, comprehensive web-based school management platform built with **Larave
 
 ---
 
-<img width="1500" height="1500" alt="portfolio-SMS" src="https://github.com/user-attachments/assets/34e7fd37-59fc-431c-a150-ccb6d8b3a34e" />
-
 ---
 
 ## 🎯 Highlights & Core Features
