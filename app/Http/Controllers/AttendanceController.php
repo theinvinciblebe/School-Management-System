@@ -126,7 +126,7 @@ class AttendanceController extends Controller
                 'attendance_edit_requests.status',
                 'attendance_edit_requests.created_at',
                 'attendance_edit_requests.updated_at',
-                DB::raw('(SELECT id FROM notifications WHERE target_type = "attendance_request" AND target_id = attendance_edit_requests.id ORDER BY id DESC LIMIT 1) as notification_id')
+                DB::raw("(SELECT id FROM notifications WHERE target_type = 'attendance_request' AND target_id = attendance_edit_requests.id ORDER BY id DESC LIMIT 1) as notification_id")
             );
 
         if (!$isAdmin) {

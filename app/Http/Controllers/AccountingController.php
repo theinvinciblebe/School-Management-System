@@ -72,19 +72,25 @@ class AccountingController extends Controller
         }
 
         // Monthly trends for selectedYear
+        $monthExpr = match(DB::getDriverName()) {
+            'sqlite' => "CAST(strftime('%m', date) AS INTEGER)",
+            'pgsql'  => "CAST(EXTRACT(MONTH FROM date) AS INTEGER)",
+            default  => "MONTH(date)",
+        };
+
         $monthlyIncomeMap = DB::table('transactions')
-            ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
+            ->select(DB::raw("{$monthExpr} as month"), DB::raw('SUM(amount) as total'))
             ->where('type', 'profit')
             ->whereYear('date', $selectedYear)
-            ->groupBy(DB::raw('MONTH(date)'))
+            ->groupBy(DB::raw($monthExpr))
             ->pluck('total', 'month')
             ->toArray();
 
         $monthlyExpenseMap = DB::table('transactions')
-            ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
+            ->select(DB::raw("{$monthExpr} as month"), DB::raw('SUM(amount) as total'))
             ->where('type', 'expense')
             ->whereYear('date', $selectedYear)
-            ->groupBy(DB::raw('MONTH(date)'))
+            ->groupBy(DB::raw($monthExpr))
             ->pluck('total', 'month')
             ->toArray();
 
@@ -340,9 +346,21 @@ class AccountingController extends Controller
 
     protected function sectionDurationExpression(): string
     {
-        return DB::getDriverName() === 'sqlite'
-            ? "CAST(((strftime('%Y', sec.end_date) - strftime('%Y', sec.start_date)) * 12 + (strftime('%m', sec.end_date) - strftime('%m', sec.start_date))) AS INTEGER) as section_duration_months"
-            : "TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months";
+        $driver = DB::getDriverName();
+
+        if ($driver === 'sqlite') {
+            return "CAST(((strftime('%Y', sec.end_date) - strftime('%Y', sec.start_date)) * 12 + (strftime('%m', sec.end_date) - strftime('%m', sec.start_date))) AS INTEGER) as section_duration_months";
+        }
+
+        if ($driver === 'pgsql') {
+            return "CASE WHEN sec.start_date IS NULL OR sec.end_date IS NULL THEN NULL ELSE CAST(((EXTRACT(YEAR FROM CAST(sec.end_date AS DATE)) - EXTRACT(YEAR FROM CAST(sec.start_date AS DATE))) * 12 + (EXTRACT(MONTH FROM CAST(sec.end_date AS DATE)) - EXTRACT(MONTH FROM CAST(sec.start_date AS DATE)))) AS INTEGER) END as section_duration_months";
+        }
+
+        if ($driver === 'sqlsrv') {
+            return "DATEDIFF(month, sec.start_date, sec.end_date) as section_duration_months";
+        }
+
+        return "TIMESTAMPDIFF(MONTH, sec.start_date, sec.end_date) as section_duration_months";
     }
 
     public function getStudentFee()

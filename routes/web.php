@@ -52,7 +52,7 @@ Route::get('/admission-form', function () {
 Route::post('/admission-form/store', [StudentAdmissionController::class, 'store'])
     ->name('studentsAdmission.store');
 
-Route::get('/123', function () {
+Route::get('/calendar', function () {
     return view('calendar');
 });
 
