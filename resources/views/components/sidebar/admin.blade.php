@@ -328,6 +328,13 @@
                         <p>{{ __('Activity Log Page') }}</p>
                     </a>
                 </li>
+                <div class="dropdown-divider"></div>
+                <li class="nav-item">
+                    <a href="{{ route('install.index') }}" class="nav-link {{ Request::is('install*') ? 'active' : '' }}" target="_blank">
+                        <i class="fas fa-magic nav-icon" aria-hidden="true"></i>
+                        <p>{{ __('Installation Wizard') }}</p>
+                    </a>
+                </li>
             </ul>
         </li>
 

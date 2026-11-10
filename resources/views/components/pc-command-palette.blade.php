@@ -182,6 +182,14 @@
                     <span class="text-muted" style="font-size: 0.78rem;">/customize</span>
                 </a>
 
+                <a href="/install" class="pc-palette-item" data-keywords="install setup installation wizard environment diagnostics database">
+                    <div class="pc-palette-item-left">
+                        <div class="pc-palette-item-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fas fa-magic"></i></div>
+                        <span class="pc-palette-item-text">{{ __('Installation Wizard') }}</span>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.78rem;">/install</span>
+                </a>
+
                 <a href="{{ route('activity.logs') }}" class="pc-palette-item" data-keywords="activity logs audit trail security system events">
                     <div class="pc-palette-item-left">
                         <div class="pc-palette-item-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fas fa-history"></i></div>

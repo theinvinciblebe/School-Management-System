@@ -63,12 +63,12 @@ class StaffSeeder extends Seeder
         }
 
         // Add Admin as staff if not present
-        $adminUser = DB::table('users')->where('email', 'admin@mail.com')->first();
+        $adminUser = DB::table('users')->where('email', 'admin@gmail.com')->first();
         if ($adminUser && !DB::table('staff')->where('user_id', $adminUser->id)->exists()) {
             DB::table('staff')->insert([
                 'name' => 'School Administrator',
                 'sex' => 'Male',
-                'email' => 'admin@mail.com',
+                'email' => 'admin@gmail.com',
                 'address' => '100 School Lane',
                 'phone' => '0112233445',
                 'department_id' => $existingDepts['Administration'],

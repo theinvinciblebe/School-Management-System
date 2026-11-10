@@ -25,6 +25,7 @@ use App\Http\Controllers\ExamMarkController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\InstallerController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,16 @@ Route::get('/admission-form', function () {
 });
 Route::post('/admission-form/store', [StudentAdmissionController::class, 'store'])
     ->name('studentsAdmission.store');
+
+// System Installation Wizard (Public setup & Admin diagnostics)
+Route::get('/install', [InstallerController::class, 'index'])->name('install.index');
+Route::get('/installer', [InstallerController::class, 'index']);
+Route::get('/setup', [InstallerController::class, 'index']);
+Route::post('/install/test-db', [InstallerController::class, 'testDatabase'])->name('install.testDb');
+Route::post('/install/setup-db', [InstallerController::class, 'setupDatabase'])->name('install.setupDb');
+Route::post('/install/save-school', [InstallerController::class, 'saveSchool'])->name('install.saveSchool');
+Route::post('/install/create-admin', [InstallerController::class, 'createAdmin'])->name('install.createAdmin');
+Route::post('/install/finalize', [InstallerController::class, 'finalize'])->name('install.finalize');
 
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'km', 'kh'])) {

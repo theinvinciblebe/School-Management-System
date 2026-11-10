@@ -79,7 +79,7 @@ Use these accounts to test the application across different access levels:
 
 | Role | Email | Password | Primary Scope |
 | :--- | :--- | :--- | :--- |
-| **Administrator** | `admin@mail.com` | `admin123` | Full master control & settings |
+| **Administrator** | `admin@gmail.com` | `admin123` | Full master control & settings |
 | **Teacher** | `TeacherTest@gmail.com` | `password` | Classroom, marks & attendance |
 | **Student** | `StudentTest@gmail.com` | `password` | Schedules, materials & grades |
 | **Accountant** | `phy@gmail.com` | `password` | Accounting, fees & financial ledger |

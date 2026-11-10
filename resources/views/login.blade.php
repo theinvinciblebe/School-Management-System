@@ -22,7 +22,7 @@
             'role_name' => 'Admin',
             'display_role' => __('Admin'),
             'name' => 'Administrator',
-            'email' => 'admin@mail.com',
+            'email' => 'admin@gmail.com',
             'password' => '123456',
             'badge' => __('Full Access'),
             'icon' => 'fas fa-user-shield',
@@ -1062,7 +1062,7 @@
                             type="email"
                             id="email"
                             name="email"
-                            value="{{ old('email', 'admin@mail.com') }}"
+                            value="{{ old('email', 'admin@gmail.com') }}"
                             placeholder="name@school.edu"
                             class="form-control-modern"
                             autocomplete="username"

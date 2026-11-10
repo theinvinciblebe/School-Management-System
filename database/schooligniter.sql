@@ -9444,7 +9444,7 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'Administrator', 'admin@mail.com', 0, '1792632103_6ad96527e20f1.jpg', NULL, '$2y$12$mkNUvAPQVcgnVvEwTJbINuzH2274FUzWvITXXp/ejdDMsnKQXeK8y', NULL, NULL, '2026-10-22 08:21:43');
+INSERT INTO `users` VALUES (1, 'Administrator', 'admin@gmail.com', 0, '1792632103_6ad96527e20f1.jpg', NULL, '$2y$12$mkNUvAPQVcgnVvEwTJbINuzH2274FUzWvITXXp/ejdDMsnKQXeK8y', NULL, NULL, '2026-10-22 08:21:43');
 INSERT INTO `users` VALUES (40, 'StudentTest', 'StudentTest@gmail.com', 2, NULL, NULL, '$2y$12$ukSWQnMbouLmCU/9SEKUZ.JSHMG8y0URRogxRjeM8/lwnzF/Y8ZHi', NULL, '2026-08-04 15:13:32', '2026-08-04 15:13:32');
 INSERT INTO `users` VALUES (41, 'TeacherTest', 'TeacherTest@gmail.com', 1, NULL, NULL, '$2y$12$sQY4/OftoENMT7Y7UrFbiuN.MYlJ/POHfpIfcs2QEpIUNeDoARzQu', NULL, '2026-08-04 15:37:31', '2026-08-04 15:37:31');
 INSERT INTO `users` VALUES (43, 'phy', 'phy@gmail.com', 3, '1792632125_6ad9653dc4fa2.jpg', NULL, '$2y$12$6LZ8TafBI9g/yFiDwi5WFuRtb.W6YXDmng44qlIfxNaz56GTTvUZe', NULL, '2026-10-21 16:37:24', '2026-10-22 08:22:05');
