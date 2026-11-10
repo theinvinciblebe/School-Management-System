@@ -12,6 +12,15 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a href="{{ route('calendar.index') }}" class="nav-link {{ request()->is('calendar*') ? 'active' : '' }}" onclick="showOverlay()">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>
+                    {{ __('Calendar') }}
+                </p>
+            </a>
+        </li>
+
         <li class="nav-header">{{ __('Manage Class') }}</li>
         <li class="nav-item {{ request()->is('class') || request()->is('sections') ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is('class') || request()->is('sections') ? 'active' : '' }}">

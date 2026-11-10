@@ -24,6 +24,7 @@ use App\Http\Controllers\MarkController;
 use App\Http\Controllers\ExamMarkController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,10 +53,6 @@ Route::get('/admission-form', function () {
 Route::post('/admission-form/store', [StudentAdmissionController::class, 'store'])
     ->name('studentsAdmission.store');
 
-Route::get('/calendar', function () {
-    return view('calendar');
-});
-
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'km', 'kh'])) {
         $standardLocale = ($locale === 'kh') ? 'km' : $locale;
@@ -77,6 +74,13 @@ Route::middleware(['auth', 'log.activity'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/chart-data', [DashboardController::class, 'chartData'])->name('dashboard.chartData');
+
+    // Modern Event & Academic Calendar (Accessible to all roles: 0, 1, 2, 3, 4)
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+    Route::post('/calendar/events', [CalendarController::class, 'store'])->name('calendar.store');
+    Route::put('/calendar/events/{id}', [CalendarController::class, 'update'])->name('calendar.update');
+    Route::delete('/calendar/events/{id}', [CalendarController::class, 'destroy'])->name('calendar.destroy');
 
     // User Profile
     Route::get('/user-profile', [UserController::class, 'profile'])->name('user.profile');

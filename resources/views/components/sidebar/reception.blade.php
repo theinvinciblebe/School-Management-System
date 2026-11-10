@@ -3,11 +3,19 @@
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
         <li class="nav-item">
-            <a href="/dashboard" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
+            <a href="/dashboard" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}" onclick="showOverlay()">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
-                    Dashboard
-                    <span class="right badge badge-danger">New</span>
+                    {{ __('Dashboard') }}
+                    <span class="right badge badge-danger">{{ __('New') }}</span>
+                </p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('calendar.index') }}" class="nav-link {{ request()->is('calendar*') ? 'active' : '' }}" onclick="showOverlay()">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>
+                    {{ __('Calendar') }}
                 </p>
             </a>
         </li>

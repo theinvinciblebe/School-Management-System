@@ -30,6 +30,14 @@
                 <kbd class="pc-palette-item-shortcut">Alt + D</kbd>
             </a>
 
+            <a href="/calendar" class="pc-palette-item" data-keywords="calendar events schedule academic planner exam holiday meeting routine">
+                <div class="pc-palette-item-left">
+                    <div class="pc-palette-item-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fas fa-calendar-alt"></i></div>
+                    <span class="pc-palette-item-text">{{ __('Calendar & Schedule') }}</span>
+                </div>
+                <span class="text-muted" style="font-size: 0.78rem;">/calendar</span>
+            </a>
+
             @if (in_array($paletteUserRole, [0, 1, 3, 4]))
                 <a href="/students" class="pc-palette-item" data-keywords="students student list directory enroll pupils">
                     <div class="pc-palette-item-left">
