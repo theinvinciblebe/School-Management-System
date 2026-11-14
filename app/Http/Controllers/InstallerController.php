@@ -52,24 +52,70 @@ class InstallerController extends Controller
             }
         }
 
-        // 3. Directory Permissions Check
-        $directories = [
-            'storage'                  => storage_path(),
-            'storage/framework'        => storage_path('framework'),
-            'storage/framework/views'  => storage_path('framework/views'),
-            'storage/logs'             => storage_path('logs'),
-            'bootstrap/cache'          => base_path('bootstrap/cache'),
-            '.env'                     => base_path('.env'),
-        ];
+        // 3. Serverless (Vercel) Environment Detection & Directory Permissions
+        $isServerless = !empty(getenv('VERCEL')) || !empty($_ENV['VERCEL']) || !empty($_SERVER['VERCEL']) || !empty(getenv('AWS_LAMBDA_FUNCTION_NAME'));
+
+        if ($isServerless) {
+            $tmpStorage = (PHP_OS_FAMILY === 'Windows') ? storage_path() : '/tmp/storage';
+            $requiredDirs = [
+                $tmpStorage,
+                $tmpStorage . '/framework',
+                $tmpStorage . '/framework/views',
+                $tmpStorage . '/framework/sessions',
+                $tmpStorage . '/framework/cache',
+                $tmpStorage . '/logs',
+                $tmpStorage . '/bootstrap/cache',
+            ];
+            foreach ($requiredDirs as $dir) {
+                if (!is_dir($dir)) {
+                    @mkdir($dir, 0755, true);
+                }
+            }
+
+            $directories = [
+                'storage (/tmp/storage)'          => $tmpStorage,
+                'storage/framework'               => $tmpStorage . '/framework',
+                'storage/framework/views'         => $tmpStorage . '/framework/views',
+                'storage/logs'                    => $tmpStorage . '/logs',
+                'bootstrap/cache'                 => $tmpStorage . '/bootstrap/cache',
+                'Environment Variables (Vercel)'  => 'serverless_env',
+            ];
+        } else {
+            $directories = [
+                'storage'                  => storage_path(),
+                'storage/framework'        => storage_path('framework'),
+                'storage/framework/views'  => storage_path('framework/views'),
+                'storage/logs'             => storage_path('logs'),
+                'bootstrap/cache'          => base_path('bootstrap/cache'),
+                '.env'                     => base_path('.env'),
+            ];
+        }
 
         $directoryResults = [];
         $allDirectoriesSatisfied = true;
         foreach ($directories as $label => $path) {
-            $isWritable = is_writable($path) || (!file_exists($path) && is_writable(dirname($path)));
+            if ($path === 'serverless_env') {
+                $isConfigured = !empty(config('app.key')) || !empty(getenv('APP_KEY'));
+                $directoryResults[] = [
+                    'label'     => $label,
+                    'path'      => 'Vercel Project Dashboard',
+                    'satisfied' => $isConfigured,
+                    'badge'     => $isConfigured ? __('Configured') : __('Missing APP_KEY'),
+                    'subtext'   => __('Managed via Vercel Dashboard'),
+                ];
+                if (!$isConfigured) {
+                    $allDirectoriesSatisfied = false;
+                }
+                continue;
+            }
+
+            $isWritable = $this->isPathWritable($path);
             $directoryResults[] = [
                 'label'     => $label,
                 'path'      => $path,
                 'satisfied' => $isWritable,
+                'badge'     => $isWritable ? __('Writable') : __('Not Writable'),
+                'subtext'   => null,
             ];
             if (!$isWritable) {
                 $allDirectoriesSatisfied = false;
@@ -118,7 +164,8 @@ class InstallerController extends Controller
             'dbError',
             'customize',
             'existingAdmin',
-            'isInstalled'
+            'isInstalled',
+            'isServerless'
         ));
     }
 
@@ -305,15 +352,23 @@ class InstallerController extends Controller
     public function finalize(Request $request)
     {
         try {
-            $installedFile = storage_path('installed');
-            file_put_contents($installedFile, json_encode([
+            $installedData = json_encode([
                 'installed_at' => now()->toIso8601String(),
                 'version'      => '2.0.0',
                 'environment'  => config('app.env', 'production'),
-            ], JSON_PRETTY_PRINT));
+            ], JSON_PRETTY_PRINT);
 
-            Artisan::call('view:clear');
-            Artisan::call('cache:clear');
+            @file_put_contents(storage_path('installed'), $installedData);
+            @file_put_contents(base_path('storage/installed'), $installedData);
+            if (!empty(getenv('VERCEL')) || PHP_OS_FAMILY !== 'Windows') {
+                @file_put_contents('/tmp/storage/installed', $installedData);
+                @file_put_contents('/tmp/installed', $installedData);
+            }
+
+            try {
+                Artisan::call('view:clear');
+                Artisan::call('cache:clear');
+            } catch (\Throwable $e) {}
 
             return response()->json([
                 'success' => true,
@@ -333,7 +388,14 @@ class InstallerController extends Controller
     protected function updateEnv(array $data)
     {
         $envPath = base_path('.env');
-        if (!file_exists($envPath)) {
+        if (!file_exists($envPath) || !is_writable($envPath)) {
+            // In read-only serverless environments (Vercel), .env is read-only.
+            // Put in environment memory for the current process instead:
+            foreach ($data as $key => $value) {
+                putenv("{$key}={$value}");
+                $_ENV[$key] = $value;
+                $_SERVER[$key] = $value;
+            }
             return;
         }
 
@@ -361,6 +423,42 @@ class InstallerController extends Controller
         }
 
         file_put_contents($envPath, $envContent);
+    }
+
+    /**
+     * Cross-platform check if a file or directory is truly writable.
+     */
+    protected function isPathWritable($path): bool
+    {
+        if (is_file($path)) {
+            if (is_writable($path)) {
+                return true;
+            }
+            $fp = @fopen($path, 'a');
+            if ($fp) {
+                fclose($fp);
+                return true;
+            }
+            return false;
+        }
+
+        if (!file_exists($path)) {
+            @mkdir($path, 0755, true);
+        }
+
+        if (!is_dir($path)) {
+            return false;
+        }
+
+        // Test actual write/delete capability
+        $testFile = rtrim($path, '/\\') . '/.write_test_' . uniqid();
+        $written = @file_put_contents($testFile, 'test');
+        if ($written !== false) {
+            @unlink($testFile);
+            return true;
+        }
+
+        return is_writable($path);
     }
 }
 

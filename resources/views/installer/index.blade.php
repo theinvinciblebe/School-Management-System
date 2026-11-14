@@ -473,15 +473,29 @@
 
                 <!-- Writable Directories -->
                 <h6 class="font-weight-bold mb-2 text-dark dark:text-white">{{ __('Directory Permissions') }}</h6>
+                @if (!empty($isServerless))
+                    <div class="alert alert-info border-0 rounded-xl py-2 px-3 mb-3 d-flex align-items-center">
+                        <i class="fas fa-cloud text-primary mr-2 fa-lg"></i>
+                        <div class="small">
+                            <strong>{{ __('Vercel Serverless Architecture') }}:</strong>
+                            {{ __('Storage and compiled view caches are dynamically routed to /tmp/storage. Configuration is managed via Vercel Environment Variables.') }}
+                        </div>
+                    </div>
+                @endif
                 <div class="row mb-4">
                     @foreach ($directoryResults as $dir)
                         <div class="col-sm-6 col-md-4 mb-2">
                             <div class="diagnostic-card d-flex align-items-center justify-content-between py-2 px-3">
-                                <span class="font-weight-bold small"><code>{{ $dir['label'] }}</code></span>
+                                <div>
+                                    <span class="font-weight-bold small d-block"><code>{{ $dir['label'] }}</code></span>
+                                    @if (!empty($dir['subtext']))
+                                        <small class="text-muted" style="font-size: 0.72rem;">{{ $dir['subtext'] }}</small>
+                                    @endif
+                                </div>
                                 @if ($dir['satisfied'])
-                                    <span class="badge badge-pill badge-success"><i class="fas fa-check"></i> {{ __('Writable') }}</span>
+                                    <span class="badge badge-pill badge-success"><i class="fas fa-check"></i> {{ $dir['badge'] ?? __('Writable') }}</span>
                                 @else
-                                    <span class="badge badge-pill badge-danger"><i class="fas fa-times"></i> {{ __('Not Writable') }}</span>
+                                    <span class="badge badge-pill badge-danger"><i class="fas fa-times"></i> {{ $dir['badge'] ?? __('Not Writable') }}</span>
                                 @endif
                             </div>
                         </div>

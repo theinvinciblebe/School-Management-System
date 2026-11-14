@@ -15,7 +15,22 @@ class EnsureSystemInstalled
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $isInstalled = file_exists(storage_path('installed'));
+        $isInstalled = file_exists(storage_path('installed'))
+            || file_exists(base_path('storage/installed'))
+            || file_exists('/tmp/storage/installed')
+            || file_exists('/tmp/installed')
+            || env('APP_INSTALLED') === true
+            || env('APP_INSTALLED') === 'true';
+
+        // In serverless environments (Vercel / Lambda) where database is already configured in production,
+        // treat as installed so public visitors are not redirected to the wizard unexpectedly
+        $isServerless = !empty(getenv('VERCEL')) || !empty($_ENV['VERCEL']) || !empty($_SERVER['VERCEL']) || !empty(getenv('AWS_LAMBDA_FUNCTION_NAME'));
+        if ($isServerless && !$isInstalled) {
+            $hasDb = !empty(getenv('DB_CONNECTION')) || !empty($_ENV['DB_CONNECTION']) || !empty($_SERVER['DB_CONNECTION']) || !empty(config('database.default'));
+            if ($hasDb && config('app.env') === 'production') {
+                $isInstalled = true;
+            }
+        }
 
         // If not installed yet, redirect everything to /install (except installer endpoints and static assets)
         if (!$isInstalled) {

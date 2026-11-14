@@ -28,6 +28,11 @@ foreach ($requiredDirs as $dir) {
     }
 }
 
+// Copy storage/installed to /tmp/storage if present
+if (file_exists(dirname(__DIR__) . '/storage/installed') && !file_exists($tmpStorage . '/installed')) {
+    @copy(dirname(__DIR__) . '/storage/installed', $tmpStorage . '/installed');
+}
+
 // 2. Set environment variables for cache and storage paths on serverless (Linux/Vercel)
 if (!$isWindows) {
     $_SERVER['HTTPS'] = 'on';

@@ -2157,5 +2157,10 @@
     "Migration error: ": "កំហុសក្នុងការបង្កើតតារាង: ",
     "School profile & branding saved successfully!": "ព័ត៌មានសាលា និងស្លាកយីហោត្រូវបានរក្សាទុកដោយជោគជ័យ!",
     "Super Administrator account configured successfully!": "គណនីអ្នកគ្រប់គ្រងជាន់ខ្ពស់ត្រូវបានកំណត់រចនាសម្ព័ន្ធដោយជោគជ័យ!",
-    "Installation finalized successfully! Welcome to your new School Management System.": "ការដំឡើងត្រូវបានបញ្ចប់ដោយជោគជ័យ! សូមស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រងសាលារៀនថ្មីរបស់អ្នក។"
+    "Installation finalized successfully! Welcome to your new School Management System.": "ការដំឡើងត្រូវបានបញ្ចប់ដោយជោគជ័យ! សូមស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រងសាលារៀនថ្មីរបស់អ្នក។",
+    "Vercel Serverless Architecture": "ស្ថាបត្យកម្ម Serverless របស់ Vercel",
+    "Storage and compiled view caches are dynamically routed to \/tmp\/storage. Configuration is managed via Vercel Environment Variables.": "ថតផ្ទុកឯកសារ (Storage) និងអង្គចងចាំទិដ្ឋភាពដែលបានចងក្រង ត្រូវបានបញ្ជូនដោយស្វ័យប្រវត្តិទៅកាន់ \/tmp\/storage។ ការកំណត់រចនាសម្ព័ន្ធត្រូវបានគ្រប់គ្រងតាមរយៈអថេរបរិស្ថាន Vercel។",
+    "Configured": "បានកំណត់រចនាសម្ព័ន្ធ",
+    "Missing APP_KEY": "ខ្វះ APP_KEY",
+    "Managed via Vercel Dashboard": "គ្រប់គ្រងតាមរយៈផ្ទាំងគ្រប់គ្រង Vercel"
 }
