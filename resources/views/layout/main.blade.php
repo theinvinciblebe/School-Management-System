@@ -441,8 +441,14 @@
             let route = "{{ Auth::user()->role == 0 ? '/notifications' : '/user-notifications' }}";
 
             fetch(route)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return [];
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    if (!Array.isArray(data)) data = [];
                     let notificationList = document.getElementById('notification-list');
                     let notificationBadge = document.getElementById('notification-badge');
                     let headerCount = document.getElementById('notification-header-count');

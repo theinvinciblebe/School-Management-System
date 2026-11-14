@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 class NotificationController extends Controller
 {
@@ -13,39 +17,62 @@ class NotificationController extends Controller
      */
     public function getNotifications()
     {
-        $userId = Auth::id();
+        try {
+            if (!Schema::hasTable('notifications')) {
+                return response()->json([]);
+            }
 
-        $outgoingTypes = [
-            'Fee Approval', 'Fee Rejected',
-            'Purchase Approval', 'Purchase Rejected',
-            'Attendance Approved', 'Attendance Rejected',
-            'Admission Approved', 'Admission Rejected'
-        ];
+            $userId = Auth::id();
+            if (!$userId) {
+                return response()->json([]);
+            }
 
-        $notifications = Notification::with('user:id,name,email')
-            ->where('admin_id', $userId)
-            ->where('is_read', false)
-            ->whereNotIn('type', $outgoingTypes)
-            ->latest()
-            ->take(15)
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'type' => $item->type,
-                    'message' => $item->message,
-                    'status' => $item->status ?? 'pending',
-                    'status_color' => $item->status_color,
-                    'icon' => $item->icon,
-                    'target_type' => $item->target_type,
-                    'target_id' => $item->target_id,
-                    'action_url' => $item->action_url ?? route('message.inbox'),
-                    'sender' => $item->user->name ?? 'System',
-                    'time_ago' => $item->created_at->diffForHumans(),
-                ];
-            });
+            $outgoingTypes = [
+                'Fee Approval', 'Fee Rejected',
+                'Purchase Approval', 'Purchase Rejected',
+                'Attendance Approved', 'Attendance Rejected',
+                'Admission Approved', 'Admission Rejected'
+            ];
 
-        return response()->json($notifications);
+            $query = Notification::with('user:id,name,email')
+                ->where('admin_id', $userId)
+                ->whereNotIn('type', $outgoingTypes);
+
+            // Cross-database boolean check for unread notifications
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw('(is_read = false OR is_read IS NULL)');
+            } else {
+                $query->where(function ($q) {
+                    $q->where('is_read', 0)
+                      ->orWhere('is_read', false)
+                      ->orWhereNull('is_read');
+                });
+            }
+
+            $notifications = $query->latest()
+                ->take(15)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id'           => $item->id,
+                        'type'         => $item->type,
+                        'message'      => $item->message,
+                        'status'       => $item->status ?? 'pending',
+                        'status_color' => $item->status_color,
+                        'icon'         => $item->icon,
+                        'target_type'  => $item->target_type,
+                        'target_id'    => $item->target_id,
+                        'action_url'   => $item->action_url ?? (Route::has('message.inbox') ? route('message.inbox') : '/inbox'),
+                        'sender'       => $item->user?->name ?? 'System',
+                        'time_ago'     => $item->created_at ? $item->created_at->diffForHumans() : 'Just now',
+                    ];
+                });
+
+            return response()->json($notifications);
+        } catch (\Throwable $e) {
+            Log::warning('Error in NotificationController@getNotifications: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
 
     /**
@@ -53,42 +80,65 @@ class NotificationController extends Controller
      */
     public function userNotifications()
     {
-        $userId = Auth::id();
+        try {
+            if (!Schema::hasTable('notifications')) {
+                return response()->json([]);
+            }
 
-        $outgoingTypes = [
-            'Fee Approval', 'Fee Rejected',
-            'Purchase Approval', 'Purchase Rejected',
-            'Attendance Approved', 'Attendance Rejected',
-            'Admission Approved', 'Admission Rejected'
-        ];
+            $userId = Auth::id();
+            if (!$userId) {
+                return response()->json([]);
+            }
 
-        $notifications = Notification::with('admin:id,name,email')
-            ->where('user_id', $userId)
-            ->where('is_read', false)
-            ->where(function($q) use ($outgoingTypes) {
-                $q->whereIn('type', $outgoingTypes)
-                  ->orWhere('status', '!=', 'pending');
-            })
-            ->latest()
-            ->take(15)
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'type' => $item->type,
-                    'message' => $item->message,
-                    'status' => $item->status ?? 'info',
-                    'status_color' => $item->status_color,
-                    'icon' => $item->icon,
-                    'target_type' => $item->target_type,
-                    'target_id' => $item->target_id,
-                    'action_url' => $item->action_url ?? route('message.Userinbox'),
-                    'sender' => $item->admin->name ?? 'Admin',
-                    'time_ago' => $item->created_at->diffForHumans(),
-                ];
-            });
+            $outgoingTypes = [
+                'Fee Approval', 'Fee Rejected',
+                'Purchase Approval', 'Purchase Rejected',
+                'Attendance Approved', 'Attendance Rejected',
+                'Admission Approved', 'Admission Rejected'
+            ];
 
-        return response()->json($notifications);
+            $query = Notification::with('admin:id,name,email')
+                ->where('user_id', $userId)
+                ->where(function ($q) use ($outgoingTypes) {
+                    $q->whereIn('type', $outgoingTypes)
+                      ->orWhere('status', '!=', 'pending');
+                });
+
+            // Cross-database boolean check for unread notifications
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw('(is_read = false OR is_read IS NULL)');
+            } else {
+                $query->where(function ($q) {
+                    $q->where('is_read', 0)
+                      ->orWhere('is_read', false)
+                      ->orWhereNull('is_read');
+                });
+            }
+
+            $notifications = $query->latest()
+                ->take(15)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id'           => $item->id,
+                        'type'         => $item->type,
+                        'message'      => $item->message,
+                        'status'       => $item->status ?? 'info',
+                        'status_color' => $item->status_color,
+                        'icon'         => $item->icon,
+                        'target_type'  => $item->target_type,
+                        'target_id'    => $item->target_id,
+                        'action_url'   => $item->action_url ?? (Route::has('message.Userinbox') ? route('message.Userinbox') : '/Userinbox'),
+                        'sender'       => $item->admin?->name ?? 'Admin',
+                        'time_ago'     => $item->created_at ? $item->created_at->diffForHumans() : 'Just now',
+                    ];
+                });
+
+            return response()->json($notifications);
+        } catch (\Throwable $e) {
+            Log::warning('Error in NotificationController@userNotifications: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
 
     /**
@@ -96,16 +146,34 @@ class NotificationController extends Controller
      */
     public function markAllRead()
     {
-        $userId = Auth::id();
-        $isAdmin = (Auth::user()->role == 0);
+        try {
+            if (!Schema::hasTable('notifications')) {
+                return response()->json(['success' => true]);
+            }
 
-        if ($isAdmin) {
-            Notification::where('admin_id', $userId)->where('is_read', false)->update(['is_read' => true]);
-        } else {
-            Notification::where('user_id', $userId)->where('is_read', false)->update(['is_read' => true]);
+            $userId = Auth::id();
+            if (!$userId) {
+                return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
+            }
+
+            $isAdmin = (Auth::user()->role == 0);
+            $query = $isAdmin ? Notification::where('admin_id', $userId) : Notification::where('user_id', $userId);
+
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw('(is_read = false OR is_read IS NULL)')->update(['is_read' => DB::raw('true')]);
+            } else {
+                $query->where(function ($q) {
+                    $q->where('is_read', 0)
+                      ->orWhere('is_read', false)
+                      ->orWhereNull('is_read');
+                })->update(['is_read' => true]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'All notifications marked as read']);
+        } catch (\Throwable $e) {
+            Log::warning('Error in NotificationController@markAllRead: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-
-        return response()->json(['success' => true, 'message' => 'All notifications marked as read']);
     }
 
     /**
@@ -113,11 +181,20 @@ class NotificationController extends Controller
      */
     public function bulkDelete(Request $request)
     {
-        $ids = $request->ids;
-        if (!empty($ids) && is_array($ids)) {
-            Notification::whereIn('id', $ids)->delete();
-            return response()->json(['success' => true, 'message' => 'Notifications deleted']);
+        try {
+            if (!Schema::hasTable('notifications')) {
+                return response()->json(['success' => true]);
+            }
+
+            $ids = $request->ids;
+            if (!empty($ids) && is_array($ids)) {
+                Notification::whereIn('id', $ids)->delete();
+                return response()->json(['success' => true, 'message' => 'Notifications deleted']);
+            }
+            return response()->json(['success' => false, 'message' => 'No items selected'], 400);
+        } catch (\Throwable $e) {
+            Log::warning('Error in NotificationController@bulkDelete: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-        return response()->json(['success' => false, 'message' => 'No items selected'], 400);
     }
 }

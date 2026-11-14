@@ -98,6 +98,8 @@ class LogUserActivity
             'telescope/*',
             'horizon/*',
             'sanctum/*',
+            'notifications*',
+            'user-notifications*',
             'api/notifications/count',
             'api/ping',
             'api/heartbeat',
