@@ -26,6 +26,11 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'theme',
             'locale',
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'migrate*',
+            'seed*',
+            'install/*',
+        ]);
         $middleware->web(append: [
             EnsureSystemInstalled::class,
             SetLocale::class,

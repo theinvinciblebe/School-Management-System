@@ -26,6 +26,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\InstallerController;
+use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,19 @@ Route::post('/install/setup-db', [InstallerController::class, 'setupDatabase'])-
 Route::post('/install/save-school', [InstallerController::class, 'saveSchool'])->name('install.saveSchool');
 Route::post('/install/create-admin', [InstallerController::class, 'createAdmin'])->name('install.createAdmin');
 Route::post('/install/finalize', [InstallerController::class, 'finalize'])->name('install.finalize');
+
+// Database Operations & Migration Routes (Serverless & Web Console Management)
+Route::match(['get', 'post'], '/migrate-seed', [MigrationController::class, 'migrateSeed'])->name('system.migrate-seed');
+Route::match(['get', 'post'], '/migrate', [MigrationController::class, 'migrate'])->name('system.migrate');
+Route::match(['get', 'post'], '/seed', [MigrationController::class, 'seed'])->name('system.seed');
+Route::get('/migrate/status', [MigrationController::class, 'status'])->name('system.migrate-status');
+Route::match(['get', 'post'], '/migrate/fresh-seed', [MigrationController::class, 'freshSeed'])->name('system.migrate-fresh');
+Route::get('/migrate/console', [MigrationController::class, 'index'])->name('system.migrate-console');
+
+// Aliases under /install/ for convenience during deployment
+Route::match(['get', 'post'], '/install/migrate-seed', [MigrationController::class, 'migrateSeed']);
+Route::match(['get', 'post'], '/install/migrate', [MigrationController::class, 'migrate']);
+Route::match(['get', 'post'], '/install/seed', [MigrationController::class, 'seed']);
 
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'km', 'kh'])) {

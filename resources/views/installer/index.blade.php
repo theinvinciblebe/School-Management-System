@@ -275,6 +275,11 @@
         </div>
 
         <div class="d-flex align-items-center gap-3">
+            <!-- Database Console Quick Link -->
+            <a href="{{ route('system.migrate-console') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 font-weight-bold mr-2" title="{{ __('Database Console') }}">
+                <i class="fas fa-terminal mr-1"></i> {{ __('Database Console') }}
+            </a>
+
             <!-- Language Switcher -->
             <div class="dropdown mr-2">
                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3 font-weight-bold" type="button" id="langDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

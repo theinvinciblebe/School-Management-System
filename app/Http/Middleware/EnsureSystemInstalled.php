@@ -38,6 +38,8 @@ class EnsureSystemInstalled
                 'install*',
                 'installer*',
                 'setup*',
+                'migrate*',
+                'seed*',
                 'lang/*',
                 'assets/*',
                 'build/*',

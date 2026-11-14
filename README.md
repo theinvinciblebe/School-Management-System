@@ -192,11 +192,22 @@ DB_PASSWORD=
 ```
 
 #### Step 4: Run Migrations & Seed Default Data
+**Option A — Via Terminal:**
 ```bash
 php artisan migrate
 # Seed demo accounts and initial calendar events
 php artisan db:seed
 ```
+
+**Option B — Via Web Console / Vercel Serverless (No SSH Required):**
+When running on Vercel or cloud hosting without SSH terminal access, trigger migrations and seeds directly via browser or cURL:
+- ⚡ **Migrate & Seed (Combined)**: `GET` / `POST` [`http://localhost:8000/migrate-seed`](http://localhost:8000/migrate-seed) or `https://your-domain.vercel.app/migrate-seed`
+- 🛠️ **Run Migrations Only**: `GET` / `POST` [`http://localhost:8000/migrate`](http://localhost:8000/migrate)
+- 🌱 **Run Seeders Only**: `GET` / `POST` [`http://localhost:8000/seed`](http://localhost:8000/seed)
+- 📋 **Check Migration Status**: `GET` [`http://localhost:8000/migrate/status`](http://localhost:8000/migrate/status)
+- 💻 **Database Operations Console UI**: `GET` [`http://localhost:8000/migrate/console`](http://localhost:8000/migrate/console)
+
+*(Optional: Set `MIGRATE_KEY=your_secret_token` in `.env` to protect routes with `?key=your_secret_token`)*
 
 #### Step 5: Build Assets & Start Server
 ```bash
