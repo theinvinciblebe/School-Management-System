@@ -2195,5 +2195,14 @@
     "Safety protection: Re-running migrate:fresh drops all tables. To proceed, pass confirm=yes.": "ការការពារសុវត្ថិភាព៖ ការដំណើរការ migrate:fresh នឹងលុបតារាងទាំងអស់។ ដើម្បីបន្ត សូមបញ្ជូន confirm=yes។",
     "Fresh migration and seeding completed successfully!": "ការកំណត់ឡើងវិញ និងបញ្ចូលទិន្នន័យគំរូត្រូវបានបញ្ចប់ដោយជោគជ័យ!",
     "Execution failed: ": "ការដំណើរការបានបរាជ័យ៖ ",
-    "Database Console": "កុងសូលមូលដ្ឋានទិន្នន័យ"
+    "Database Console": "កុងសូលមូលដ្ឋានទិន្នន័យ",
+    "Invalid image format. Allowed: ": "ទម្រង់រូបភាពមិនត្រឹមត្រូវ។ អនុញ្ញាត៖ ",
+    "Invalid icon format. Allowed: ": "ទម្រង់រូបតំណាងមិនត្រឹមត្រូវ។ អនុញ្ញាត៖ ",
+    "School Brand Logo Updated Successfully!": "ឡូហ្គោប្រព័ន្ធត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ!",
+    "Browser Tab Icon Updated Successfully!": "រូបតំណាង Browser Tab ត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ!",
+    "Brand Title Updated Successfully!": "ចំណងជើងម៉ាកយីហោត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ!",
+    "URL Title Updated Successfully!": "ចំណងជើង URL ត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ!",
+    "School Contact Info Updated Successfully!": "ព័ត៌មានទំនាក់ទំនងសាលារៀនត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ!",
+    "File upload failed: No file received.": "ការផ្ទុកឯកសារឡើងបានបរាជ័យ៖ មិនទទួលបានឯកសារឡើយ។",
+    "Upload failed: ": "ការផ្ទុកឡើងបានបរាជ័យ៖ "
 }

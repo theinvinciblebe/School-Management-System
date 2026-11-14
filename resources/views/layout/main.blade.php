@@ -71,9 +71,13 @@
     <!-- System Preloader: Runs on Fresh Start of System, suppressed during internal route changes -->
     @php
         $brandLogoFile = $customizes->brand_logo ?? null;
-        $preloaderLogo = (!empty($brandLogoFile) && file_exists(public_path('customize_images/' . $brandLogoFile)))
-            ? asset('customize_images/' . $brandLogoFile)
-            : (!empty($brandLogoFile) ? asset('customize_images/' . $brandLogoFile) : asset('assets/dist/img/mawaridLogo.jpg'));
+        if (!empty($brandLogoFile) && str_starts_with($brandLogoFile, 'data:')) {
+            $preloaderLogo = $brandLogoFile;
+        } else {
+            $preloaderLogo = (!empty($brandLogoFile) && file_exists(public_path('customize_images/' . $brandLogoFile)))
+                ? asset('customize_images/' . $brandLogoFile)
+                : (!empty($brandLogoFile) ? asset('customize_images/' . $brandLogoFile) : asset('assets/dist/img/mawaridLogo.jpg'));
+        }
     @endphp
     <div id="systemPreloader" class="system-preloader flex-column justify-content-center align-items-center" style="{{ $isDark ? 'background-color: #232323 !important;' : '' }}">
         <img class="img-circle elevation-3 preloader-brand-img animation__wobble"
@@ -137,7 +141,11 @@
     <!-- Brand Logo -->
     <a href="/dashboard" class="brand-link modern-brand-header">
       <div class="modern-brand-logo">
-        <img src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}" alt="Brand Logo" class="brand-image img-circle">
+        @php
+            $sidebarLogo = $customizes->brand_logo ?? 'noimg.jpg';
+            $sidebarLogoUrl = str_starts_with($sidebarLogo, 'data:') ? $sidebarLogo : asset('customize_images/' . $sidebarLogo);
+        @endphp
+        <img src="{{ $sidebarLogoUrl }}" alt="Brand Logo" class="brand-image img-circle">
       </div>
       <div class="modern-brand-details">
         <span class="brand-text modern-brand-title">{{ $customizes->brand_title ?? 'School MS' }}</span>

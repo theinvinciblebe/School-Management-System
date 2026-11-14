@@ -5,12 +5,21 @@
         $customizes = null;
     }
     $brandLogoFile = $customizes->brand_logo ?? null;
-    $brandLogo = (!empty($brandLogoFile) && file_exists(public_path('customize_images/' . $brandLogoFile)))
-        ? asset('customize_images/' . $brandLogoFile)
-        : (file_exists(public_path('logo-final.png')) ? asset('logo-final.png') : asset('assets/dist/img/mawaridLogo.jpg'));
+    if (!empty($brandLogoFile) && str_starts_with($brandLogoFile, 'data:')) {
+        $brandLogo = $brandLogoFile;
+    } else {
+        $brandLogo = (!empty($brandLogoFile) && file_exists(public_path('customize_images/' . $brandLogoFile)))
+            ? asset('customize_images/' . $brandLogoFile)
+            : (file_exists(public_path('logo-final.png')) ? asset('logo-final.png') : asset('assets/dist/img/mawaridLogo.jpg'));
+    }
     $brandTitle = $customizes->brand_title ?? 'School Management System';
     $rawFavicon = $customizes->url_icon ?? 'favicon.ico';
-    $faviconVer = file_exists(public_path($rawFavicon)) ? filemtime(public_path($rawFavicon)) : time();
+    if (str_starts_with($rawFavicon, 'data:')) {
+        $faviconUrl = $rawFavicon;
+    } else {
+        $faviconVer = file_exists(public_path($rawFavicon)) ? filemtime(public_path($rawFavicon)) : time();
+        $faviconUrl = asset($rawFavicon) . '?v=' . $faviconVer;
+    }
     $currentLang = app()->getLocale();
     $themeCookie = request()->cookie('theme') ?? ($_COOKIE['theme'] ?? null);
     $isDark = ($themeCookie === 'dark-mode');
@@ -94,7 +103,7 @@
     <title>{{ __('Login') }} - {{ $brandTitle }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset($rawFavicon) }}?v={{ $faviconVer }}" type="image/x-icon">
+    <link rel="icon" href="{{ $faviconUrl }}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -139,15 +139,19 @@
 
 @php
     $brandLogo = $customizes->brand_logo ?? null;
-    $logoPath = (!empty($brandLogo) && file_exists(public_path('customize_images/' . $brandLogo)))
-        ? public_path('customize_images/' . $brandLogo)
-        : (file_exists(public_path('logo-final.png'))
-            ? public_path('logo-final.png')
-            : (file_exists(public_path('customize_images/noimg.jpg'))
-                ? public_path('customize_images/noimg.jpg')
-                : public_path('assets/dist/img/mawaridLogo.jpg')));
+    if (!empty($brandLogo) && str_starts_with($brandLogo, 'data:')) {
+        $logoBase64 = $brandLogo;
+    } else {
+        $logoPath = (!empty($brandLogo) && file_exists(public_path('customize_images/' . $brandLogo)))
+            ? public_path('customize_images/' . $brandLogo)
+            : (file_exists(public_path('logo-final.png'))
+                ? public_path('logo-final.png')
+                : (file_exists(public_path('customize_images/noimg.jpg'))
+                    ? public_path('customize_images/noimg.jpg')
+                    : public_path('assets/dist/img/mawaridLogo.jpg')));
 
-    $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : '';
+        $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : '';
+    }
     $schoolName    = $customizes->brand_title ?? 'School System';
     $schoolAddress = $customizes->school_address ?? 'No.32, Street 606, Tuol Kork, Phnom Penh, Cambodia';
     $schoolPhone   = $customizes->school_phone ?? '+855 12 801 470 / +855 71 220 6315';

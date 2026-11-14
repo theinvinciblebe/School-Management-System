@@ -927,8 +927,12 @@
                             <div class="col-sm-4 text-center mb-3 mb-sm-0">
                                 <div class="preview-avatar-card">
                                     <div class="avatar-wrapper">
+                                        @php
+                                            $activeLogo = $customizes->brand_logo ?? 'noimg.jpg';
+                                            $activeLogoUrl = str_starts_with($activeLogo, 'data:') ? $activeLogo : asset('customize_images/' . $activeLogo);
+                                        @endphp
                                         <img id="current-logo-img"
-                                             src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}"
+                                             src="{{ $activeLogoUrl }}"
                                              alt="School Brand Logo">
                                     </div>
                                     <div class="font-weight-bold text-dark small mb-1">{{ __('Active Logo') }}</div>
@@ -998,8 +1002,12 @@
                             <div class="col-sm-4 text-center mb-3 mb-sm-0">
                                 <div class="preview-avatar-card">
                                     <div class="favicon-wrapper">
+                                        @php
+                                            $activeIcon = $customizes->url_icon ?? 'favicon.ico';
+                                            $activeIconUrl = str_starts_with($activeIcon, 'data:') ? $activeIcon : asset($activeIcon);
+                                        @endphp
                                         <img id="current-icon-img"
-                                             src="{{ asset($customizes->url_icon ?? 'favicon.ico') }}"
+                                             src="{{ $activeIconUrl }}"
                                              alt="Favicon">
                                     </div>
                                     <div class="font-weight-bold text-dark small mb-1">{{ __('Active Favicon') }}</div>
@@ -1274,7 +1282,11 @@
                             <span class="mockup-dot green"></span>
                         </div>
                         <div class="mockup-browser-tab">
-                            <img id="mockup-favicon" src="{{ asset($customizes->url_icon ?? 'favicon.ico') }}" alt="Tab Icon">
+                            @php
+                                $mockupIcon = $customizes->url_icon ?? 'favicon.ico';
+                                $mockupIconUrl = str_starts_with($mockupIcon, 'data:') ? $mockupIcon : asset($mockupIcon);
+                            @endphp
+                            <img id="mockup-favicon" src="{{ $mockupIconUrl }}" alt="Tab Icon">
                             <span id="mockup-url-title">{{ $customizes->url_title ?? 'School System' }}</span>
                         </div>
                     </div>
@@ -1284,8 +1296,12 @@
                         <!-- Mockup Sidebar -->
                         <div class="mockup-sidebar" id="mockupSidebar">
                             <div class="mockup-brand">
+                                @php
+                                    $mockupLogo = $customizes->brand_logo ?? 'noimg.jpg';
+                                    $mockupLogoUrl = str_starts_with($mockupLogo, 'data:') ? $mockupLogo : asset('customize_images/' . $mockupLogo);
+                                @endphp
                                 <img id="mockup-brand-logo" class="mockup-brand-img"
-                                     src="{{ asset('customize_images/' . ($customizes->brand_logo ?? 'noimg.jpg')) }}"
+                                     src="{{ $mockupLogoUrl }}"
                                      alt="Logo">
                                 <span id="mockup-brand-title" class="mockup-brand-title">{{ $customizes->brand_title ?? 'School' }}</span>
                             </div>

@@ -6,13 +6,17 @@
 
 @php
     $brandLogo = $customizes->brand_logo ?? null;
-    $logoUrl = (!empty($brandLogo) && file_exists(public_path('customize_images/' . $brandLogo)))
-        ? asset('customize_images/' . $brandLogo)
-        : (file_exists(public_path('logo-final.png'))
-            ? asset('logo-final.png')
-            : (file_exists(public_path('customize_images/noimg.jpg'))
-                ? asset('customize_images/noimg.jpg')
-                : asset('assets/dist/img/mawaridLogo.jpg')));
+    if (!empty($brandLogo) && str_starts_with($brandLogo, 'data:')) {
+        $logoUrl = $brandLogo;
+    } else {
+        $logoUrl = (!empty($brandLogo) && file_exists(public_path('customize_images/' . $brandLogo)))
+            ? asset('customize_images/' . $brandLogo)
+            : (file_exists(public_path('logo-final.png'))
+                ? asset('logo-final.png')
+                : (file_exists(public_path('customize_images/noimg.jpg'))
+                    ? asset('customize_images/noimg.jpg')
+                    : asset('assets/dist/img/mawaridLogo.jpg')));
+    }
 
     $schoolName    = $customizes->brand_title ?? 'School System';
     $schoolAddress = $customizes->school_address ?? 'No.32, Street 606, Tuol Kork, Phnom Penh, Cambodia';

@@ -281,12 +281,17 @@
 
     @php
         $rawFavicon = $customizes->url_icon ?? 'favicon.ico';
-        $faviconVer = file_exists(public_path($rawFavicon)) ? filemtime(public_path($rawFavicon)) : time();
+        if (str_starts_with($rawFavicon, 'data:')) {
+            $faviconUrl = $rawFavicon;
+        } else {
+            $faviconVer = file_exists(public_path($rawFavicon)) ? filemtime(public_path($rawFavicon)) : time();
+            $faviconUrl = asset($rawFavicon) . '?v=' . $faviconVer;
+        }
     @endphp
     <!-- Favicon -->
     <link rel="icon"
           id="app-favicon"
-          href="{{ asset($rawFavicon) }}?v={{ $faviconVer }}"
+          href="{{ $faviconUrl }}"
           type="image/x-icon">
 
     <!-- CSRF -->
