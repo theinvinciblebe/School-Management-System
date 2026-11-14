@@ -28,8 +28,10 @@ return new class extends Migration
                 $table->string('url')->nullable();
                 $table->timestamps();
             });
+        }
 
-            // Seed key school calendar milestones & national events for current/upcoming terms
+        // Seed key school calendar milestones & national events for current/upcoming terms
+        if (DB::table('calendar_events')->count() === 0) {
             $year = date('Y');
             $initialEvents = [
                 [
@@ -202,6 +204,11 @@ return new class extends Migration
                     'updated_at'  => now(),
                 ],
             ];
+
+            foreach ($initialEvents as &$event) {
+                $event['all_day'] = $event['all_day'] ? DB::raw('true') : DB::raw('false');
+            }
+            unset($event);
 
             DB::table('calendar_events')->insert($initialEvents);
         }
